@@ -1,0 +1,116 @@
+from urllib.request import urlopen
+import os
+import json
+import pyphen
+from multiprocessing import Process, Manager
+
+
+def import_dicts(lang_list):
+    """
+    downloads dictionary files from: https://github.com/wooorm/dictionaries
+
+    returns a list of file objects ready to be read
+    """
+    files = {}
+
+    baseurl = 'https://raw.githubusercontent.com/wooorm/dictionaries/master/dictionaries/'
+    for lang in lang_list:
+        print('downloading')
+        file = urlopen(f"{baseurl}/{lang}/index.dic")
+        files[lang] = file
+
+    return files
+
+
+def get_words(file):
+    """
+    reads a dictionary file in hunspell format (utf-8 version)
+
+    returns a set of words
+    """
+    words = set()
+
+    # skip first line, header
+    lines = file.readlines()[1:]
+    for l in lines:
+        # decode and remove comments
+        l = l.decode('utf-8').partition('/')[0]
+        # only use non-empty lines
+        if l:
+            words.add(l)
+
+    return words
+
+
+def gen_syllables(words, lang):
+    """
+    splits all the words in a given set into syllables
+
+    returns all the usable syllables in a new set
+    """
+    print('generating syllables')
+    syllables = set()
+
+    # use all versions of a language to make sure we get all the possible syllables
+    hyph_dicts = [k for k in pyphen.LANGUAGES if k.startswith(lang)]
+    for dict in hyph_dicts:
+        hyph = pyphen.Pyphen(lang=dict)
+        for w in words:
+            # hyphenate and split into list
+            syl = hyph.inserted(w).split('-')
+            for s in syl:
+                # clean up syllables from non-alpha characters
+                s_clean = ''.join(c for c in s if c.isalpha())
+                # remove syllables which contain uppercase letters after the first
+                # (acronyms, other aberrations)
+                if s_clean[1:].islower():
+                    # keep syllable only if it is between 2 and 5 characters. This is to ensure
+                    # usability for random word generation without being ugly or too recognizable.
+                    # This is particularly relevant for English, which has ridiculously dumb
+                    # hyphenation rules.
+                    if 2 <= len(s_clean) <= 4:
+                        syllables.add(s_clean.lower())
+
+    return syllables
+
+
+def gen_pool(lang_list):
+    """
+    generates a dictionary with languages as keys and a set of syllables as values
+    """
+    pool = {}
+
+    files = import_dicts(lang_list)
+    for lang in files:
+        # load words from the file
+        words = get_words(files[lang])
+        # get language string only, without locale
+        lang = lang.split('-')[0]
+        syllables = gen_syllables(words, lang)
+        pool[lang] = list(syllables)
+
+    return pool
+
+
+if __name__ == '__main__':
+    pool = gen_pool(['en-US'])
+    with open('syllables.json', 'w') as outfile:
+        json.dump(pool, outfile)
+
+
+#def f(d, l):
+#    d[1] = '1'
+#    d['2'] = 2
+#    d[0.25] = None
+#    l.reverse()
+#
+#if __name__ == '__main__':
+#    with Manager() as manager:
+#        d = manager.dict()
+#        l = manager.list(range(10))
+#        p = Process(target=f, args=(d, l))
+#        p.start()
+#        p.join()
+#
+#        print(d)
+#        print(l)
