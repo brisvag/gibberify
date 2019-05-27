@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 import json
 import pyphen
+from time import sleep
 
 
 def import_dicts(lang_list):
@@ -15,6 +16,8 @@ def import_dicts(lang_list):
     for lang in lang_list:
         print(f'Downloading "{lang}"...')
         file = urlopen(f"{baseurl}/{lang}/index.dic")
+        # need to wait a bit, cause files may be large
+        sleep(10)
         files[lang] = file
 
     return files
@@ -92,6 +95,6 @@ def gen_pool(lang_list):
 
 
 if __name__ == '__main__':
-    pool = gen_pool(['en-GB', 'it', 'de', 'fr'])
+    pool = gen_pool(['en-GB', 'it', 'de', 'fr', 'ru'])
     with open('syllables.json', 'w') as outfile:
-        json.dump(pool, outfile)
+        json.dump(pool, outfile, indent=0)
