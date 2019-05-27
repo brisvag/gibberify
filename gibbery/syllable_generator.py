@@ -97,4 +97,4 @@ def gen_pool(lang_list):
 if __name__ == '__main__':
     pool = gen_pool(['en-GB', 'it', 'de', 'fr', 'ru'])
     with open('syllables.json', 'w') as outfile:
-        json.dump(pool, outfile, indent=0)
+        json.dump(pool, outfile, indent=1)
