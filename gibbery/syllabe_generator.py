@@ -13,7 +13,7 @@ def import_dicts(lang_list):
 
     baseurl = 'https://raw.githubusercontent.com/wooorm/dictionaries/master/dictionaries/'
     for lang in lang_list:
-        print('downloading')
+        print(f'Downloading "{lang}"...')
         file = urlopen(f"{baseurl}/{lang}/index.dic")
         files[lang] = file
 
@@ -46,8 +46,9 @@ def gen_syllables(words, lang):
 
     returns all the usable syllables in a new set
     """
-    print('generating syllables')
     syllables = set()
+
+    print(f'Generating syllables for language: "{lang}"...')
 
     # use all versions of a language to make sure we get all the possible syllables
     hyph_dicts = [k for k in pyphen.LANGUAGES if k.startswith(lang)]
@@ -91,6 +92,6 @@ def gen_pool(lang_list):
 
 
 if __name__ == '__main__':
-    pool = gen_pool(['en-US'])
+    pool = gen_pool(['en-GB', 'it', 'de', 'fr'])
     with open('syllables.json', 'w') as outfile:
         json.dump(pool, outfile)

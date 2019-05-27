@@ -17,3 +17,4 @@ Either way, you can find the code for syllable pool generation in syllable_gener
 ### TODO
 
 - use multiprocessing to speedup syllable pool generation
+- add support for non-latin fonts
