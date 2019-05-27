@@ -1,4 +1,5 @@
 from urllib.request import urlopen
+from transliterate import translit, get_available_language_codes
 import json
 import pyphen
 import re
@@ -17,6 +18,7 @@ def import_dicts(lang_list):
     for lang in lang_list:
         print(f'Downloading "{lang}"...')
         file = urlopen(f"{baseurl}/{lang}/index.dic")
+        lang = lang.split('-')[0]
         # need to wait a bit, cause files may be large
         sleep(10)
         files[lang] = file
@@ -24,7 +26,7 @@ def import_dicts(lang_list):
     return files
 
 
-def get_words(file):
+def get_words(file, lang):
     """
     reads a dictionary file in hunspell format (utf-8 version)
 
@@ -37,6 +39,9 @@ def get_words(file):
     for l in lines:
         # decode and remove comments
         l = l.decode('utf-8').partition('/')[0]
+        # transliterate line if needed
+        if lang.split('-')[0] in get_available_language_codes():
+            l = translit(l, lang, reversed=True)
         # only use non-empty lines
         if l:
             words.add(l)
@@ -69,9 +74,10 @@ def gen_syllables(words, lang):
                 # vowels. This is to ensure usability for random word generation without
                 # being unpronounceable or too recognizable. This is particularly relevant for
                 # English, which has ridiculously dumb hyphenation rules.
-                vowels = re.compile("[AEIOUYaeiouy]")
+                s_clean = s_clean.lower()
+                vowels = re.compile("[aäeëiïoöuüyÿ]")
                 if 2 <= len(s_clean) <= 4 and vowels.search(s_clean):
-                    syllables.add(s_clean.lower())
+                    syllables.add(s_clean)
 
     return syllables
 
@@ -85,9 +91,8 @@ def gen_pool(lang_list):
     files = import_dicts(lang_list)
     for lang in files:
         # load words from the file
-        words = get_words(files[lang])
+        words = get_words(files[lang], lang)
         # get language string only, without locale
-        lang = lang.split('-')[0]
         syllables = gen_syllables(words, lang)
         pool[lang] = list(syllables)
 
