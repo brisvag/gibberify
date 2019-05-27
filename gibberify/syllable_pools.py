@@ -72,7 +72,7 @@ def gen_syllables(words, lang):
                     # vowels. This is to ensure usability for random word generation without
                     # being unpronounceable or too recognizable. This is particularly relevant for
                     # English, which has ridiculously dumb hyphenation rules.
-                    vowels = re.compile("[AEIOUaeiou]")
+                    vowels = re.compile("[AEIOUYaeiouy]")
                     if 2 <= len(s_clean) <= 4 and vowels.search(s_clean):
                         syllables.add(s_clean.lower())
 
