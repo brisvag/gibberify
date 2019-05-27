@@ -46,7 +46,8 @@ def get_words(file):
 
 def gen_syllables(words, lang):
     """
-    splits all the words in a given set into syllables
+    splits all the words in a given set into syllables using Italian
+    as hyphenation language (see readme for why)
 
     returns all the usable syllables in a new set
     """
@@ -54,27 +55,23 @@ def gen_syllables(words, lang):
 
     print(f'Generating syllables for language: "{lang}"...')
 
-    # use all versions of a language to make sure we get all the possible syllables
-    # TODO: use italian to hyphenate everything because it's the best
-    hyph_dicts = [k for k in pyphen.LANGUAGES if k.startswith(lang)]
-    for dict in hyph_dicts:
-        hyph = pyphen.Pyphen(lang=dict)
-        for w in words:
-            # hyphenate and split into list
-            syl = hyph.inserted(w).split('-')
-            for s in syl:
-                # clean up syllables from non-alpha characters
-                s_clean = ''.join(c for c in s if c.isalpha())
-                # remove syllables which contain uppercase letters after the first
-                # (acronyms, other aberrations)
-                if s_clean[1:].islower():
-                    # keep syllable only if it is between 2 and 5 characters and if they contain
-                    # vowels. This is to ensure usability for random word generation without
-                    # being unpronounceable or too recognizable. This is particularly relevant for
-                    # English, which has ridiculously dumb hyphenation rules.
-                    vowels = re.compile("[AEIOUYaeiouy]")
-                    if 2 <= len(s_clean) <= 4 and vowels.search(s_clean):
-                        syllables.add(s_clean.lower())
+    hyph = pyphen.Pyphen(lang='it')
+    for w in words:
+        # hyphenate and split into list
+        syl = hyph.inserted(w).split('-')
+        for s in syl:
+            # clean up syllables from non-alpha characters
+            s_clean = ''.join(c for c in s if c.isalpha())
+            # remove syllables which contain uppercase letters after the first
+            # (acronyms, other aberrations)
+            if s_clean[1:].islower():
+                # keep syllable only if it is between 2 and 5 characters and if they contain
+                # vowels. This is to ensure usability for random word generation without
+                # being unpronounceable or too recognizable. This is particularly relevant for
+                # English, which has ridiculously dumb hyphenation rules.
+                vowels = re.compile("[AEIOUYaeiouy]")
+                if 2 <= len(s_clean) <= 4 and vowels.search(s_clean):
+                    syllables.add(s_clean.lower())
 
     return syllables
 
