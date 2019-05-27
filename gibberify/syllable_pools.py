@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 import json
 import pyphen
+import re
 from time import sleep
 
 
@@ -54,6 +55,7 @@ def gen_syllables(words, lang):
     print(f'Generating syllables for language: "{lang}"...')
 
     # use all versions of a language to make sure we get all the possible syllables
+    # TODO: use italian to hyphenate everything because it's the best
     hyph_dicts = [k for k in pyphen.LANGUAGES if k.startswith(lang)]
     for dict in hyph_dicts:
         hyph = pyphen.Pyphen(lang=dict)
@@ -66,11 +68,12 @@ def gen_syllables(words, lang):
                 # remove syllables which contain uppercase letters after the first
                 # (acronyms, other aberrations)
                 if s_clean[1:].islower():
-                    # keep syllable only if it is between 2 and 5 characters. This is to ensure
-                    # usability for random word generation without being ugly or too recognizable.
-                    # This is particularly relevant for English, which has ridiculously dumb
-                    # hyphenation rules.
-                    if 2 <= len(s_clean) <= 4:
+                    # keep syllable only if it is between 2 and 5 characters and if they contain
+                    # vowels. This is to ensure usability for random word generation without
+                    # being unpronounceable or too recognizable. This is particularly relevant for
+                    # English, which has ridiculously dumb hyphenation rules.
+                    vowels = re.compile("[AEIOUaeiou]")
+                    if 2 <= len(s_clean) <= 4 and vowels.search(s_clean):
                         syllables.add(s_clean.lower())
 
     return syllables
