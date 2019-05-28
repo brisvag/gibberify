@@ -6,7 +6,7 @@ Or, as an Orc might say:
 
 Gibbery is a simple gibberish generator that translates words from a real language to a (almost) pronounceable gibberish.
 
-It uses words taken from [wooorm/dictionaries](https://github.com/wooorm/dictionaries/tree/master/dictionaries) to generate new syllables which are used to convert real language into a wrangled mess or nonsense.
+It uses words taken from [wooorm/dictionaries](https://github.com/wooorm/dictionaries/tree/master/dictionaries) to generate new syllables which are used to convert real language into a wrangled mess of nonsense.
 
 #### DISCLAIMER:
 
@@ -45,7 +45,7 @@ Either way, you can find the code for syllable pool generation in `syllable_pool
 Syllables are generated (and later matched) using Italian hyphenation rules for a few reasons:
 - they generate reasonable outcome, in contrast to English (`wardrobe` and `nightstand` contain only one syllable? For real?)
 - they mostly generate pronounceable syllables that contain at least a vowel
-- they are consistent (again, compared to English), producing a more useful set of syllables that contain fewer weird string that appear only once in the whole language
+- they are consistent (again, compared to English), producing a more useful set of syllables that contain fewer weird strings that appear only once in the whole language
 
 There are probably other ways (or other languages) to do this, but Italian is my native language so either deal with it, or improve it :P
 
@@ -57,11 +57,11 @@ For now, you have to manually change the code to do so (you're smart, you can fi
 I plan on making this thing a bit more user friendly in the future.
 
 Right now I only included Orcish and it's generated using German and Russian, with no real reason other than "*It sounded right*".
-To be honest, I don't think this combination turned out that well so try out some stuff yourself!
+To be honest, I don't think this combination turned out that well, so try out some stuff yourself!
 
 # Contributing
 
-Yes, please! Just create issues, PRs, forks and have fun!
+Yes, please! Just create issues, PRs, forks and fiddle around with it!
 
 # TODO
 
