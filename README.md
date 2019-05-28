@@ -64,4 +64,4 @@ Yes, please! Just create issues, PRs, forks and have fun!
 - use multiprocessing to speedup the hot mess that `syllable_pools.py` is.
 - translation mapping should be in a unique 1 to 1 fashion to avoid repetitions, not random.
 - a tiny bit of user-friendliness wouldn't hurt... 
-
+- weighted use of syllables from different languages
