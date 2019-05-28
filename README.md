@@ -18,7 +18,7 @@ Does anything weird happen? Report it using an issue or fix it yourself and send
 
 ### Translation
 
-Just run `gibberify.py` with python3.6 or higher. You can figure out the rest ;)
+Just clone the repo and run `gibberify.py` from the gibberify folder. You can figure out the rest ;)
 
 # Requirements
 
