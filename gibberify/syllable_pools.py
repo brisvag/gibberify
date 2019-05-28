@@ -70,7 +70,7 @@ def gen_syllables(words, lang):
         for s in syl:
             # clean up syllables from non-alphabetical characters
             s_clean = ''.join(c for c in s if c.isalpha())
-            syllables_full.add(s_clean)
+            syllables_full.add(s_clean.lower())
             # remove syllables which contain uppercase letters after the first
             # (acronyms, other aberrations)
             if s_clean[1:].islower():
