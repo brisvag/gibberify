@@ -38,9 +38,7 @@ pip install transliterate
 
 #### Sillable pool
 
-You can use the pre-generated syllable pool present in the repo, or you can generate a new one using your preferred languages by running:
-
-Either way, you can find the code for syllable pool generation in `syllable_pools.py`.
+You can use the pre-generated syllable pool present in the repo, or you can generate a new one using your preferred languages by changing the language list in `syllable_pools.py` and running it.
 
 Syllables are generated (and later matched) using Italian hyphenation rules for a few reasons:
 - they generate reasonable outcome, in contrast to English (`wardrobe` and `nightstand` contain only one syllable? For real?)
