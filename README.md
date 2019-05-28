@@ -1,6 +1,10 @@
-# INSERT_GIBBERISH_HERE
+# Do you like nonsense? I'LL GIVE YOU SOME NONSENSE!
 
-Gibbery is a simple gibberish generator that translates words from a real language to a pronounceable gibberish.
+Or, as an Orc might say:
+
+"**Tlot ivol denzikorusvovden? JAIM'FURZ OZOWIR IVOL UNARHANE DENZIKORUSVOVDEN!**"
+
+Gibbery is a simple gibberish generator that translates words from a real language to a (almost) pronounceable gibberish.
 
 It uses words taken from [wooorm/dictionaries](https://github.com/wooorm/dictionaries/tree/master/dictionaries) to generate new syllables which are used to convert real language into a wrangled mess or nonsense.
 
@@ -53,7 +57,7 @@ For now, you have to manually change the code to do so (you're smart, you can fi
 I plan on making this thing a bit more user friendly in the future.
 
 Right now I only included Orcish and it's generated using German and Russian, with no real reason other than "*It sounded right*".
-To be honest, I don't think it turned out that well so: please, experiment!
+To be honest, I don't think this combination turned out that well so try out some stuff yourself!
 
 # Contributing
 
