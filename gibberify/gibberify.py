@@ -49,6 +49,11 @@ def gibberify(lang_out):
     # remove multiple spaces due to input or unmapped syllables
     trans = re.sub(' +', ' ', trans)
 
+    # strip ugly whitespaces and capitalise first letter.
+    # TODO: this is a hack around empty syllables at the start of a sentence. I also does not
+    #       capitalise words after punctuation.
+    trans = trans.strip().capitalize()
+
     return trans
 
 
