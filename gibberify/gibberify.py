@@ -1,0 +1,50 @@
+import json
+import re
+import string
+import pyphen
+
+
+def gibberify(lang_out):
+    """
+    translate a text into the specified gibberish language
+    """
+    # load translation dictionary
+    with open('dicts.json') as f:
+        dicts = json.load(f)
+
+    # check if requested output language exists
+    if not lang_out in dicts:
+        return f'Error: you first need to generate a dictionary for "{lang_out}".'
+    else:
+        inp = input('Write the sentence you want to translate:\n')
+
+    # split words maintaining non-word characters in the right positions
+    words = re.split('(\W+)(\w+)', inp)
+
+    # generate translation based on syllables
+    trans_list = []
+    hyph = pyphen.Pyphen(lang='it')
+    for w in words:
+        if re.match(r'\w+', w):
+            syl = hyph.inserted(w).split('-')
+            # translate syllables only if they are found, otherwise return XXX TODO: return random?
+            trans_syl = [dicts[lang_out].get(s.lower(), 'XXX') for s in syl]
+            # save word translation
+            trans_w = ''.join(trans_syl)
+        else:
+            # if w is not a word, just leave it as is
+            trans_w = w
+
+        trans_list.append(trans_w)
+
+    # join everything
+    trans = ''.join(trans_list)
+
+    # remove multiple spaces due to input or unmapped syllables
+    trans = re.sub(' +', ' ', trans)
+
+    return trans
+
+
+if __name__ == '__main__':
+    print(gibberify('orc'))
