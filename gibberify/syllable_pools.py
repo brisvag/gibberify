@@ -54,19 +54,23 @@ def gen_syllables(words, lang):
     splits all the words in a given set into syllables using Italian
     as hyphenation language (see readme for why)
 
-    returns all the usable syllables in a new set
+    returns all the syllables in each language in a set and a subset
+    with only those useful for gibberish generation
     """
+    syllables_full = set()
     syllables = set()
 
     print(f'Generating syllables for language: "{lang}"...')
 
+    # using italian because reasons
     hyph = pyphen.Pyphen(lang='it')
     for w in words:
         # hyphenate and split into list
         syl = hyph.inserted(w).split('-')
         for s in syl:
-            # clean up syllables from non-alpha characters
+            # clean up syllables from non-alphabetical characters
             s_clean = ''.join(c for c in s if c.isalpha())
+            syllables_full.add(s_clean)
             # remove syllables which contain uppercase letters after the first
             # (acronyms, other aberrations)
             if s_clean[1:].islower():
@@ -79,13 +83,14 @@ def gen_syllables(words, lang):
                 if 2 <= len(s_clean) <= 4 and vowels.search(s_clean):
                     syllables.add(s_clean)
 
-    return syllables
+    return syllables_full, syllables
 
 
 def gen_pool(lang_list):
     """
     generates a dictionary with languages as keys and a set of syllables as values
     """
+    pool_full = {}
     pool = {}
 
     files = import_dicts(lang_list)
@@ -93,13 +98,16 @@ def gen_pool(lang_list):
         # load words from the file
         words = get_words(files[lang], lang)
         # get language string only, without locale
-        syllables = gen_syllables(words, lang)
+        syllables_full, syllables = gen_syllables(words, lang)
+        pool_full[lang] = list(syllables_full)
         pool[lang] = list(syllables)
 
-    return pool
+    return pool_full, pool
 
 
 if __name__ == '__main__':
-    pool = gen_pool(['en-GB', 'it', 'de', 'fr', 'ru'])
+    pool_full, pool = gen_pool(['en-GB', 'it', 'de', 'fr', 'ru'])
+    with open('syllables_full.json', 'w') as outfile:
+        json.dump(pool_full, outfile, indent=2)
     with open('syllables.json', 'w') as outfile:
-        json.dump(pool, outfile, indent=1)
+        json.dump(pool, outfile, indent=2)
