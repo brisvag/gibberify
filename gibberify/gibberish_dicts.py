@@ -19,7 +19,7 @@ def gen_dicts(lang_in):
     }
 
     # make dictionary generation somewhat deterministic, cause why not
-    random.seed('GIBBERISH')
+    random.seed('total gibberish')
 
     with open('syllables_full.json') as f:
         syllables_full = json.load(f)
