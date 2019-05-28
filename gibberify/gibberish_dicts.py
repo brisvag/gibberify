@@ -18,8 +18,8 @@ def gen_dicts(lang_in):
         'orc': ['ru', 'de']
     }
 
-    # make dictionary generation somewhat deterministic
-    random.seed('gibberify')
+    # make dictionary generation somewhat deterministic, cause why not
+    random.seed('GIBBERISH')
 
     with open('syllables_full.json') as f:
         syllables_full = json.load(f)
