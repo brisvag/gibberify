@@ -31,6 +31,12 @@ def gibberify(lang_out):
             trans_syl = [dicts[lang_out].get(s.lower(), 'XXX') for s in syl]
             # save word translation
             trans_w = ''.join(trans_syl)
+            # let's preserve capitalisation, at least a bit
+            if w[0].isupper():
+                if w.isupper():
+                    trans_w = trans_w.upper()
+                else:
+                    trans_w = trans_w.capitalize()
         else:
             # if w is not a word, just leave it as is
             trans_w = w
