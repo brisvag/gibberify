@@ -36,15 +36,15 @@ def get_words(file, lang):
 
     # skip first line, header
     lines = file.readlines()[1:]
-    for l in lines:
+    for line in lines:
         # decode and remove comments
-        l = l.decode('utf-8').partition('/')[0]
+        line = line.decode('utf-8').partition('/')[0]
         # transliterate line if needed
         if lang.split('-')[0] in get_available_language_codes():
-            l = translit(l, lang, reversed=True)
+            line = translit(line, lang, reversed=True)
         # only use non-empty lines
-        if l:
-            words.add(l)
+        if line:
+            words.add(line)
 
     return words
 
@@ -79,7 +79,7 @@ def gen_syllables(words, lang):
                 # being unpronounceable or too recognizable. This is particularly relevant for
                 # English, which has ridiculously dumb hyphenation rules.
                 s_clean = s_clean.lower()
-                vowels = re.compile("[aäeëiïoöuüyÿ]")
+                vowels = re.compile('[aäeëiïoöuüyÿ]')
                 if 2 <= len(s_clean) <= 4 and vowels.search(s_clean):
                     syllables.add(s_clean)
 
