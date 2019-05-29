@@ -5,12 +5,15 @@ import pyphen
 import re
 from time import sleep
 
+# local imports
+from config import langs_download
+
 
 def import_dicts(lang_list):
     """
     downloads dictionary files from: https://github.com/wooorm/dictionaries
 
-    returns a list of file objects ready to be read
+    returns file objects ready to be read
     """
     files = {}
 
@@ -106,7 +109,7 @@ def gen_pool(lang_list):
 
 
 if __name__ == '__main__':
-    pool_full, pool = gen_pool(['en-GB', 'it', 'de', 'fr', 'ru'])
+    pool_full, pool = gen_pool(langs_download)
     with open('../data/syllables_full.json', 'w') as outfile:
         json.dump(pool_full, outfile, indent=2)
     with open('../data/syllables.json', 'w') as outfile:
