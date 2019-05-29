@@ -2,7 +2,7 @@
 
 Or, as an Orc might say:
 
-"**Tlot ivol denzikorusvovden? JAIM'FURZ OZOWIR IVOL UNARHANE DENZIKORUSVOVDEN!**"
+"**Ova prah iso zajdeitlhio? 'CHLI MÜLEKAR PRAH KVAGREJ ZAJDEITLHIO!**"
 
 Gibbery is a simple gibberish generator that translates words from a real language to a (almost) pronounceable gibberish.
 
@@ -24,17 +24,19 @@ Just clone the repo and run `gibberify.py` from the gibberify folder. You can fi
 
 Everything requires python3.6 or higher.
 
-If you just want to make some gibberish or create new dictionaries you only need `pyphen`:
+If you just want to make some gibberish and create new dictionaries you only need `pyphen`:
 ```
 pip install pyphen
 ```
 
-If you want to fiddle around with syllables you will also need (for non-latin characters):
+If you want to fiddle around with syllable pools you will also need (for non-latin characters):
 ```
 pip install transliterate
 ```
 
 # Customisation
+
+Most of the things you might wanna change are located in `config.py`.
 
 #### Sillable pool
 
@@ -51,11 +53,8 @@ There are probably other ways (or other languages) to do this, but Italian is my
 
 Same as above, for the most part. You can generate new ones using any combination of existing languages, it's up to you.
 
-For now, you have to manually change the code to do so (you're smart, you can figure it out).
-I plan on making this thing a bit more user friendly in the future.
-
-Right now I only included Orcish and it's generated using German and Russian, with no real reason other than "*It sounded right*".
-To be honest, I don't think this combination turned out that well, so try out some stuff yourself!
+Right now the ones I'm shipping are purely arbitrary, with no real reason other than "*It sounded right*".
+To be honest, I don't think my combinations turned out that well, so try out some stuff yourself and let me know what sounds best!
 
 # Contributing
 
@@ -65,5 +64,5 @@ Yes, please! Just create issues, PRs, forks and fiddle around with it!
 
 - use multiprocessing to speedup the hot mess that `syllable_pools.py` is.
 - translation mapping should be in a unique 1 to 1 fashion to avoid repetitions, not random.
-- a tiny bit of user-friendliness wouldn't hurt... 
+- a tiny bit *more* of user-friendliness wouldn't hurt... 
 - weighted use of syllables from different languages
