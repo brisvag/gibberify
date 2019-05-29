@@ -1,6 +1,7 @@
 import json
 import re
 import pyphen
+import random
 
 
 def gibberify():
@@ -29,8 +30,10 @@ def gibberify():
     for w in words:
         if re.match(r'\w+', w):
             syl = hyph.inserted(w).split('-')
-            # translate syllables only if they are found, otherwise return XXX TODO: return random?
-            trans_syl = [dicts[lang_out].get(s.lower(), 'XXX') for s in syl]
+            # translate syllables only if they are found, otherwise return a random one
+            # TODO: for now, this will also give a warning, to see how often it happens
+            trans_syl = [dicts[lang_out].get(s.lower(), random.choice(list(dicts[lang_out].keys())))
+                         for s in syl]
             # save word translation
             trans_w = ''.join(trans_syl)
             # let's preserve capitalisation, at least a bit
