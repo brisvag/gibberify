@@ -15,7 +15,9 @@ def gen_dicts(lang_in):
 
     # gibberish languages and the respective template languages
     gib_langs = {
-        'orc': ['ru', 'de']
+        'orc': ['ru', 'de'],
+        'elv': ['fr', 'en'],
+        'dwa': ['it', 'de'],
     }
 
     # make dictionary generation somewhat deterministic, cause why not

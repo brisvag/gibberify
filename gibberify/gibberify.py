@@ -3,19 +3,22 @@ import re
 import pyphen
 
 
-def gibberify(lang_out):
+def gibberify():
     """
-    translate a text into the specified gibberish language
+    translate a text into a specified gibberish language
     """
     # load translation dictionary
     with open('../data/dicts.json') as f:
         dicts = json.load(f)
 
+    # what language to translate into
+    lang_out = input(f'What language do you want to translate into? '
+                     f'Options are: {", ".join(dicts.keys())}\n')
     # check if requested output language exists
     if lang_out not in dicts:
         return f'Error: you first need to generate a dictionary for "{lang_out}".'
     else:
-        inp = input('Write the sentence you want to translate:\n')
+        inp = input(f'You chose "{lang_out}". Write the sentence you want to translate:\n')
 
     # split words maintaining non-word characters in the right positions
     words = re.split(r'(\W+)(\w+)', inp)
@@ -57,4 +60,4 @@ def gibberify(lang_out):
 
 
 if __name__ == '__main__':
-    print(gibberify('orc'))
+    print(gibberify())
