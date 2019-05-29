@@ -1,5 +1,5 @@
 """
-This file contains the settings for the other modules
+Configuration file
 """
 
 

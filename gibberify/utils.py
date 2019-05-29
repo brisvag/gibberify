@@ -1,5 +1,5 @@
 """
-Collection of utilities
+Collection of utilities and globals
 """
 
 

@@ -1,3 +1,7 @@
+"""
+Main entry point of gibberify
+"""
+
 import json
 import re
 import pyphen

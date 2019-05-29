@@ -1,3 +1,7 @@
+"""
+Module for parsing and preparing syllable pools from word lists
+"""
+
 from urllib.request import urlopen
 from transliterate import translit, get_available_language_codes
 import json

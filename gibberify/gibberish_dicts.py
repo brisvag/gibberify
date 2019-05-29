@@ -1,3 +1,7 @@
+"""
+Module for generation of fake, gibberish translation dictionaries
+"""
+
 import json
 import random
 
