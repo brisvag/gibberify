@@ -22,7 +22,6 @@ def gibberify(translator, text):
         if re.match(r'\w+', w):
             syl = hyph.inserted(w).split('-')
             # translate syllables only if they are found, otherwise return a random one
-            # TODO: for now, this will also give a warning, to see how often it happens
             trans_syl = [translator.get(s.lower(), random.choice(list(translator.keys())))
                          for s in syl]
             # save word translation
@@ -45,10 +44,7 @@ def gibberify(translator, text):
     # remove multiple spaces due to input or unmapped syllables
     trans = re.sub(' +', ' ', trans)
 
-    # strip ugly whitespaces and capitalise first letter.
-    # TODO: this is a hack around empty syllables at the start of a sentence. It also does not
-    #       capitalise words after punctuation.
-    trans = trans.strip().capitalize()
+    # TODO: strip ugly whitespaces and capitalise first letter in a smart way
 
     return trans
 
@@ -101,7 +97,7 @@ def main():
             if level == 2:
                 translator = dicts[lang_in][lang_out]
                 text = input('What do you want to translate?\n')
-                print(f'... or as someone could say:\n'
+                print(f'... or as someone might say:\n'
                       f'{gibberify(translator, text)}')
                 continue
 
@@ -117,5 +113,4 @@ def main():
 
 
 if __name__ == '__main__':
-    print(real_langs)
     main()
