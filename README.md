@@ -69,3 +69,4 @@ Yes, please! Just create issues, PRs, forks and fiddle around with it!
 
 ### TOTHINKABOUT
 - allow asking for higher percentage of syllables containing some specific letters?
+- Maybe short syllables are more common than long ones. Mapping should reflect this. Right now, translations are almost always longer and contain longer words.
