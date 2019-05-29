@@ -8,7 +8,7 @@ def gibberify(lang_out):
     translate a text into the specified gibberish language
     """
     # load translation dictionary
-    with open('dicts.json') as f:
+    with open('../data/dicts.json') as f:
         dicts = json.load(f)
 
     # check if requested output language exists

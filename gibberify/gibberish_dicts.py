@@ -21,10 +21,10 @@ def gen_dicts(lang_in):
     # make dictionary generation somewhat deterministic, cause why not
     random.seed('total gibberish')
 
-    with open('syllables_full.json') as f:
+    with open('../data/syllables_full.json') as f:
         syllables_full = json.load(f)
 
-    with open('syllables.json') as f:
+    with open('../data/syllables.json') as f:
         syllables = json.load(f)
 
     # create pools of syllables from template languages
@@ -57,5 +57,5 @@ def gen_dicts(lang_in):
 
 if __name__ == '__main__':
     dicts = gen_dicts('en')
-    with open('dicts.json', 'w') as outfile:
+    with open('../data/dicts.json', 'w') as outfile:
         json.dump(dicts, outfile, indent=1)

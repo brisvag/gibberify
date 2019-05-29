@@ -107,7 +107,7 @@ def gen_pool(lang_list):
 
 if __name__ == '__main__':
     pool_full, pool = gen_pool(['en-GB', 'it', 'de', 'fr', 'ru'])
-    with open('syllables_full.json', 'w') as outfile:
+    with open('../data/syllables_full.json', 'w') as outfile:
         json.dump(pool_full, outfile, indent=2)
-    with open('syllables.json', 'w') as outfile:
+    with open('../data/syllables.json', 'w') as outfile:
         json.dump(pool, outfile, indent=2)
