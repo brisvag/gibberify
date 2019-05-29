@@ -12,13 +12,13 @@ def gibberify(lang_out):
         dicts = json.load(f)
 
     # check if requested output language exists
-    if not lang_out in dicts:
+    if lang_out not in dicts:
         return f'Error: you first need to generate a dictionary for "{lang_out}".'
     else:
         inp = input('Write the sentence you want to translate:\n')
 
     # split words maintaining non-word characters in the right positions
-    words = re.split('(\W+)(\w+)', inp)
+    words = re.split(r'(\W+)(\w+)', inp)
 
     # generate translation based on syllables
     trans_list = []
