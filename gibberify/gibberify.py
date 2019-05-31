@@ -49,13 +49,10 @@ def gibberify(translator, text):
     return trans
 
 
-def main():
+def interactive():
     """
     deal with user input and call functions accordingly
     """
-    # load translation dictionaries
-    with open('../data/dicts.json') as f:
-        dicts = json.load(f)
 
     # Make it a sort of menu for easier usage
     level = 0
@@ -110,6 +107,29 @@ def main():
             print('\nGoing back...\n')
             continue
 
+import argparse
+
+def main():
+    # Parse arguments (also gives you help automatically with -h)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--from-lang','-fl', dest='lang_in', type=str, default='en', choices=real_langs)
+    parser.add_argument('--to-lang','-l', dest='lang_out', type=str, default='orc', choices=gib_langs.keys())
+    parser.add_argument('--message', '-m', type=str)
+    args = parser.parse_args()
+    lang_in = args.lang_in
+    lang_out = args.lang_out
+    text = args.message
+
+    # load translation dictionaries
+    with open('../data/dicts.json') as f:
+        global dicts
+        dicts = json.load(f)
+
+    if text:
+        translator = dicts[lang_in][lang_out]
+        print(gibberify(translator, text))
+    else:
+        interactive()
 
 
 if __name__ == '__main__':
