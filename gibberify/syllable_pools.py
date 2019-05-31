@@ -8,9 +8,11 @@ import json
 import pyphen
 import re
 from time import sleep
+import sys
+import os
 
 # local imports
-from config import langs_download
+from .config import langs_download
 
 
 def import_dicts(lang_list):
@@ -114,7 +116,13 @@ def gen_pool(lang_list):
 
 if __name__ == '__main__':
     pool_full, pool = gen_pool(langs_download)
-    with open('../data/syllables_full.json', 'w') as outfile:
+
+    if hasattr(sys, "_MEIPASS"):
+        data = os.path.join(sys._MEIPASS, 'data')
+    else:
+        data = os.path.join(os.path.dirname(__file__), 'data')
+
+    with open(os.path.join(data, 'syllables_full.json'), 'w') as outfile:
         json.dump(pool_full, outfile, indent=2)
-    with open('../data/syllables.json', 'w') as outfile:
+    with open(os.path.join(data, 'syllables.json'), 'w') as outfile:
         json.dump(pool, outfile, indent=2)
