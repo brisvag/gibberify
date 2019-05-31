@@ -20,6 +20,10 @@ Does anything weird happen? Report it using an issue or fix it yourself and send
 
 Just clone the repo and run `python -m gibberify` from the main directory. You can figure out the rest ;)
 
+Alternatively, you can use the standalone executable `standalone/gibberify`.
+For now, it only works on linux. This file was generated with PyInstaller using the configuration file `gibberify.spec`.
+If you want to make it yourself, just run `pyinstaller gibberify.spec` from the main directory (you will need pyinstaller installed, of course)
+
 # Requirements
 
 Everything requires python3.6 or higher.
