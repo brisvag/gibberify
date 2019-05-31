@@ -122,7 +122,7 @@ if __name__ == '__main__':
     else:
         data = os.path.join(os.path.dirname(__file__), 'data')
 
-    with open(os.path.join(data, 'syllables_full.json')) as outfile:
+    with open(os.path.join(data, 'syllables_full.json'), 'w') as outfile:
         json.dump(pool_full, outfile, indent=2)
-    with open(os.path.join(data, 'syllables.json')) as outfile:
+    with open(os.path.join(data, 'syllables.json'), 'w') as outfile:
         json.dump(pool, outfile, indent=2)

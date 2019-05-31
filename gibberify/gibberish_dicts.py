@@ -83,5 +83,5 @@ if __name__ == '__main__':
     else:
         data = os.path.join(os.path.dirname(__file__), 'data')
 
-    with open(os.path.join(data, 'dicts.json')) as outfile:
+    with open(os.path.join(data, 'dicts.json'), 'w') as outfile:
         json.dump(dicts, outfile, indent=1)
