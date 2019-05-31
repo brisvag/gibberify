@@ -108,17 +108,42 @@ def interactive():
             continue
 
 import argparse
+import sys, os
+
+def parse_message(somestring):
+    """
+    Handle message input nicely
+    Passing '-' as the message will read from stdin
+    Passing a valid file will read from the file
+    Passing a string will use it as the message.
+    If your string happens to accidentally be a valid file,
+    tough shit i guess..
+    """
+    somestring = str(somestring)
+    if somestring == '-':
+        try:
+            return sys.stdin.read()
+        except KeyboardInterrupt:
+            print()
+            exit()
+    elif os.path.exists(somestring):
+        with open(somestring, 'r') as f:
+            return f.read()
+    else:
+        return somestring
 
 def main():
     # Parse arguments (also gives you help automatically with -h)
     parser = argparse.ArgumentParser()
     parser.add_argument('--from-lang','-fl', dest='lang_in', type=str, default='en', choices=real_langs)
     parser.add_argument('--to-lang','-l', dest='lang_out', type=str, default='orc', choices=gib_langs.keys())
-    parser.add_argument('--message', '-m', type=str)
+    parser.add_argument('--message', '-m', type=parse_message, nargs='*')
     args = parser.parse_args()
+    
+    # Set some convenient variable names
     lang_in = args.lang_in
     lang_out = args.lang_out
-    text = args.message
+    text = ' '.join(args.message)
 
     # load translation dictionaries
     with open('../data/dicts.json') as f:
