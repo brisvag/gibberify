@@ -4,7 +4,7 @@ Or, as an Orc might say:
 
 "**Ova prah iso zajdeitlhio? 'CHLI MÜLEKAR PRAH KVAGREJ ZAJDEITLHIO!**"
 
-Gibbery is a simple gibberish generator that translates words from a real language to a (almost) pronounceable gibberish.
+Gibberify is a simple gibberish generator that translates words from a real language to a (almost) pronounceable gibberish.
 
 It uses words taken from [wooorm/dictionaries](https://github.com/wooorm/dictionaries/tree/master/dictionaries) to generate new syllables which are used to convert real language into a wrangled mess of nonsense.
 
@@ -18,7 +18,7 @@ Does anything weird happen? Report it using an issue or fix it yourself and send
 
 ### Translation
 
-Just clone the repo and run `gibberify.py` from the gibberify folder. You can figure out the rest ;)
+Just clone the repo and run `python -m gibberify` from the main directory. You can figure out the rest ;)
 
 # Requirements
 
@@ -38,9 +38,11 @@ pip install transliterate
 
 Most of the things you might wanna change are located in `config.py`.
 
-#### Sillable pool
+#### Syllable pool
 
-You can use the pre-generated syllable pool present in the repo, or you can generate a new one using your preferred languages by changing the language list in `syllable_pools.py` and running it.
+You can use the pre-generated syllable pool present in the repo, or you can generate a new one using your preferred languages by editing `config.py`.
+
+To generate new pools, run `python -m gibberify.syllable_pools` from the main directory.
 
 Syllables are generated (and later matched) using Italian hyphenation rules for a few reasons:
 - they generate reasonable outcome, in contrast to English (`wardrobe` and `nightstand` contain only one syllable? For real?)
@@ -51,7 +53,7 @@ There are probably other ways (or other languages) to do this, but Italian is my
 
 #### Translation dictionaries
 
-Same as above, for the most part. You can generate new ones using any combination of existing languages, it's up to you.
+Same as above, for the most part. You can generate new ones using any combination of existing languages, it's up to you. Just run `python -m gibberify.gibberish_dicts` from the main directory.
 
 Right now the ones I'm shipping are purely arbitrary, with no real reason other than "*It sounded right*".
 To be honest, I don't think my combinations turned out that well, so try out some stuff yourself and let me know what sounds best!

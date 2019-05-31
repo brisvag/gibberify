@@ -6,10 +6,12 @@ import json
 import re
 import pyphen
 import random
+import sys
+import os
 
 # local imports
-from utils import __version__
-from config import real_langs, gib_langs
+from .utils import __version__
+from .config import real_langs, gib_langs
 
 
 def gibberify(translator, text):
@@ -57,8 +59,15 @@ def main():
     """
     deal with user input and call functions accordingly
     """
+
+    # fix path to files depending if we are running as script or as executable
+    if hasattr(sys, "_MEIPASS"):
+        data = os.path.join(sys._MEIPASS, 'data')
+    else:
+        data = os.path.join(os.path.dirname(__file__), 'data')
+
     # load translation dictionaries
-    with open('../data/dicts.json') as f:
+    with open(os.path.join(data, 'dicts.json')) as f:
         dicts = json.load(f)
 
     # Make it a sort of menu for easier usage
@@ -113,7 +122,6 @@ def main():
                 return
             print('\nGoing back...\n')
             continue
-
 
 
 if __name__ == '__main__':

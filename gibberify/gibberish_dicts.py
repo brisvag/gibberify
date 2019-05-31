@@ -4,9 +4,11 @@ Module for generation of fake, gibberish translation dictionaries
 
 import json
 import random
+import sys
+import os
 
 # local imports
-from config import real_langs, gib_langs
+from .config import real_langs, gib_langs
 
 
 def gen_dict(pool_in, pool_out):
@@ -42,10 +44,16 @@ def gen_dicts():
     # make dictionary generation somewhat deterministic, cause why not
     random.seed('gibberish')
 
-    with open('../data/syllables_full.json') as f:
+    # fix path to files depending if we are running as script or as executable
+    if hasattr(sys, "_MEIPASS"):
+        data = os.path.join(sys._MEIPASS, 'data')
+    else:
+        data = os.path.join(os.path.dirname(__file__), 'data')
+
+    with open(os.path.join(data, 'syllables_full.json')) as f:
         syllables_full = json.load(f)
 
-    with open('../data/syllables.json') as f:
+    with open(os.path.join(data, 'syllables.json')) as f:
         syllables = json.load(f)
 
     # create pools of syllables from template languages
@@ -69,5 +77,11 @@ def gen_dicts():
 
 if __name__ == '__main__':
     dicts = gen_dicts()
-    with open(f'../data/dicts.json', 'w') as outfile:
+
+    if hasattr(sys, "_MEIPASS"):
+        data = os.path.join(sys._MEIPASS, 'data')
+    else:
+        data = os.path.join(os.path.dirname(__file__), 'data')
+
+    with open(os.path.join(data, 'dicts.json')) as outfile:
         json.dump(dicts, outfile, indent=1)
