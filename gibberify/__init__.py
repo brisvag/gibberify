@@ -1,7 +1,7 @@
-# TODO: I still don't get how this thing works.
-
-from .gibberify import gibberify
+from .gibberify import main
+from .utils import __version__
 
 __all__ = [
-    'gibberify'
+    'main',
+    '__version__'
 ]
