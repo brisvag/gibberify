@@ -140,8 +140,6 @@ def parse_message(somestring):
 def main():
     # Parse arguments (also gives you help automatically with -h)
     parser = argparse.ArgumentParser(prog='gibberify')
-    parser.add_argument('--interactive', '-i', dest='inter', action='store_true',
-                        help='run in interactive mode')
     parser.add_argument('--from-lang', '-fl', dest='lang_in', type=str, default='en',
                         choices=real_langs, help='language to translate from')
     parser.add_argument('--to-lang', '-l', dest='lang_out', type=str, default='orc',
@@ -152,13 +150,12 @@ def main():
                              'If `-` is given, input text is take from stdin')
     args = parser.parse_args()
 
-    # if no arguments were given, print help
+    # if no arguments were given, run interactive mode
+    inter = False
     if len(sys.argv) == 1:
-        parser.print_help()
-        return
+        inter = True
 
     # Set some convenient variable names
-    inter = args.inter
     if not inter:
         lang_in = args.lang_in
         lang_out = args.lang_out

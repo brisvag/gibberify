@@ -18,11 +18,14 @@ Does anything weird happen? Report it using an issue or fix it yourself and send
 
 ## Translation
 
-Just clone the repo and run `python -m gibberify -i` from the main directory to use the interactive mode. Run `python -m gibberify -h` to print the help.
+Just clone the repo and run `python -m gibberify` from the main directory to use the interactive mode.
 
-Alternatively, you can use the standalone executable `standalone/gibberify`, with the same command line options.
+You can also translate from the command line: run `python -m gibberify -h` to print the help.
+
+Alternatively, you can just use the standalone executable `standalone/gibberify` without needing python or any dependencies.
 For now, the standalone only works on linux. This file was generated with PyInstaller using the configuration file `gibberify.spec`.
-If you want to generate it yourself, just run `pyinstaller gibberify.spec` from the main directory (you will need pyinstaller installed, of course).
+If you want to generate it yourself, just run `pyinstaller gibberify.spec` from the main directory (you will need pyinstaller installed).
+PyInstaller does not work with python3.7, use python3.6!
 
 ### Examples
 
