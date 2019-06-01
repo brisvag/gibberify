@@ -96,6 +96,7 @@ Yes, please! Just create issues, PRs, forks and fiddle around with it!
 - translation mapping should be in a unique 1 to 1 fashion to avoid repetitions, not random.
 - a tiny bit *more* of user-friendliness wouldn't hurt... 
 - weighted use of syllables from different languages
+- support reverse translation!
 
 # TOTHINKABOUT
 - allow asking for higher percentage of syllables containing some specific letters?
