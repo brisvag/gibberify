@@ -145,7 +145,12 @@ def main():
     parser.add_argument('--to-lang', '-l', dest='lang_out', type=str, default='orc', choices=gib_langs.keys())
     parser.add_argument('--message', '-m', type=parse_message, nargs='*')
     args = parser.parse_args()
-    
+
+    # if no arguments were given, print help
+    if len(sys.argv) == 1:
+        parser.print_help()
+        return
+
     # Set some convenient variable names
     inter = args.inter
     if not inter:
