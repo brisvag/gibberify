@@ -140,10 +140,16 @@ def parse_message(somestring):
 def main():
     # Parse arguments (also gives you help automatically with -h)
     parser = argparse.ArgumentParser(prog='gibberify')
-    parser.add_argument('--interactive', '-i', dest='inter', action='store_true')
-    parser.add_argument('--from-lang', '-fl', dest='lang_in', type=str, default='en', choices=real_langs)
-    parser.add_argument('--to-lang', '-l', dest='lang_out', type=str, default='orc', choices=gib_langs.keys())
-    parser.add_argument('--message', '-m', type=parse_message, nargs='*')
+    parser.add_argument('--interactive', '-i', dest='inter', action='store_true',
+                        help='run in interactive mode')
+    parser.add_argument('--from-lang', '-fl', dest='lang_in', type=str, default='en',
+                        choices=real_langs, help='language to translate from')
+    parser.add_argument('--to-lang', '-l', dest='lang_out', type=str, default='orc',
+                        choices=gib_langs.keys(), help='language to translate into')
+    parser.add_argument('--message', '-m', type=parse_message, nargs='*',
+                        help='text to translate. If a filename is given, the '
+                             'contents of the file will be translated to stdout. '
+                             'If `-` is given, input text is take from stdin')
     args = parser.parse_args()
 
     # if no arguments were given, print help
