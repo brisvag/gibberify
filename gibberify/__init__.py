@@ -1,5 +1,5 @@
-from .gibberify import main
-from .utils import __version__
+from gibberify.gibberify import main
+from gibberify.utils import __version__
 
 __all__ = [
     'main',

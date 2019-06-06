@@ -12,7 +12,7 @@ import sys
 import os
 
 # local imports
-from .config import langs_download
+from gibberify.config import langs_download
 
 
 def import_dicts(lang_list):

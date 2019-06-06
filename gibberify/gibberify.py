@@ -11,8 +11,8 @@ import os
 import argparse
 
 # local imports
-from .utils import __version__
-from .config import real_langs, gib_langs
+from gibberify.utils import __version__
+from gibberify.config import real_langs, gib_langs
 
 
 def gibberify(translator, text):
