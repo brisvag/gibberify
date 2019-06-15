@@ -104,7 +104,11 @@ def gui(dicts):
     app.setApplicationName('Gibberify')
 
     window = MainWindow(dicts)
-    app.exec_()
+
+    try:
+        app.exec_()
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == '__main__':
