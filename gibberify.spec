@@ -3,7 +3,6 @@
 from PyInstaller.utils.hooks import collect_data_files
 
 import PyInstaller.config
-PyInstaller.config.CONF['distpath'] = './standalone'
 
 block_cipher = None
 
