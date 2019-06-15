@@ -14,11 +14,13 @@ This thing is heavily **WIP**. This is just the first working prototype.
 
 Does anything weird happen? Report it using an issue or fix it yourself and send a PR!
 
-# Usage
+# Set up
 
-## Translation
+*All the following commands are equivalent if ran through `python -m gibberify` or by executing the standalone.*
 
-Just clone the repo with:
+---
+
+To run with python using the source code, just clone the repo with:
 ```
 git clone https://github.com/brisvag/gibberify.git
 cd gibberify
@@ -28,26 +30,41 @@ and then run:
 python -m gibberify
 ```
 
+---
+
+Alternatively, you can use the standalone executable without needing python or any dependency. Wohoo!
+
+To do download the executable go [**here**](https://github.com/brisvag/gibberify/releases/latest) and look through the *Assets*.
+
+Alternatively, click [*here*](https://github.com/brisvag/gibberify/releases/latest/gibberify.tar.gz) for a direct download of a `.tar.gz` and [*here*](https://github.com/brisvag/gibberify/releases/latest/gibberify.zip) for a direct download of a `.zip`.
+
+For now, the standalone only works on **linux**.
+
+    The standalone was generated with PyInstaller using the configuration file `gibberify.spec`.
+    If you want to generate it yourself, just run `pyinstaller gibberify.spec` from the main directory (you will need pyinstaller installed).
+    PyInstaller does not work with python3.7: use python3.6!
+
+# Usage
+
+## Translation
+
+To open the graphical interface, run:
+```
+python -m gibberify
+```
+
 You can also translate from the command line. To print the help, run:
 ```
 python -m gibberify -h
 ```
 
-Alternatively, you can use the standalone executable `standalone/gibberify` without needing python or any dependency. Wohoo!
-For now, the standalone only works on **linux**.
-
-The standalone was generated with PyInstaller using the configuration file `gibberify.spec`.
-If you want to generate it yourself, just run `pyinstaller gibberify.spec` from the main directory (you will need pyinstaller installed).
-
-PyInstaller does not work with python3.7, use python3.6!
-
 ### Examples
 
 - Run the program with the graphical interface using the standalone:
 ```
-./standalone/gibberify
+./gibberify
 ```
-(or just double click on it)
+(or just double click on it).
 
 - Translate from German to Elvish the sentence "*Hans, Get ze Flammenwerfer*" from the command line:
 ```
@@ -57,13 +74,13 @@ Skel, Foë togssaé Licfoeusuasean
 
 - Translate from English (default) to Dwarvish the file `README.md`, using the standalone executable:
 ```
-./standalone/gibberify -l dwa -m README.md
+./gibberify -l dwa -m README.md
 ***this_is_not_a_recursive_message***
 ```
 
 - Translate from Russian to Orcish (default) from `stdin`:
 ```
-echo Privetstvuju Putina! | ./standalone/gibberify -fl ru -m -
+echo Privetstvuju Putina! | python -m gibberify -fl ru -m -
 Thorsyneftlaos Pryrheeflut!
 ```
 
@@ -117,7 +134,6 @@ Yes, please! Just create issues, PRs, forks and fiddle around with it!
 - add support for non-latin fonts in input/output
 - use multiprocessing to speedup the hot mess that `syllable_pools.py` is.
 - translation mapping should be in a unique 1 to 1 fashion to avoid repetitions, not random.
-- a tiny bit *more* of user-friendliness wouldn't hurt... 
 - weighted use of syllables from different languages
 - support two-way translation (and transliteration!)
 
