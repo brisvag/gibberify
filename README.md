@@ -27,7 +27,7 @@ cd gibberify
 ``` 
 and then run:
 ```
-python -m gibberify
+./gibberify.sh
 ```
 
 ---
@@ -50,25 +50,26 @@ For now, the standalone only works on **linux**.
 
 To open the graphical interface, run:
 ```
-python -m gibberify
+./gibberify.sh
 ```
 
 You can also translate from the command line. To print the help, run:
 ```
-python -m gibberify -h
+./gibberify.sh -h
 ```
 
 ### Examples
 
 - Run the program with the graphical interface using the standalone:
 ```
+cd /path/to/standalone/directory/
 ./gibberify
 ```
 (or just double click on it).
 
 - Translate from German to Elvish the sentence "*Hans, Get ze Flammenwerfer*" from the command line:
 ```
-python -m gibberify -fl de -l elv -m Hans, Get ze Flammenwerfer
+./gibberify.sh -fl de -l elv -m Hans, Get ze Flammenwerfer
 Skel, Foë togssaé Licfoeusuasean
 ```
 
@@ -78,9 +79,9 @@ Skel, Foë togssaé Licfoeusuasean
 ***this_is_not_a_recursive_message***
 ```
 
-- Translate from Russian to Orcish (default) from `stdin`:
+- Translate from Russian to Orcish (default) from `stdin`, using gibberify as a python module:
 ```
-echo Privetstvuju Putina! | python -m gibberify -fl ru -m -
+echo Privetstvuju Putina! | python3 -m gibberify -fl ru -m -
 Thorsyneftlaos Pryrheeflut!
 ```
 
