@@ -1,5 +1,5 @@
 """
-Download, parse and build all the files needed by gibberify to do its magic
+Download, parse and build all the data files needed by gibberify to do its magic
 """
 
 from urllib.request import urlopen
