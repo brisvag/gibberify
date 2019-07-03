@@ -103,3 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+# building datafiles should not be shipped in the repo
+gibberify/data/syllables/
+gibberify/data/words/

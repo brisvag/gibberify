@@ -1,128 +1,181 @@
 """
-Module for parsing and preparing syllable pools from word lists
+Download, parse and build all the files needed by gibberify to do its magic
 """
 
 from urllib.request import urlopen
 from transliterate import translit, get_available_language_codes
 import json
 import pyphen
-import re
 from time import sleep
-import sys
 import os
 
 # local imports
-from .config import langs_download
+from .config import __real_langs__
+from .utils import code, __data__
 
 
-def import_dicts(lang_list):
+def get_dict(lang):
     """
-    downloads dictionary files from: https://github.com/wooorm/dictionaries
+    downloads a dictionary file from: https://github.com/wooorm/dictionaries
 
-    returns file objects ready to be read
+    returns file object ready to be read
     """
-    files = {}
-
     baseurl = 'https://raw.githubusercontent.com/wooorm/dictionaries/master/dictionaries/'
-    for lang in lang_list:
-        print(f'Downloading "{lang}"...')
-        file = urlopen(f"{baseurl}/{lang}/index.dic")
-        lang = lang.split('-')[0]
-        # need to wait a bit, cause files may be large
-        sleep(10)
-        files[lang] = file
 
-    return files
+    print(f'Downloading "{lang}"...')
+    file = urlopen(f"{baseurl}/{lang}/index.dic")
+    # need to wait a bit, cause files may be large. TODO: any better solution?
+    sleep(3)
+
+    return file
 
 
-def get_words(file, lang):
+def get_words(lang, file_obj):
     """
-    reads a dictionary file in hunspell format (utf-8 version)
+    reads a dictionary file-object in hunspell format (utf-8 version)
 
-    returns a set of words
+    returns a cleaned up set of words
     """
     words = set()
 
-    # skip first line, header
-    lines = file.readlines()[1:]
+    lines = file_obj.readlines()[1:]
     for line in lines:
         # decode and remove comments
         line = line.decode('utf-8').partition('/')[0]
+        # strip line from unwanted stuff
+        line = line.strip()
         # transliterate line if needed
-        if lang.split('-')[0] in get_available_language_codes():
+        if lang in get_available_language_codes():
             line = translit(line, lang, reversed=True)
-        # only use non-empty lines
-        if line:
-            words.add(line)
+        # discard lines containing superscript/subscript
+        if any(x in line for x in '⁰¹²³⁴⁵⁶⁷⁸⁹'):
+            continue
+        # discard lines containing non-alpha characters and with non-normal capitalization (acronyms...)
+        if not line.isalpha() or (len(line) > 1 and not line[1:].islower()):
+            continue
+        words.add(line)
+
+    # need to transform in list be able to save it as json
+    words.discard('')
+    words = list(words)
 
     return words
 
 
-def gen_syllables(words, lang):
+def download_data(lang):
     """
-    splits all the words in a given set into syllables using Italian
-    as hyphenation language (see readme for why)
+    downloads, cleans up and saves a word list for a language
 
-    returns all the syllables in each language in a set and a subset
-    with only those useful for gibberish generation
+    returns nothing
     """
-    syllables_full = set()
+    # download raw data
+    raw = get_dict(lang)
+    # use non-locale version of the language code from now on
+    lang = code(lang)
+    # get clean list of words from raw data
+    words = get_words(lang, raw)
+    # save it as json
+    with open(os.path.join(__data__, 'words', f'{lang}.json'), 'w+') as outfile:
+        json.dump(words, outfile, indent=2)
+
+
+def syllabize(word, hyph_list):
+    """
+    takes a word and reduces it to fundamental syllables using a list of
+    pyphen hyphenators from several different languages
+
+    returns a set of syllables
+    """
+    word = word.lower()
+
+    # first get rid of apostrophes and such by splitting the word in sub-words
+    syl = word.split('\'')
+    for hyph in hyph_list:
+        # do some list comprehension black magic to split up everything nicely
+        syl = [s for w in syl for s in hyph.inserted(w).split('-')]
+
+    syllables = set(syl)
+
+    return syllables
+
+
+def gen_syllables(lang):
+    """
+    generates a pool of syllables for a given language starting from a word list in a file and
+    saves to file a dictionary containing the syllables divided by length
+
+    returns nothing
+    """
     syllables = set()
 
-    print(f'Generating syllables for language: "{lang}"...')
+    print(f'Generating syllables for "{lang}"...')
 
-    # using italian because reasons
-    hyph = pyphen.Pyphen(lang='it')
-    for w in words:
-        # hyphenate and split into list
-        syl = hyph.inserted(w).split('-')
-        for s in syl:
-            # clean up syllables from non-alphabetical characters
-            s_clean = ''.join(c for c in s if c.isalpha())
-            syllables_full.add(s_clean.lower())
-            # remove syllables which contain uppercase letters after the first
-            # (acronyms, other aberrations)
-            if s_clean[1:].islower():
-                # keep syllable only if it is between 2 and 5 characters and if they contain
-                # vowels. This is to ensure usability for random word generation without
-                # being unpronounceable or too recognizable. This is particularly relevant for
-                # English, which has ridiculously dumb hyphenation rules.
-                s_clean = s_clean.lower()
-                vowels = re.compile('[aäeëiïoöuüyÿ]')
-                if 2 <= len(s_clean) <= 4 and vowels.search(s_clean):
-                    syllables.add(s_clean)
+    # hyphen using as many languages as possible. This ensures we cut down syllables to the most fundamental ones
+    # TODO: using pyphen.LANGUAGES is kinda overkill, reverting back to __real_langs__, but keep this in mind
+    hyph_dict = [pyphen.Pyphen(lang=hyph_lang) for hyph_lang in __real_langs__]
 
-    return syllables_full, syllables
+    # open words file and syllabize all of them
+    with open(os.path.join(__data__, 'words', f'{lang}.json'), 'r') as f:
+        words = json.load(f)
+        for word in words:
+            # let's clean up once more just to be sure
+            word = word.strip()
+            syllables.update(syllabize(word, hyph_dict))
+
+    # divide per length
+    syllables.discard('')
+    syl_dict = {}
+    for s in syllables:
+        ln = len(s)
+        if ln not in syl_dict.keys():
+            syl_dict[ln] = []
+        syl_dict[ln].append(s)
+
+    with open(os.path.join(__data__, 'syllables', f'{lang}.json'), 'w+') as outfile:
+        json.dump(syl_dict, outfile, indent=2)
 
 
-def gen_pool(lang_list):
+def build(download=False, only_langs=False):
     """
-    generates a dictionary with languages as keys and a set of syllables as values
-    """
-    pool_full = {}
-    pool = {}
+    builds a syllable pool for all the required languages, saves it as a file
 
-    files = import_dicts(lang_list)
-    for lang in files:
-        # load words from the file
-        words = get_words(files[lang], lang)
+    returns nothing
+    """
+    # check if languages in config.py exist in pyphen
+    for l in __real_langs__:
+        if code(l) not in pyphen.LANGUAGES:
+            raise KeyError(f'the language "{l}" is not supported by pyphen. Remove it from the configuration')
+
+    # make sure data directories exist
+    dirs = [
+        os.path.join(__data__, 'words'),
+        os.path.join(__data__, 'syllables'),
+        os.path.join(__data__, 'dicts'),
+    ]
+    for d in dirs:
+        if not os.path.exists(d):
+            os.makedirs(d)
+
+    # main loop through languages
+    for lang in __real_langs__:
+        lang_code = code(lang)
+        # only download again if requested or if local word lists are not present
+        dw = download
+        if not os.path.isfile(os.path.join(__data__, 'words', f'{lang_code}.json')):
+            dw = True
+        if dw:
+            download_data(lang)
+
         # get language string only, without locale
-        syllables_full, syllables = gen_syllables(words, lang)
-        pool_full[lang] = list(syllables_full)
-        pool[lang] = list(syllables)
+        lang = code(lang)
 
-    return pool_full, pool
+        # generate syllables and save them, restricting to some languages if required
+        if only_langs:
+            if lang not in only_langs or lang_code not in only_langs:
+                print(f'Language "{lang_code}" will be skipped as requested.')
+                continue
+        gen_syllables(lang)
 
 
 if __name__ == '__main__':
-    pool_full, pool = gen_pool(langs_download)
-
-    if hasattr(sys, "_MEIPASS"):
-        data = os.path.join(sys._MEIPASS, 'data')
-    else:
-        data = os.path.join(os.path.dirname(__file__), 'data')
-
-    with open(os.path.join(data, 'syllables_full.json'), 'w') as outfile:
-        json.dump(pool_full, outfile, indent=2)
-    with open(os.path.join(data, 'syllables.json'), 'w') as outfile:
-        json.dump(pool, outfile, indent=2)
+    build(download=True)
