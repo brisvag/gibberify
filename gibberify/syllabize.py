@@ -79,6 +79,13 @@ def download_data(lang):
         json.dump(words, outfile, indent=2)
 
 
+def super_hyphenator(lang_list):
+    """
+    returns a list of pyphen.Pyphen instances for each passed language
+    """
+    return [pyphen.Pyphen(lang=hyph_lang) for hyph_lang in lang_list]
+
+
 def syllabize(word, hyph_list):
     """
     takes a word and reduces it to fundamental syllables using a list of
@@ -112,7 +119,7 @@ def gen_syllables(lang):
 
     # hyphen using as many languages as possible. This ensures we cut down syllables to the most fundamental ones
     # TODO: using pyphen.LANGUAGES is kinda overkill, reverting back to __real_langs__, but keep this in mind
-    hyph_dict = [pyphen.Pyphen(lang=hyph_lang) for hyph_lang in __real_langs__]
+    hyph_list = super_hyphenator(code(__real_langs__))
 
     # open words file and syllabize all of them
     with open(os.path.join(__data__, 'words', f'{lang}.json'), 'r') as f:
@@ -120,7 +127,7 @@ def gen_syllables(lang):
         for word in words:
             # let's clean up once more just to be sure
             word = word.strip()
-            syllables.update(syllabize(word, hyph_dict))
+            syllables.update(syllabize(word, hyph_list))
 
     # divide per length
     syllables.discard('')

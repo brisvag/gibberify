@@ -3,13 +3,14 @@ Where the translation actually happens
 """
 
 import re
-import pyphen
 import random
 import sys
 import os
+import json
 
 # local imports
-from .utils import __version__
+from .syllabize import super_hyphenator, syllabize
+from .utils import __version__, code, __data__
 from .config import __real_langs__, __gib_langs__
 
 
@@ -22,12 +23,15 @@ def gibberify(translator, text):
 
     # generate translation based on syllables
     trans_list = []
-    hyph = pyphen.Pyphen(lang='it')
+    # use syllabize to break down into syllables
+    hyph_list = super_hyphenator(__real_langs__)
     for w in words:
+        # leave non-word parts of the sentence as is
         if re.match(r'\w+', w):
-            syl = hyph.inserted(w).split('-')
+            syl = syllabize(w, hyph_list)
+            # check for translation in corresponding length
             # translate syllables only if they are found, otherwise return a random one
-            trans_syl = [translator.get(s.lower(), random.choice(list(translator.keys())))
+            trans_syl = [translator[str(len(s))].get(s.lower(), random.choice(list(translator[str(len(s))].keys())))
                          for s in syl]
             # save word translation
             trans_w = ''.join(trans_syl)
@@ -38,7 +42,6 @@ def gibberify(translator, text):
                 else:
                     trans_w = trans_w.capitalize()
         else:
-            # if w is not a word, just leave it as is
             trans_w = w
 
         trans_list.append(trans_w)
@@ -54,17 +57,19 @@ def gibberify(translator, text):
     return trans
 
 
-def interactive(dicts):
+def interactive():
     """
     interactive mode. Deal with user input and call functions accordingly
     """
     # Make it a sort of menu for easier usage
     level = 0
+    real_langs = [code(lang) for lang in __real_langs__]
+    gib_langs = [lang for lang in __gib_langs__]
     while True:
         try:
             if level == 0:
                 # welcome and usage
-                print(f'Welcome to Gibberify version {__version__}! '
+                print(f'Welcome to Gibberify {__version__}! '
                       f'Follow the prompts to translate a text.\n'
                       f'To go back to the previous menu, press Ctrl+C.\n')
                 level += 1
@@ -76,29 +81,32 @@ def interactive(dicts):
                 # language selection
                 while not lang_in:
                     lang_in = input(f'What language do you want to translate from? '
-                                    f'Options are: {", ".join(__real_langs__)}.\n')
+                                    f'Options are: {", ".join(real_langs)}.\n')
                     # check if requested input language exists
-                    if lang_in not in __real_langs__:
+                    if lang_in not in real_langs:
                         print(f'ERROR: you first need to generate a syllable pool for "{lang_in}"!')
                         lang_in = ''
                     else:
+                        lang_in = code(lang_in)
                         print(f'You chose "{lang_in}".')
                 while not lang_out:
                     lang_out = input(f'What language do you want to translate into? '
-                                     f'Options are: {", ".join(__gib_langs__)}.\n')
+                                     f'Options are: {", ".join(gib_langs)}.\n')
                     # check if requested output language exists
-                    if lang_out not in __gib_langs__:
+                    if lang_out not in gib_langs:
                         print(f'ERROR: you first need to generate a dictionary for "{lang_out}"!')
                         lang_out = ''
                     else:
+                        lang_out = code(lang_out)
                         print(f'You chose "{lang_out}".')
                 level += 1
                 continue
 
             if level == 2:
-                translator = dicts[lang_in][lang_out]
+                with open(os.path.join(__data__, 'dicts', f'{lang_in}-{lang_out}.json'), 'r') as f:
+                    translator = json.load(f)
                 text = input('What do you want to translate?\n')
-                print(f'... or as someone might say:\n'
+                print(f'... or, as someone might say:\n'
                       f'{gibberify(translator, text)}')
                 continue
 
@@ -133,7 +141,3 @@ def parse_message(somestring):
             return f.read()
     else:
         return somestring
-
-
-if __name__ == '__main__':
-    raise NotImplementedError('this function is not implemented yet')

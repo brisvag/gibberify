@@ -23,14 +23,14 @@ def scramble(lang_in, langs_out):
 
     # load the required languages
     with open(os.path.join(__data__, 'syllables', f'{lang_in}.json')) as f:
-        pool_in = {int(length): set(syllables) for length, syllables in json.load(f).items()}
+        pool_in = {length: set(syllables) for length, syllables in json.load(f).items()}
     pool_out = {}
     for lang_out in langs_out:
         with open(os.path.join(__data__, 'syllables', f'{lang_out}.json')) as f:
             for ln, syls in json.load(f).items():
                 if ln not in pool_out.keys():
-                    pool_out[int(ln)] = set()
-                pool_out[int(ln)].update(syls)
+                    pool_out[ln] = set()
+                pool_out[ln].update(syls)
 
     # TODO: would be nice not to have duplicate mappings, but my attempts using a while loop were
     #       unsuccessful/ridiculously expensive

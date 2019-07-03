@@ -42,20 +42,10 @@ def main():
     if len(sys.argv) == 1:
         graphical = True
 
-    # fix path to files depending if we are running as script or as executable
-    if hasattr(sys, "_MEIPASS"):
-        data = os.path.join(sys._MEIPASS, 'data')
-    else:
-        data = os.path.join(os.path.dirname(__file__), 'data')
-
-    # load translation dictionaries
-    with open(os.path.join(data, 'dicts.json')) as f:
-        dicts = json.load(f)
-
     if graphical:
-        gui(dicts)
+        gui()
     elif args.inter:
-        interactive(dicts)
+        interactive()
     else:
         translator = dicts[args.lang_in][args.lang_out]
         print(gibberify(translator, ' '.join(args.message)))
