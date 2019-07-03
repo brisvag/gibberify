@@ -3,12 +3,15 @@ User interface using PyQt5
 """
 
 import sys
+import os
+import json
 from PyQt5.QtGui import QFontDatabase
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QComboBox, QHBoxLayout,\
     QVBoxLayout, QWidget
 
 # local imports
 from .config import __real_langs__, __gib_langs__
+from .utils import code, __data__
 from .gibberify import gibberify
 
 
@@ -38,21 +41,22 @@ class MainWindow(QMainWindow):
     """
     main window class
     """
-    def __init__(self, dicts):
+    def __init__(self):
         super(MainWindow, self).__init__()
         self.setWindowTitle('Gibberify')
-        self.dicts = dicts
 
         # create textboxes
         self.text_in = TextBox('Type your text here.')
         self.text_out = TextBox('Get your translation here.', readonly=True)
 
         # create language menus
-        self.lang_in_box = LangMenu(__real_langs__)
-        self.lang_out_box = LangMenu(list(__gib_langs__.keys()))
+        self.lang_in_box = LangMenu([code(lang) for lang in __real_langs__])
+        self.lang_out_box = LangMenu([code(lang) for lang in __gib_langs__])
         # and initialize languages to current ones
         self.lang_in = self.lang_in_box.currentText()
         self.lang_out = self.lang_out_box.currentText()
+        # initialize translator
+        self.update_translator()
 
         # set up overall layout
         # main container
@@ -86,11 +90,14 @@ class MainWindow(QMainWindow):
         self.lang_out_box.currentTextChanged.connect(self.translate)
         self.show()
 
+    def update_translator(self):
+        with open(os.path.join(__data__, 'dicts', f'{self.lang_in}-{self.lang_out}.json'), 'r') as f:
+            self.translator = json.load(f)
+
     def translate(self):
         textin = self.text_in.toPlainText()
-        translator = self.dicts[self.lang_in][self.lang_out]
         # set new text_out as translation
-        self.text_out.setText(gibberify(translator, textin))
+        self.text_out.setText(gibberify(self.translator, textin))
 
     def update_lang_in(self, value):
         self.lang_in = value
@@ -99,11 +106,11 @@ class MainWindow(QMainWindow):
         self.lang_out = value
 
 
-def gui(dicts):
+def gui():
     app = QApplication(sys.argv)
     app.setApplicationName('Gibberify')
 
-    window = MainWindow(dicts)
+    window = MainWindow()
 
     try:
         app.exec_()
