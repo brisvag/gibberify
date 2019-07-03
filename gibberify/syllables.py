@@ -150,7 +150,6 @@ def build(download=False, only_langs=False):
     dirs = [
         os.path.join(__data__, 'words'),
         os.path.join(__data__, 'syllables'),
-        os.path.join(__data__, 'dicts'),
     ]
     for d in dirs:
         if not os.path.exists(d):

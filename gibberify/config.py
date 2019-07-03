@@ -2,7 +2,6 @@
 Configuration file
 """
 
-
 # natural languages used for syllable generation (lang. codes may need locales, eg: en-GB)
 __real_langs__ = (
                       'en-GB',  # english
@@ -22,9 +21,15 @@ __real_langs__ = (
                       'sk',     # slovak
                       )
 
-# fake languages and their relative syllable pools
+# fake languages and their relative settings
 __gib_langs__ = {
-    'orc': ['ru', 'de'],
-    'elv': ['fr', 'en'],
-    'dwa': ['it', 'de'],
+    'orc': {
+        'pool': ['ru', 'de']
+    },
+    'elv': {
+        'pool': ['fr', 'en']
+    },
+    'dwa': {
+        'pool': ['it', 'de'],
+    },
 }
