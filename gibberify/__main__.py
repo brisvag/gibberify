@@ -8,9 +8,9 @@ import argparse
 import json
 
 # local imports
-from gibberify.config import real_langs, gib_langs
-from gibberify.gibberify import gibberify, parse_message, interactive
-from gibberify.gui import gui
+from .config import real_langs, gib_langs
+from .gibberify import gibberify, parse_message, interactive
+from .gui import gui
 
 def main():
     # Parse arguments (also gives you help automatically with -h)

@@ -9,8 +9,8 @@ import sys
 import os
 
 # local imports
-from gibberify.utils import __version__
-from gibberify.config import real_langs, gib_langs
+from .utils import __version__
+from .config import real_langs, gib_langs
 
 
 def gibberify(translator, text):

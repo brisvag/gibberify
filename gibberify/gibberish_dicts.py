@@ -8,7 +8,7 @@ import sys
 import os
 
 # local imports
-from gibberify.config import real_langs, gib_langs
+from .config import real_langs, gib_langs
 
 
 def gen_dict(pool_in, pool_out):

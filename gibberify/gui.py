@@ -8,8 +8,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QComboBox, QHB
     QVBoxLayout, QWidget
 
 # local imports
-from gibberify.config import real_langs, gib_langs
-from gibberify.gibberify import gibberify
+from .config import real_langs, gib_langs
+from .gibberify import gibberify
 
 
 class LangMenu(QComboBox):
