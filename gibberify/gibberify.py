@@ -10,7 +10,7 @@ import os
 
 # local imports
 from .utils import __version__
-from .config import real_langs, gib_langs
+from .config import __real_langs__, __gib_langs__
 
 
 def gibberify(translator, text):
@@ -76,18 +76,18 @@ def interactive(dicts):
                 # language selection
                 while not lang_in:
                     lang_in = input(f'What language do you want to translate from? '
-                                    f'Options are: {", ".join(real_langs)}.\n')
+                                    f'Options are: {", ".join(__real_langs__)}.\n')
                     # check if requested input language exists
-                    if lang_in not in real_langs:
+                    if lang_in not in __real_langs__:
                         print(f'ERROR: you first need to generate a syllable pool for "{lang_in}"!')
                         lang_in = ''
                     else:
                         print(f'You chose "{lang_in}".')
                 while not lang_out:
                     lang_out = input(f'What language do you want to translate into? '
-                                     f'Options are: {", ".join(gib_langs)}.\n')
+                                     f'Options are: {", ".join(__gib_langs__)}.\n')
                     # check if requested output language exists
-                    if lang_out not in gib_langs:
+                    if lang_out not in __gib_langs__:
                         print(f'ERROR: you first need to generate a dictionary for "{lang_out}"!')
                         lang_out = ''
                     else:
