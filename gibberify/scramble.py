@@ -34,12 +34,13 @@ def scramble(lang_in, langs_out):
 
     # TODO: would be nice not to have duplicate mappings, but my attempts using a while loop were
     #       unsuccessful/ridiculously expensive
-    # generate new syllables until we have mapped every syllable to something
+    #       for now, generate new syllables until we have mapped every syllable to something
 
     for ln_in, syls_in in pool_in.items():
+        # maintain length discrimination for better translation
+        trans_dict[ln_in] = {}
         # create subpool of syllables (more black magic!)
         subpool = [syl_out for ln_out, syls_out in pool_out.items() for syl_out in syls_out]
-        # TODO use syllable length for something meaningful
         for syl_in in syls_in:
             # get a random number between 0 and 2, so syllable mapping is not 1 to 1.
             # weights are arbitrary: 10% `0`, 80% `1`, 10% `2`. This way we shouldn't end up with
@@ -47,7 +48,7 @@ def scramble(lang_in, langs_out):
             weights = [0] + [1] * 8 + [2]
             r = random.choice(weights)
             mapping = ''.join(random.sample(subpool, r))
-            trans_dict[syl_in] = mapping
+            trans_dict[ln_in][syl_in] = mapping
 
     return trans_dict
 
