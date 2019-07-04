@@ -81,7 +81,7 @@ def parse_message(somestring):
         except KeyboardInterrupt:
             print()
             exit()
-    elif os.path.exists(somestring):
+    elif os.path.isfile(somestring):
         with open(somestring, 'r') as f:
             return f.read()
     else:
