@@ -4,8 +4,8 @@ Generate fake, gibberish translation dictionaries to be used by the translator
 
 import json
 import random
-import sys
 import os
+import math
 
 # local imports
 from .config import __real_langs__, __gib_langs__
@@ -37,17 +37,25 @@ def scramble(lang_in, langs_out):
     #       for now, generate new syllables until we have mapped every syllable to something
 
     for ln_in, syls_in in pool_in.items():
-        # maintain length discrimination for better translation
+        # maintain length discrimination for better translation TODO: is this really useful?
         trans_dict[ln_in] = {}
-        # create subpool of syllables (more black magic!)
-        subpool = [syl_out for ln_out, syls_out in pool_out.items() for syl_out in syls_out]
+        # create subpool of syllables (more list comprehension black magic!)
+        # keep syllable length *somewhat* consistent, it makes it look better, imho
+        subpool = [syl_out
+                   for ln_out, syls_out in pool_out.items()
+                   for syl_out in syls_out
+                   if abs((int(ln_in)-int(ln_out))) <= 2]
+        # scramble!
+        random.shuffle(subpool)
+        # make sure we do enough times to map to all the input syllables (should not be a problem, but you never know)
+        ratio = len(syls_in) // len(subpool)
+        for _ in range(ratio):
+            tmp_pool = subpool
+            random.shuffle(tmp_pool)
+            subpool.extend(tmp_pool)
+        # do the actual mapping
         for syl_in in syls_in:
-            # get a random number between 0 and 2, so syllable mapping is not 1 to 1.
-            # weights are arbitrary: 10% `0`, 80% `1`, 10% `2`. This way we shouldn't end up with
-            # too many empty words or very long ones
-            weights = [0] + [1] * 8 + [2]
-            r = random.choice(weights)
-            mapping = ''.join(random.sample(subpool, r))
+            mapping = subpool.pop()
             trans_dict[ln_in][syl_in] = mapping
 
     return trans_dict
