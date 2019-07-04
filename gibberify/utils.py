@@ -54,3 +54,25 @@ def access_data(data_type, real_lang, gib_lang=None, write_data=None):
         else:
             json.dump(write_data, f, indent=2)
 
+
+def parse_message(somestring):
+    """
+    Handle message input nicely
+    Passing '-' as the message will read from stdin
+    Passing a valid file will read from the file
+    Passing a string will use it as the message.
+    If your string happens to accidentally be a valid file,
+    tough shit i guess..
+    """
+    somestring = str(somestring)
+    if somestring == '-':
+        try:
+            return sys.stdin.read()
+        except KeyboardInterrupt:
+            print()
+            exit()
+    elif os.path.exists(somestring):
+        with open(somestring, 'r') as f:
+            return f.read()
+    else:
+        return somestring

@@ -8,8 +8,8 @@ import argparse
 import json
 
 # local imports
-from .utils import __version__, access_data
-from .gibberify import gibberify, parse_message, interactive
+from .utils import __version__, access_data, parse_message
+from .gibberify import gibberify, interactive
 from .gui import gui
 
 
