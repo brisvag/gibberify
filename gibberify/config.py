@@ -2,9 +2,9 @@
 Configuration file
 """
 
-# natural languages used for syllable generation (lang. codes may need locales, eg: en-GB)
+# natural languages used for syllable generation and everything else
 __real_langs__ = (
-                      'en-GB',  # english
+                      'en',     # english
                       'it',     # italian
                       'de',     # german
                       'fr',     # french

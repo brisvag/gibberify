@@ -2,10 +2,8 @@
 Main entry point of gibberify
 """
 
-import os
 import sys
 import argparse
-import json
 
 # local imports
 from .utils import __version__, access_data, parse_message

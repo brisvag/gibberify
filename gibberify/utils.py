@@ -15,15 +15,6 @@ else:
     __data__ = os.path.join(os.path.dirname(__file__), 'data')
 
 
-def code(lang):
-    """
-    strips locale info from language
-
-    returns 2-letter code
-    """
-    return lang.split('-')[0]
-
-
 def progress(message, partial, total):
     """
     print progress in percentage with carriage return
@@ -39,11 +30,9 @@ def access_data(data_type, real_lang, gib_lang=None, write_data=None):
     if data_type not in ['words', 'syllables', 'dicts']:
         raise ValueError(f'no such data type as "{data_type}"')
 
-    real_lang = code(real_lang)
     dest = real_lang
     if gib_lang:
-        gib_lang = code(gib_lang)
-        dest = f'{real_lang}-{gib_lang}'
+        dest = f'{dest}-{gib_lang}'
     mode = 'r'
     if write_data:
         mode = 'w+'

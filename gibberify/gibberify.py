@@ -9,7 +9,7 @@ import os
 
 # local imports
 from .syllabize import super_hyphenator, syllabize
-from .utils import __version__, code, access_data
+from .utils import __version__, access_data
 from .config import __real_langs__, __gib_langs__
 
 
@@ -60,10 +60,10 @@ def interactive():
     """
     interactive mode. Deal with user input and call functions accordingly
     """
+    gib_langs = [lang for lang in __gib_langs__]
+
     # Make it a sort of menu for easier usage
     level = 0
-    real_langs = [code(lang) for lang in __real_langs__]
-    gib_langs = [lang for lang in __gib_langs__]
     while True:
         try:
             if level == 0:
@@ -80,13 +80,13 @@ def interactive():
                 # language selection
                 while not lang_in:
                     lang_in = input(f'What language do you want to translate from? '
-                                    f'Options are: {", ".join(real_langs)}.\n')
+                                    f'Options are: {", ".join(__real_langs__)}.\n')
                     # check if requested input language exists
-                    if lang_in not in real_langs:
+                    if lang_in not in __real_langs__:
                         print(f'ERROR: you first need to generate a syllable pool for "{lang_in}"!')
                         lang_in = ''
                     else:
-                        lang_in = code(lang_in)
+                        lang_in = lang_in
                         print(f'You chose "{lang_in}".')
                 while not lang_out:
                     lang_out = input(f'What language do you want to translate into? '
@@ -96,7 +96,7 @@ def interactive():
                         print(f'ERROR: you first need to generate a dictionary for "{lang_out}"!')
                         lang_out = ''
                     else:
-                        lang_out = code(lang_out)
+                        lang_out = lang_out
                         print(f'You chose "{lang_out}".')
                 level += 1
                 continue

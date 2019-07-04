@@ -6,7 +6,11 @@ Or, as an Orc might say:
 
 Gibberify is a simple gibberish generator that translates words from a real language to a (almost) pronounceable gibberish.
 
-It uses words taken from [wooorm/dictionaries](https://github.com/wooorm/dictionaries/tree/master/dictionaries) to generate new syllables which are used to convert real language into a wrangled mess of nonsense.
+It uses words taken from a streamlined fork of
+[wooorm/dictionaries](https://github.com/wooorm/dictionaries/tree/master/dictionaries)
+(hosted [here](https://github.com/brisvag/dictionaries)) to generate new syllables, 
+which are then used to convert real language into a wrangled mess of nonsense.
+
 
 #### DISCLAIMER:
 

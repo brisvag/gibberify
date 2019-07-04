@@ -8,7 +8,7 @@ from collections import OrderedDict
 
 # local imports
 from .config import __real_langs__, __gib_langs__
-from .utils import code, access_data, __data__
+from .utils import access_data, __data__
 
 
 def scramble(lang_in, langs_out):
@@ -91,7 +91,6 @@ def build():
 
     # check whether syllable pools exist
     for lang in __real_langs__:
-        lang = code(lang)
         syl_file = os.path.join(__data__, 'syllables', f'{lang}.json')
         if not os.path.isfile(syl_file):
             raise FileNotFoundError(f'syllable file for {lang} does not exist. You need to generate it first!\n')
@@ -102,7 +101,7 @@ def build():
     # make them all!
     for lang_in in __real_langs__:
         for gib_lang_out in __gib_langs__.keys():
-            make_dict(code(lang_in), gib_lang_out)
+            make_dict(lang_in, gib_lang_out)
 
 
 if __name__ == '__main__':

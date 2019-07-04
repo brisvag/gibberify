@@ -11,16 +11,16 @@ import os
 
 # local imports
 from .config import __real_langs__
-from .utils import code, access_data, __data__
+from .utils import access_data, __data__
 
 
 def get_dict(lang):
     """
-    downloads a dictionary file from: https://github.com/wooorm/dictionaries
+    downloads a dictionary file from: https://github.com/brisvag/dictionaries
 
     returns file object ready to be read
     """
-    baseurl = 'https://raw.githubusercontent.com/wooorm/dictionaries/master/dictionaries/'
+    baseurl = 'https://raw.githubusercontent.com/brisvag/dictionaries/master/dictionaries/'
 
     print(f'Downloading "{lang}"...')
     file = urlopen(f"{baseurl}/{lang}/index.dic")
@@ -70,8 +70,6 @@ def download_data(lang):
     """
     # download raw data
     raw = get_dict(lang)
-    # use non-locale version of the language code from now on
-    lang = code(lang)
     # get clean list of words from raw data
     words = get_words(lang, raw)
     # save it as json
@@ -118,7 +116,7 @@ def gen_syllables(lang):
 
     # hyphen using as many languages as possible. This ensures we cut down syllables to the most fundamental ones
     # TODO: using pyphen.LANGUAGES is kinda overkill, reverting back to __real_langs__, but keep this in mind
-    hyph_list = super_hyphenator(code(__real_langs__))
+    hyph_list = super_hyphenator(__real_langs__)
 
     # open words file and syllabize all of them
     words = access_data('words', lang)
@@ -147,7 +145,7 @@ def build(download=False, only_langs=False):
     """
     # check if languages in config.py exist in pyphen
     for l in __real_langs__:
-        if code(l) not in pyphen.LANGUAGES:
+        if l not in pyphen.LANGUAGES:
             raise KeyError(f'the language "{l}" is not supported by pyphen. Remove it from the configuration')
 
     # make sure data directories exist
@@ -161,21 +159,17 @@ def build(download=False, only_langs=False):
 
     # main loop through languages
     for lang in __real_langs__:
-        lang_code = code(lang)
         # only download again if requested or if local word lists are not present
         dw = download
-        if not os.path.isfile(os.path.join(__data__, 'words', f'{lang_code}.json')):
+        if not os.path.isfile(os.path.join(__data__, 'words', f'{lang}.json')):
             dw = True
         if dw:
             download_data(lang)
 
-        # get language string only, without locale
-        lang = code(lang)
-
         # generate syllables and save them, restricting to some languages if required
         if only_langs:
-            if lang not in only_langs or lang_code not in only_langs:
-                print(f'Language "{lang_code}" will be skipped as requested.')
+            if lang not in only_langs:
+                print(f'Language "{lang}" will be skipped as requested.')
                 continue
         gen_syllables(lang)
 

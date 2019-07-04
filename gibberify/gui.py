@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QComboBox, QHB
 
 # local imports
 from .config import __real_langs__, __gib_langs__
-from .utils import code, access_data
+from .utils import access_data
 from .gibberify import gibberify
 
 
@@ -48,8 +48,8 @@ class MainWindow(QMainWindow):
         self.text_out = TextBox('Get your translation here.', readonly=True)
 
         # create language menus
-        self.lang_in_box = LangMenu([code(lang) for lang in __real_langs__])
-        self.lang_out_box = LangMenu([code(lang) for lang in __gib_langs__])
+        self.lang_in_box = LangMenu(__real_langs__)
+        self.lang_out_box = LangMenu([lang for lang in __gib_langs__])
         # and initialize languages to current ones
         self.lang_in = self.lang_in_box.currentText()
         self.lang_out = self.lang_out_box.currentText()
