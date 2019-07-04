@@ -56,6 +56,8 @@ class MainWindow(QMainWindow):
         # initialize translator
         self.translator = None
         self.update_translator()
+        # run an empty translation to prevent stutter at first actual translation
+        self.translate()
 
         # set up overall layout
         # main container
