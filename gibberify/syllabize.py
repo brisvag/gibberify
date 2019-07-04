@@ -4,7 +4,6 @@ Download, parse and build all the data files needed by gibberify to do its magic
 
 from urllib.request import urlopen
 from transliterate import translit, get_available_language_codes
-import json
 import pyphen
 from time import sleep
 import os

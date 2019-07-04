@@ -4,8 +4,6 @@ Where the translation actually happens
 
 import re
 import random
-import sys
-import os
 
 # local imports
 from .syllabize import super_hyphenator, syllabize
