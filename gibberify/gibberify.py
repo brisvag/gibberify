@@ -6,11 +6,10 @@ import re
 import random
 import sys
 import os
-import json
 
 # local imports
 from .syllabize import super_hyphenator, syllabize
-from .utils import __version__, code, __data__
+from .utils import __version__, code, access_data
 from .config import __real_langs__, __gib_langs__
 
 
@@ -103,8 +102,7 @@ def interactive():
                 continue
 
             if level == 2:
-                with open(os.path.join(__data__, 'dicts', f'{lang_in}-{lang_out}.json'), 'r') as f:
-                    translator = json.load(f)
+                translator = access_data('dicts', lang_in, lang_out)
                 text = input('What do you want to translate?\n')
                 print(f'... or, as someone might say:\n'
                       f'{gibberify(translator, text)}')

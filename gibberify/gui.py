@@ -3,15 +3,13 @@ User interface using PyQt5
 """
 
 import sys
-import os
-import json
 from PyQt5.QtGui import QFontDatabase
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QComboBox, QHBoxLayout,\
     QVBoxLayout, QWidget
 
 # local imports
 from .config import __real_langs__, __gib_langs__
-from .utils import code, __data__
+from .utils import code, access_data
 from .gibberify import gibberify
 
 
@@ -56,6 +54,7 @@ class MainWindow(QMainWindow):
         self.lang_in = self.lang_in_box.currentText()
         self.lang_out = self.lang_out_box.currentText()
         # initialize translator
+        self.translator = None
         self.update_translator()
 
         # set up overall layout
@@ -91,8 +90,7 @@ class MainWindow(QMainWindow):
         self.show()
 
     def update_translator(self):
-        with open(os.path.join(__data__, 'dicts', f'{self.lang_in}-{self.lang_out}.json'), 'r') as f:
-            self.translator = json.load(f)
+        self.translator = access_data('dicts', self.lang_in, self.lang_out)
 
     def translate(self):
         textin = self.text_in.toPlainText()

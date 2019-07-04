@@ -11,7 +11,7 @@ import os
 
 # local imports
 from .config import __real_langs__
-from .utils import code, __data__
+from .utils import code, access_data, __data__
 
 
 def get_dict(lang):
@@ -75,8 +75,7 @@ def download_data(lang):
     # get clean list of words from raw data
     words = get_words(lang, raw)
     # save it as json
-    with open(os.path.join(__data__, 'words', f'{lang}.json'), 'w+') as outfile:
-        json.dump(words, outfile, indent=2)
+    access_data('words', lang, write_data=words)
 
 
 def super_hyphenator(lang_list):
@@ -122,12 +121,11 @@ def gen_syllables(lang):
     hyph_list = super_hyphenator(code(__real_langs__))
 
     # open words file and syllabize all of them
-    with open(os.path.join(__data__, 'words', f'{lang}.json'), 'r') as f:
-        words = json.load(f)
-        for word in words:
-            # let's clean up once more just to be sure
-            word = word.strip()
-            syllables.update(syllabize(word, hyph_list))
+    words = access_data('words', lang)
+    for word in words:
+        # let's clean up once more just to be sure
+        word = word.strip()
+        syllables.update(syllabize(word, hyph_list))
 
     # divide per length
     syllables.discard('')
@@ -138,8 +136,7 @@ def gen_syllables(lang):
             syl_dict[ln] = []
         syl_dict[ln].append(s)
 
-    with open(os.path.join(__data__, 'syllables', f'{lang}.json'), 'w+') as outfile:
-        json.dump(syl_dict, outfile, indent=2)
+    access_data('syllables', lang, write_data=syl_dict)
 
 
 def build(download=False, only_langs=False):
@@ -184,4 +181,4 @@ def build(download=False, only_langs=False):
 
 
 if __name__ == '__main__':
-    build(download=True)
+    build()

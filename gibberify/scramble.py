@@ -2,13 +2,13 @@
 Generate fake, gibberish translation dictionaries to be used by the translator
 """
 
-import json
 import random
 import os
+from collections import OrderedDict
 
 # local imports
 from .config import __real_langs__, __gib_langs__
-from .utils import code, __data__
+from .utils import code, access_data, __data__
 
 
 def scramble(lang_in, langs_out):
@@ -21,15 +21,18 @@ def scramble(lang_in, langs_out):
     trans_dict = {}
 
     # load the required languages
-    with open(os.path.join(__data__, 'syllables', f'{lang_in}.json')) as f:
-        pool_in = {length: set(syllables) for length, syllables in json.load(f).items()}
+    pool_in = access_data('syllables', lang_in)
     pool_out = {}
     for lang_out in langs_out:
-        with open(os.path.join(__data__, 'syllables', f'{lang_out}.json')) as f:
-            for ln, syls in json.load(f).items():
-                if ln not in pool_out.keys():
-                    pool_out[ln] = set()
-                pool_out[ln].update(syls)
+        pool_out_part = access_data('syllables', lang_out)
+        for ln, syls in pool_out_part.items():
+            if ln not in pool_out.keys():
+                pool_out[ln] = []
+            pool_out[ln].extend(syls)
+    # remove duplicates syllables from different languages
+    for ln, syls in pool_out.items():
+        # this trick preserves order (why not?) and it should be quicker than list(set())
+        pool_out[ln] = list(OrderedDict.fromkeys(syls))
 
     # TODO: would be nice not to have duplicate mappings, but my attempts using a while loop were
     #       unsuccessful/ridiculously expensive
@@ -74,8 +77,7 @@ def make_dict(lang_in, gib_lang_out):
     print(f'Creating translation dictionary "{lang_in}-{gib_lang_out}"')
     trans_dict = scramble(lang_in, langs_out)
 
-    with open(os.path.join(__data__, 'dicts', f'{lang_in}-{gib_lang_out}.json'), 'w+') as outfile:
-        json.dump(trans_dict, outfile, indent=2)
+    access_data('dicts', lang_in, gib_lang_out, write_data=trans_dict)
 
 
 def build():

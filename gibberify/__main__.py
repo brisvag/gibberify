@@ -8,8 +8,7 @@ import argparse
 import json
 
 # local imports
-from .config import __real_langs__, __gib_langs__
-from .utils import __version__, __data__
+from .utils import __version__, access_data
 from .gibberify import gibberify, parse_message, interactive
 from .gui import gui
 
@@ -55,8 +54,7 @@ def main():
     elif args.inter:
         interactive()
     else:
-        with open(os.path.join(__data__, 'dicts', f'{args.lang_in}-{args.lang_out}.json'), 'r') as f:
-            translator = json.load(f)
+        translator = access_data('dicts', args.lang_in, args.lang_out)
         print(gibberify(translator, ' '.join(args.message)))
 
 
