@@ -4,7 +4,6 @@ Generate fake, gibberish translation dictionaries to be used by the translator
 
 import random
 import os
-from collections import OrderedDict
 
 # local imports
 from .config import __real_langs__, __gib_langs__
@@ -31,33 +30,32 @@ def scramble(lang_in, langs_out):
             pool_out[ln].extend(syls)
     # remove duplicates syllables from different languages
     for ln, syls in pool_out.items():
-        # this trick preserves order (why not?) and it should be quicker than list(set())
-        pool_out[ln] = list(OrderedDict.fromkeys(syls))
+        pool_out[ln] = list(set(syls))
 
     # TODO: would be nice not to have duplicate mappings, but my attempts using a while loop were
     #       unsuccessful/ridiculously expensive
     #       for now, generate new syllables until we have mapped every syllable to something
 
+    pool_in_total = [syl for syls in pool_in.values() for syl in syls]
+    pool_out_total = [syl for syls in pool_out.values() for syl in syls]
+
+    # scramble!
+    random.shuffle(pool_out_total)
+
+    # make sure we do enough times to map to all the input syllables (should not be a problem, but you never know)
+    ratio = len(pool_in_total) // len(pool_out_total)
+    tmp_pool = pool_out_total
+    for _ in range(ratio):
+        random.shuffle(tmp_pool)
+        pool_out_total.extend(tmp_pool)
+
     for ln_in, syls_in in pool_in.items():
         # maintain length discrimination for better translation TODO: is this really useful?
         trans_dict[ln_in] = {}
         # create subpool of syllables (more list comprehension black magic!)
-        # keep syllable length *somewhat* consistent, it makes it look better, imho
-        subpool = [syl_out
-                   for ln_out, syls_out in pool_out.items()
-                   for syl_out in syls_out
-                   if abs((int(ln_in)-int(ln_out))) <= 2]
-        # scramble!
-        random.shuffle(subpool)
-        # make sure we do enough times to map to all the input syllables (should not be a problem, but you never know)
-        ratio = len(syls_in) // len(subpool)
-        for _ in range(ratio):
-            tmp_pool = subpool
-            random.shuffle(tmp_pool)
-            subpool.extend(tmp_pool)
         # do the actual mapping
         for syl_in in syls_in:
-            mapping = subpool.pop()
+            mapping = pool_out_total.pop()
             trans_dict[ln_in][syl_in] = mapping
 
     return trans_dict
@@ -93,7 +91,7 @@ def build_dicts():
     for lang in __real_langs__:
         syl_file = os.path.join(__data__, 'syllables', f'{lang}.json')
         if not os.path.isfile(syl_file):
-            raise FileNotFoundError(f'syllable file for {lang} does not exist. You need to generate it first!\n')
+            raise FileNotFoundError(f'syllable file for {lang} does not exist. You need to generate it first!')
 
     # make dictionary generation somewhat deterministic, cause why not TODO: this clearly does nothing
     random.seed('gibberify')
