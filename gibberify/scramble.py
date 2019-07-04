@@ -5,7 +5,6 @@ Generate fake, gibberish translation dictionaries to be used by the translator
 import json
 import random
 import os
-import math
 
 # local imports
 from .config import __real_langs__, __gib_langs__
