@@ -137,7 +137,7 @@ def gen_syllables(lang):
     access_data('syllables', lang, write_data=syl_dict)
 
 
-def build(download=False, only_langs=False):
+def build_syllables(download=False, langs=False):
     """
     builds a syllable pool for all the required languages, saves it as a file
 
@@ -167,12 +167,12 @@ def build(download=False, only_langs=False):
             download_data(lang)
 
         # generate syllables and save them, restricting to some languages if required
-        if only_langs:
-            if lang not in only_langs:
+        if langs:
+            if lang not in langs:
                 print(f'Language "{lang}" will be skipped as requested.')
                 continue
         gen_syllables(lang)
 
 
 if __name__ == '__main__':
-    build()
+    build_syllables()

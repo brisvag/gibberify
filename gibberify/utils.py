@@ -9,10 +9,25 @@ import json
 __version__ = 0.1
 
 
-if hasattr(sys, "_MEIPASS"):
-    __data__ = os.path.join(sys._MEIPASS, 'data')
-else:
-    __data__ = os.path.join(os.path.dirname(__file__), 'data')
+def is_standalone():
+    """
+    check whethere it's runnin gin standalone mode
+
+    returns true or false
+    """
+    if hasattr(sys, "_MEIPASS"):
+        return True
+    return False
+
+
+def find_data():
+    if is_standalone():
+        return os.path.join(sys._MEIPASS, 'data')
+    else:
+        return os.path.join(os.path.dirname(__file__), 'data')
+
+
+__data__ = find_data()
 
 
 def progress(message, partial, total):

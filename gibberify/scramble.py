@@ -80,7 +80,7 @@ def make_dict(lang_in, gib_lang_out):
     access_data('dicts', lang_in, gib_lang_out, write_data=trans_dict)
 
 
-def build():
+def build_dicts():
     """
     builds a translation dictionary for all the required language combinations
     """
@@ -105,4 +105,4 @@ def build():
 
 
 if __name__ == '__main__':
-    build()
+    build_dicts()

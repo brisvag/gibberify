@@ -6,7 +6,9 @@ import sys
 import argparse
 
 # local imports
-from .utils import __version__, access_data, parse_message
+from .utils import __version__, access_data, parse_message, is_standalone
+from .syllabize import build_syllables
+from .scramble import build_dicts
 from .gibberify import gibberify, interactive
 from .gui import gui
 
@@ -36,6 +38,20 @@ def main():
                                 'contents of the file will be translated to stdout. '
                                 'If `-` is given, input text is take from stdin. '
                                 'Question marks are not supported')
+
+    if not is_standalone():
+        build_opt = parser.add_argument_group('building options')
+        build_opt.add_argument('--first-build', dest='first_build', action='store_true',
+                               help='download data and create syllable pools, then generate '
+                                    'dictionary files for all the language combinations. '
+                                    'It may take a few minutes')
+        build_opt.add_argument('--rebuild-syllables', dest='rebuild_syllables', action='store_true',
+                               help='rebuild syllable pools, without downloading word lists. '
+                                    'Then, generate dictionaries with the new syllables')
+        build_opt.add_argument('--rebuild-dicts', dest='rebuild_dicts', action='store_true',
+                               help='rebuild translation dictionaries only. Use this option '
+                                    'after changing settings in config.py')
+
     args = parser.parse_args()
 
     if args.version:
@@ -46,6 +62,19 @@ def main():
     graphical = False
     if len(sys.argv) == 1:
         graphical = True
+
+    if not is_standalone():
+        if args.first_build:
+            build_syllables(download=True)
+            build_dicts()
+            exit()
+        if args.rebuild_syllables:
+            build_syllables(download=False)
+            build_dicts()
+            exit()
+        if args.rebuild_dicts:
+            build_dicts()
+            exit()
 
     if graphical:
         gui()
