@@ -38,25 +38,31 @@ def progress(message, partial, total):
     print(f'\r{message}: {int((partial/total)*100+0.5)}%', flush=True, end='')
 
 
-def access_data(data_type, real_lang, gib_lang=None, write_data=None):
+def access_data(data_type, lang_in, lang_out=None, write_data=None):
     """
     utility function to load or write data files
     """
     if data_type not in ['words', 'syllables', 'dicts']:
         raise ValueError(f'no such data type as "{data_type}"')
 
-    dest = real_lang
-    if gib_lang:
-        dest = f'{dest}-{gib_lang}'
+    dest = lang_in
+    if lang_out:
+        dest = f'{dest}-{lang_out}'
     mode = 'r'
     if write_data:
         mode = 'w+'
 
-    with open(os.path.join(__data__, data_type, f'{dest}.json'), mode) as f:
-        if not write_data:
-            return json.load(f)
-        else:
-            json.dump(write_data, f, indent=2)
+    try:
+        with open(os.path.join(__data__, data_type, f'{dest}.json'), mode) as f:
+            if not write_data:
+                return json.load(f)
+            else:
+                json.dump(write_data, f, indent=2)
+    except FileNotFoundError:
+        if lang_out and lang_in:
+            print(f'ERROR: "{dest}" is not a valid language combination.')
+            exit(1)
+        raise
 
 
 def parse_message(somestring):

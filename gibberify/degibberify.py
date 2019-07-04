@@ -73,10 +73,3 @@ def degibberify(translator, text):
                                 [c for c in mapping] +
                                 [x for x in trans[end:]])
     return trans
-
-
-import sys
-tr = access_data('dicts', 'orc', 'en')
-args = ' '.join(sys.argv[1:])
-print(degibberify(tr, args))
-

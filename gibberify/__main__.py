@@ -9,6 +9,7 @@ import argparse
 from .utils import __version__, access_data, parse_message, is_standalone
 from .syllabize import build_syllables
 from .scramble import build_dicts
+from .degibberify import build_reverse_dicts
 from .gibberify import gibberify, interactive
 from .gui import gui
 
@@ -29,9 +30,9 @@ def main():
                          help='display version information and exit')
 
     trans_opt = parser.add_argument_group('translation options')
-    trans_opt.add_argument('-fl', '--from-lang', dest='lang_in', type=str, default='en',
+    trans_opt.add_argument('-f', '--from', dest='lang_in', type=str, default='en',
                            help='language to translate from')
-    trans_opt.add_argument('-l', '--to-lang', dest='lang_out', type=str, default='orc',
+    trans_opt.add_argument('-t', '--to', dest='lang_out', type=str, default='orc',
                            help='language to translate into')
     trans_opt.add_argument('-m', '--message', type=parse_message, nargs='*',
                            help='text to translate. If a filename is given, the '
@@ -67,13 +68,16 @@ def main():
         if args.first_build:
             build_syllables(download=True)
             build_dicts()
+            build_reverse_dicts()
             exit()
         if args.rebuild_syllables:
             build_syllables(download=False)
             build_dicts()
+            build_reverse_dicts()
             exit()
         if args.rebuild_dicts:
             build_dicts()
+            build_reverse_dicts()
             exit()
 
     if graphical:
