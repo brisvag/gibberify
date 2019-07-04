@@ -4,6 +4,7 @@ Download, parse and build all the data files needed by gibberify to do its magic
 
 from urllib.request import urlopen
 from transliterate import translit, get_available_language_codes
+from collections import OrderedDict
 import pyphen
 from time import sleep
 import os
@@ -97,7 +98,8 @@ def syllabize(word, hyph_list):
         # do some list comprehension black magic to split up everything nicely
         syl = [s for w in syl for s in hyph.inserted(w).strip().split('-')]
 
-    syllables = set(syl)
+    # nice trick to maintain order
+    syllables = list(OrderedDict.fromkeys(syl))
 
     return syllables
 
@@ -122,7 +124,7 @@ def gen_syllables(lang):
     for word in words:
         # let's clean up once more just to be sure
         word = word.strip()
-        syllables.update(syllabize(word, hyph_list))
+        syllables.update(set(syllabize(word, hyph_list)))
 
     # divide per length
     syllables.discard('')
