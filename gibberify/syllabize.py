@@ -95,7 +95,7 @@ def syllabize(word, hyph_list):
     syl = word.split('\'')
     for hyph in hyph_list:
         # do some list comprehension black magic to split up everything nicely
-        syl = [s for w in syl for s in hyph.inserted(w).split('-')]
+        syl = [s for w in syl for s in hyph.inserted(w).strip().split('-')]
 
     syllables = set(syl)
 
