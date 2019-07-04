@@ -27,7 +27,15 @@ def find_data():
         return os.path.join(os.path.dirname(__file__), 'data')
 
 
+def find_assets():
+    if is_standalone():
+        return os.path.join(sys._MEIPASS, 'assets')
+    else:
+        return os.path.join(os.path.dirname(__file__), 'assets')
+
+
 __data__ = find_data()
+__assets__ = find_assets()
 
 
 def progress(message, partial, total):
