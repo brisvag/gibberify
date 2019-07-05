@@ -34,10 +34,6 @@ def scramble(lang_in, langs_out):
     for ln, syls in pool_out.items():
         pool_out[ln] = list(set(syls))
 
-    # TODO: would be nice not to have duplicate mappings, but my attempts using a while loop were
-    #       unsuccessful/ridiculously expensive
-    #       for now, generate new syllables until we have mapped every syllable to something
-
     pool_in_total = [syl for syls in pool_in.values() for syl in syls]
     pool_out_total = [syl for syls in pool_out.values() for syl in syls]
 
@@ -52,7 +48,7 @@ def scramble(lang_in, langs_out):
         pool_out_total.extend(tmp_pool)
 
     for ln_in, syls_in in pool_in.items():
-        # maintain length discrimination for better translation TODO: is this really useful?
+        # maintain length discrimination for later utility
         trans_dict[ln_in] = {}
         # create subpool of syllables (more list comprehension black magic!)
         # do the actual mapping

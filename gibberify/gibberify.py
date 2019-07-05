@@ -51,8 +51,6 @@ def gibberify(translator, text):
     # remove multiple spaces due to input or unmapped syllables
     trans = re.sub(' +', ' ', trans)
 
-    # TODO: strip ugly whitespaces and capitalise first letter in a smart way
-
     return trans
 
 
