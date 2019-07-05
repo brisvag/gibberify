@@ -9,7 +9,7 @@ with open('README.md', 'r') as f:
 setuptools.setup(
         name='gibberify',
         scripts=['bin/gibberify'],
-        version='1.0-beta',
+        version='0.2-beta',
         author='Lorenzo Gaifas',
         author_email='brisvag@gmail.com',
         description='Simple gibberish generator that translates words from a real language '

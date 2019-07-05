@@ -9,7 +9,7 @@ import os
 
 # local imports
 from .config import __real_langs__, __gib_langs__
-from .utils import access_data, __data__
+from .utils import access_data, __data__, clean_path
 
 
 def scramble(lang_in, langs_out):
@@ -81,13 +81,13 @@ def build_dicts():
     builds a translation dictionary for all the required language combinations
     """
     # make sure directories exist
-    dict_dir = os.path.join(__data__, 'dicts')
+    dict_dir = clean_path(__data__, 'dicts')
     if not os.path.exists(dict_dir):
         os.makedirs(dict_dir)
 
     # check whether syllable pools exist
     for lang in __real_langs__:
-        syl_file = os.path.join(__data__, 'syllables', f'{lang}.json')
+        syl_file = clean_path(__data__, 'syllables', f'{lang}.json')
         if not os.path.isfile(syl_file):
             raise FileNotFoundError(f'syllable file for {lang} does not exist. You need to generate it first!')
 

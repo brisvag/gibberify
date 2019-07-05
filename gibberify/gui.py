@@ -5,7 +5,6 @@ User interface using PyQt5
 """
 
 import sys
-import os
 from PyQt5.QtGui import QFontDatabase, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QComboBox, QHBoxLayout,\
     QVBoxLayout, QWidget, QPushButton
@@ -13,7 +12,7 @@ from PyQt5.QtCore import QSize, pyqtSignal
 
 # local imports
 from .config import __real_langs__, __gib_langs__
-from .utils import access_data, __assets__
+from .utils import access_data, __assets__, clean_path
 from .gibberify import gibberify
 from .degibberify import degibberify
 
@@ -49,7 +48,7 @@ class SwitchButton(QPushButton):
     def __init__(self):
         super(SwitchButton, self).__init__()
         # configure icon and size
-        self.setIcon(QIcon(os.path.join(__assets__, 'switch.png')))
+        self.setIcon(QIcon(clean_path(__assets__, 'switch.png')))
         self.setIconSize(QSize(35, 35))
         # make it togglable
         self.setCheckable(True)
@@ -65,7 +64,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setWindowTitle('Gibberify')
-        self.setWindowIcon(QIcon(os.path.join(__assets__, 'gibberify.png')))
+        self.setWindowIcon(QIcon(clean_path(__assets__, 'gibberify.png')))
 
         # WIDGET CREATION
         # create textboxes

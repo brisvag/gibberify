@@ -9,7 +9,7 @@ import re
 
 # local imports
 from .config import __real_langs__, __gib_langs__
-from .utils import access_data, __data__
+from .utils import access_data, __data__, clean_path
 
 
 def unscramble(straight):
@@ -39,7 +39,7 @@ def build_reverse_dicts():
     # check whether straight dictionaries exist
     for lang in __real_langs__:
         for gib_lang in __gib_langs__.keys():
-            dict_file = os.path.join(__data__, 'dicts', f'{lang}-{gib_lang}.json')
+            dict_file = clean_path(__data__, 'dicts', f'{lang}-{gib_lang}.json')
         if not os.path.isfile(dict_file):
             raise FileNotFoundError(f'dictionary file for {lang}-{gib_lang} does not exist. '
                                     f'You need to generate it first!')

@@ -5,7 +5,6 @@ Main entry point of gibberify
 """
 
 import sys
-import os
 import argparse
 
 # local imports. Here, they MUST actually be explicit, otherwise pyinstaller complains

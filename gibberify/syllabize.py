@@ -13,7 +13,7 @@ import os
 
 # local imports
 from .config import __real_langs__
-from .utils import access_data, __data__
+from .utils import access_data, __data__, clean_path
 
 
 def get_dict(lang):
@@ -153,8 +153,8 @@ def build_syllables(download=False, langs=False):
 
     # make sure data directories exist
     dirs = [
-        os.path.join(__data__, 'words'),
-        os.path.join(__data__, 'syllables'),
+        clean_path(__data__, 'words'),
+        clean_path(__data__, 'syllables'),
     ]
     for d in dirs:
         if not os.path.exists(d):
@@ -164,7 +164,7 @@ def build_syllables(download=False, langs=False):
     for lang in __real_langs__:
         # only download again if requested or if local word lists are not present
         dw = download
-        if not os.path.isfile(os.path.join(__data__, 'words', f'{lang}.json')):
+        if not os.path.isfile(clean_path(__data__, 'words', f'{lang}.json')):
             dw = True
         if dw:
             download_data(lang)
