@@ -7,13 +7,16 @@ Collection of utilities and globals
 import os
 import sys
 import json
+import platform
 
 # local imports
 from .config import __real_langs__, __gib_langs__
 
+# TODO: keep updated!
 __version__ = 0.1
 
 
+# TODO: is this needed anymore?
 def is_standalone():
     """
     check whethere it's runnin gin standalone mode
@@ -25,30 +28,45 @@ def is_standalone():
     return False
 
 
+def clean_path(*steps):
+    """
+    joins strings into a path, then returns a cleaned up version with expanded variables and ~
+    """
+    path = os.path.realpath(os.path.expanduser(os.path.expandvars(os.path.join(*steps))))
+
+    return path
+
+
+def get_data_dir():
+    """
+    OS-sensitive function to find a good place to store data and config files
+    """
+    os_name = platform.system().lower()
+    basedir = ''
+    if os.name in ['linux', 'darwin']:
+        basedir = clean_path('~', '.config')
+    elif os_name == 'windows':
+        try:
+            basedir = clean_path(os.getenv('APPDATA'))
+        except KeyError:
+            print(f'ERROR: could not find "APPDATA" environment variable.')
+            exit(0)
+
+    datadir = clean_path(basedir, 'gibberify')
+
+    return datadir
+
+
 # TODO: refactor these functions into one that returns package dir and
 #       if possible use pkg_resources for standalone
-def find_data():
-    if is_standalone():
-        return os.path.join(sys._MEIPASS, 'data')
-    else:
-        return os.path.join(os.path.dirname(__file__), 'data')
-
-
 def find_assets():
     if is_standalone():
-        return os.path.join(sys._MEIPASS, 'assets')
+        return clean_path(sys._MEIPASS, 'assets')
     else:
-        return os.path.join(os.path.dirname(__file__), 'assets')
+        return clean_path(os.path.dirname(__file__), 'assets')
 
 
-def find_config():
-    if is_standalone():
-        return os.path.join(sys._MEIPASS, 'config.py')
-    else:
-        return os.path.join(os.path.dirname(__file__), 'config.py')
-
-
-__data__ = find_data()
+__data__ = get_data_dir()
 __assets__ = find_assets()
 
 
@@ -69,12 +87,12 @@ def access_data(data_type, lang_in, lang_out=None, write_data=None):
 
     dest = lang_in
     if lang_out:
-        dest = f'{dest}-{lang_out}'
+        dest = f'{lang_in}-{lang_out}'
     mode = 'r'
     if write_data:
         mode = 'w+'
 
-    with open(os.path.join(__data__, data_type, f'{dest}.json'), mode) as f:
+    with open(clean_path(__data__, data_type, f'{dest}.json'), mode) as f:
         if not write_data:
             return json.load(f)
         else:
@@ -85,16 +103,15 @@ def data_exists():
     """
     make sure all the dict files required for translation exist
     """
-    for real_lang in __real_langs__:
-        for gib_lang in __gib_langs__:
-            straight = os.path.join(__data__, 'dicts', f'{real_lang}-{gib_lang}.json')
-            reverse = os.path.join(__data__, 'dicts', f'{gib_lang}-{real_lang}.json')
-            if not any([os.path.isfile(straight), os.path.isfile(reverse)]):
-                return False
+    for real_lang, gib_lang in zip(__real_langs__, __gib_langs__):
+        straight = clean_path(__data__, 'dicts', f'{real_lang}-{gib_lang}.json')
+        reverse = clean_path(__data__, 'dicts', f'{gib_lang}-{real_lang}.json')
+        if not any([os.path.isfile(straight), os.path.isfile(reverse)]):
+            return False
     return True
 
 
-def parse_message(somestring):
+def parse_message(str_in):
     """
     Handle message input nicely
     Passing '-' as the message will read from stdin
@@ -103,15 +120,16 @@ def parse_message(somestring):
     If your string happens to accidentally be a valid file,
     tough shit i guess..
     """
-    somestring = str(somestring)
-    if somestring == '-':
-        try:
-            return sys.stdin.read()
-        except KeyboardInterrupt:
-            print()
-            exit()
-    elif os.path.isfile(somestring):
-        with open(somestring, 'r') as f:
-            return f.read()
-    else:
-        return somestring
+    # TODO: handle this a bit better (now only checks each word separately)
+    str_in = str(str_in)
+#    if str_in == '-':
+#        try:
+#            return sys.stdin.read()
+#        except KeyboardInterrupt:
+#            print()
+#            exit()
+#    elif os.path.isfile(str_in):
+#        with open(str_in, 'r') as f:
+#            return f.read()
+#    else:
+    return str_in
