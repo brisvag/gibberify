@@ -8,6 +8,9 @@ import os
 import sys
 import json
 
+# local imports
+from .config import __real_langs__, __gib_langs__
+
 __version__ = 0.1
 
 
@@ -67,6 +70,19 @@ def access_data(data_type, lang_in, lang_out=None, write_data=None):
             return json.load(f)
         else:
             json.dump(write_data, f, indent=2)
+
+
+def data_exists():
+    """
+    make sure all the dict files required for translation exist
+    """
+    for real_lang in __real_langs__:
+        for gib_lang in __gib_langs__:
+            straight = os.path.join(__data__, 'dicts', f'{real_lang}-{gib_lang}.json')
+            reverse = os.path.join(__data__, 'dicts', f'{gib_lang}-{real_lang}.json')
+            if not any([os.path.isfile(straight), os.path.isfile(reverse)]):
+                return False
+    return True
 
 
 def parse_message(somestring):
