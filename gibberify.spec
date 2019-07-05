@@ -2,15 +2,16 @@
 
 # Copyright 2019-2019 the gibberify authors. See copying.md for legal info.
 
+import os
 from PyInstaller.utils.hooks import collect_data_files
 
-import PyInstaller.config
 
 block_cipher = None
 
 added_files = []
 added_files += collect_data_files('pyphen')
-added_files += [('./gibberify/data', 'data')]
+added_files += [(os.path.join('gibberify', 'data', 'dicts'), os.path.join('data', 'dicts'))]
+added_files += [(os.path.join('gibberify', 'assets'), 'assets')]
 
 extra_imports = ['pyphen']
 
@@ -27,8 +28,11 @@ a = Analysis(['gibberify/__main__.py'],
              win_private_assemblies=False,
              cipher=block_cipher,
              noarchive=False)
-pyz = PYZ(a.pure, a.zipped_data,
-             cipher=block_cipher)
+
+pyz = PYZ(a.pure,
+          a.zipped_data,
+          cipher=block_cipher)
+
 exe = EXE(pyz,
           a.scripts,
           a.binaries,
@@ -41,4 +45,4 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           runtime_tmpdir=None,
-          console=True )
+          console=True)

@@ -7,13 +7,13 @@ Main entry point of gibberify
 import sys
 import argparse
 
-# local imports
-from .utils import __version__, access_data, parse_message, is_standalone
-from .syllabize import build_syllables
-from .scramble import build_dicts
-from .degibberify import build_reverse_dicts
-from .gibberify import gibberify, interactive
-from .gui import gui
+# local imports. Here, they MUST actually be explicit, otherwise pyinstaller complains
+from gibberify.utils import __version__, access_data, parse_message, is_standalone
+from gibberify.syllabize import build_syllables
+from gibberify.scramble import build_dicts
+from gibberify.degibberify import build_reverse_dicts
+from gibberify.gibberify import gibberify, interactive
+from gibberify.gui import gui
 
 
 def main():
