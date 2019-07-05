@@ -61,12 +61,6 @@ def main():
         print(f'Gibberify {__version__}')
         exit()
 
-    # before doing anything, check if data file exist:
-    if not data_exists():
-        print('Dictionaries are missing! Make sure to generate all the data first.')
-        parser.print_help()
-        exit(1)
-
     # if no arguments were given, run gui version
     graphical = False
     if len(sys.argv) == 1:
@@ -87,6 +81,12 @@ def main():
             build_dicts()
             build_reverse_dicts()
             exit()
+
+    # before running anything, check if data file exist:
+    if not data_exists():
+        print('ERROR: Dictionaries are missing! Make sure to generate all the data first.\n')
+        parser.print_usage()
+        exit(1)
 
     if graphical:
         gui()
