@@ -43,7 +43,7 @@ def get_data_dir():
     """
     os_name = platform.system().lower()
     basedir = ''
-    if os.name in ['linux', 'darwin']:
+    if os_name in ['linux', 'darwin']:
         basedir = clean_path('~', '.config')
     elif os_name == 'windows':
         try:
