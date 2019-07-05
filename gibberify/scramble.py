@@ -1,3 +1,5 @@
+# Copyright 2019-2019 the gibberify authors. See copying.md for legal info.
+
 """
 Generate fake, gibberish translation dictionaries to be used by the translator
 """
