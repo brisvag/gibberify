@@ -5,10 +5,11 @@ Main entry point of gibberify
 """
 
 import sys
+import os
 import argparse
 
 # local imports. Here, they MUST actually be explicit, otherwise pyinstaller complains
-from gibberify.utils import __version__, access_data, parse_message, is_standalone, data_exists
+from gibberify.utils import __version__, access_data, parse_message, is_standalone, data_exists, __data__
 from gibberify.syllabize import build_syllables
 from gibberify.scramble import build_dicts
 from gibberify.degibberify import build_reverse_dicts
@@ -54,11 +55,18 @@ def main():
         build_opt.add_argument('--rebuild-dicts', dest='rebuild_dicts', action='store_true',
                                help='rebuild translation dictionaries only. Use this option '
                                     'after changing settings in config.py')
+        # TODO: this find-config is a bit of a hack, replace it asap
+        build_opt.add_argument('--find-config', dest='find_config', action='store_true',
+                               help='print location of the configuration file and exit')
 
     args = parser.parse_args()
 
     if args.version:
         print(f'Gibberify {__version__}')
+        exit()
+
+    if args.find_config:
+        print(f'You can find the configuration file in: {os.path.join(__data__, "config.py")}')
         exit()
 
     # if no arguments were given, run gui version
