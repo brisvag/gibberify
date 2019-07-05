@@ -25,6 +25,8 @@ def is_standalone():
     return False
 
 
+# TODO: refactor these functions into one that returns package dir and
+#       if possible use pkg_resources for standalone
 def find_data():
     if is_standalone():
         return os.path.join(sys._MEIPASS, 'data')
@@ -37,6 +39,13 @@ def find_assets():
         return os.path.join(sys._MEIPASS, 'assets')
     else:
         return os.path.join(os.path.dirname(__file__), 'assets')
+
+
+def find_config():
+    if is_standalone():
+        return os.path.join(sys._MEIPASS, 'config.py')
+    else:
+        return os.path.join(os.path.dirname(__file__), 'config.py')
 
 
 __data__ = find_data()

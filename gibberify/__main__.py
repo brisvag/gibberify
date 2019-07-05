@@ -9,7 +9,7 @@ import os
 import argparse
 
 # local imports. Here, they MUST actually be explicit, otherwise pyinstaller complains
-from gibberify.utils import __version__, access_data, parse_message, is_standalone, data_exists, __data__
+from gibberify.utils import __version__, access_data, parse_message, is_standalone, data_exists, find_config
 from gibberify.syllabize import build_syllables
 from gibberify.scramble import build_dicts
 from gibberify.degibberify import build_reverse_dicts
@@ -66,7 +66,7 @@ def main():
         exit()
 
     if args.find_config:
-        print(f'You can find the configuration file in: {os.path.join(__data__, "config.py")}')
+        print(f'You can find the configuration file in: {find_config()}')
         exit()
 
     # if no arguments were given, run gui version
