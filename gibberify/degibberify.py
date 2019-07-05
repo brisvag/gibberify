@@ -10,6 +10,7 @@ import re
 # local imports
 from .config import __real_langs__, __gib_langs__
 from .utils import access_data, __data__, clean_path
+from .scramble import build_dicts
 
 
 def unscramble(straight):
@@ -32,17 +33,16 @@ def unscramble(straight):
     return reverse
 
 
-def build_reverse_dicts():
+def build_all_dicts():
     """
     creates and saves a reverse dict for every language combination
     """
-    # check whether straight dictionaries exist
+    # check whether straight dictionaries exist, run scramble if needed
     for lang in __real_langs__:
         for gib_lang in __gib_langs__.keys():
             dict_file = clean_path(__data__, 'dicts', f'{lang}-{gib_lang}.json')
         if not os.path.isfile(dict_file):
-            raise FileNotFoundError(f'dictionary file for {lang}-{gib_lang} does not exist. '
-                                    f'You need to generate it first!')
+            build_dicts()
 
     # make them all!
     for gib_lang_in in __gib_langs__.keys():

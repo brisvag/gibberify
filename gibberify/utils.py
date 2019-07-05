@@ -103,7 +103,7 @@ def data_exists():
     """
     make sure all the dict files required for translation exist
     """
-    for real_lang, gib_lang in zip(__real_langs__, __gib_langs__):
+    for real_lang, gib_lang in zip(__real_langs__, __gib_langs__.keys()):
         straight = clean_path(__data__, 'dicts', f'{real_lang}-{gib_lang}.json')
         reverse = clean_path(__data__, 'dicts', f'{gib_lang}-{real_lang}.json')
         if not any([os.path.isfile(straight), os.path.isfile(reverse)]):

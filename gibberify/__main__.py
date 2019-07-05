@@ -8,10 +8,10 @@ import sys
 import argparse
 
 # local imports. Here, they MUST actually be explicit, otherwise pyinstaller complains
-from gibberify.utils import __version__, access_data, parse_message, is_standalone, data_exists, find_config
+from gibberify.utils import __version__, access_data, parse_message, is_standalone, data_exists
 from gibberify.syllabize import build_syllables
 from gibberify.scramble import build_dicts
-from gibberify.degibberify import build_reverse_dicts
+from gibberify.degibberify import build_all_dicts
 from gibberify.gibberify import gibberify, interactive
 from gibberify.gui import gui
 
@@ -42,21 +42,13 @@ def main():
                                 'If `-` is given, input text is take from stdin. '
                                 'Question marks are not supported')
 
-    if not is_standalone():
-        build_opt = parser.add_argument_group('building options')
-        build_opt.add_argument('--force-download', dest='force_download', action='store_true',
-                               help='force re-download of word data and create syllable pools, then generate '
-                                    'dictionary files for all the language combinations. '
-                                    'This may take a few minutes')
-        build_opt.add_argument('--rebuild-syllables', dest='rebuild_syllables', action='store_true',
-                               help='rebuild syllable pools, without downloading word lists. '
-                                    'Then, generate dictionaries with the new syllables')
-        build_opt.add_argument('--rebuild-dicts', dest='rebuild_dicts', action='store_true',
-                               help='rebuild translation dictionaries only. Use this option '
-                                    'after changing settings in config.py')
-        # TODO: this find-config is a bit of a hack, replace it asap
-        build_opt.add_argument('--find-config', dest='find_config', action='store_true',
-                               help='print location of the configuration file and exit')
+    build_opt = parser.add_argument_group('building options')
+    build_opt.add_argument('--force-download', dest='force_download', action='store_true',
+                           help='force re-download of word data and create syllable pools, then generate '
+                                'dictionary files for all the language combinations.')
+    build_opt.add_argument('--rebuild-dicts', dest='rebuild_dicts', action='store_true',
+                           help='rebuild translation dictionaries. Use this option '
+                                'after changing dictionary generation settings')
 
     args = parser.parse_args()
 
@@ -64,35 +56,23 @@ def main():
         print(f'Gibberify {__version__}')
         exit()
 
-    if args.find_config:
-        print(f'You can find the configuration file in: {find_config()}')
-        exit()
-
     # if no arguments were given, run gui version
     graphical = False
     if len(sys.argv) == 1:
         graphical = True
 
-    if not is_standalone():
-        if args.force_download:
-            build_syllables(download=True)
-            build_dicts()
-            build_reverse_dicts()
-            exit()
-        if args.rebuild_syllables:
-            build_syllables(download=False)
-            build_dicts()
-            build_reverse_dicts()
-            exit()
-        if args.rebuild_dicts:
-            build_dicts()
-            build_reverse_dicts()
-            exit()
+    if args.force_download:
+        build_syllables(download=True)
+        build_all_dicts()
+        exit()
+    if args.rebuild_dicts:
+        build_all_dicts()
+        exit()
 
     # before running anything, check if data file exist:
     if not data_exists():
-        print('ERROR: Dictionaries are missing! Make sure to generate all the data first.\n')
-        parser.print_usage()
+        print('Dictionaries are missing! I will generate all the data first. It may take a minute!\n')
+        build_all_dicts()
         exit(1)
 
     if graphical:

@@ -10,6 +10,7 @@ import os
 # local imports
 from .config import __real_langs__, __gib_langs__
 from .utils import access_data, __data__, clean_path
+from .syllabize import build_syllables
 
 
 def scramble(lang_in, langs_out):
@@ -85,11 +86,11 @@ def build_dicts():
     if not os.path.exists(dict_dir):
         os.makedirs(dict_dir)
 
-    # check whether syllable pools exist
+    # check whether syllable pools exist, and make them if needed
     for lang in __real_langs__:
         syl_file = clean_path(__data__, 'syllables', f'{lang}.json')
         if not os.path.isfile(syl_file):
-            raise FileNotFoundError(f'syllable file for {lang} does not exist. You need to generate it first!')
+            build_syllables(download=False)
 
     # make dictionary generation somewhat deterministic, cause why not TODO: this clearly does nothing
     random.seed('gibberify')
