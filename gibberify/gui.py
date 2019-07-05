@@ -65,6 +65,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setWindowTitle('Gibberify')
+        self.setWindowIcon(QIcon(os.path.join(__assets__, 'gibberify.png')))
 
         # WIDGET CREATION
         # create textboxes

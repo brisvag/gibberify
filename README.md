@@ -148,5 +148,6 @@ Yes, please! Just create issues, PRs, forks and fiddle around with it!
 
 ---
 
-#### Acknowledgements
-_Icons made by [Freepik](https://www.freepik.com/) from [Flaticon](https://www.flaticon.com/)_
+_Icons made by_
+- _[Freepik](https://www.freepik.com/) from [Flaticon](https://www.flaticon.com/)_
+- _[Good Ware](https://www.flaticon.com/authors/good-ware) from [Flaticon](https://www.flaticon.com/)_
