@@ -10,7 +10,6 @@ block_cipher = None
 
 added_files = []
 added_files += collect_data_files('pyphen')
-added_files += [(os.path.join('gibberify', 'data', 'dicts'), os.path.join('data', 'dicts'))]
 added_files += [(os.path.join('gibberify', 'assets'), 'assets')]
 
 extra_imports = ['pyphen']
