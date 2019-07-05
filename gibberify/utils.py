@@ -62,17 +62,11 @@ def access_data(data_type, lang_in, lang_out=None, write_data=None):
     if write_data:
         mode = 'w+'
 
-    try:
-        with open(os.path.join(__data__, data_type, f'{dest}.json'), mode) as f:
-            if not write_data:
-                return json.load(f)
-            else:
-                json.dump(write_data, f, indent=2)
-    except FileNotFoundError:
-        if lang_out and lang_in:
-            print(f'ERROR: "{dest}" is not a valid language combination.')
-            exit(1)
-        raise
+    with open(os.path.join(__data__, data_type, f'{dest}.json'), mode) as f:
+        if not write_data:
+            return json.load(f)
+        else:
+            json.dump(write_data, f, indent=2)
 
 
 def parse_message(somestring):
