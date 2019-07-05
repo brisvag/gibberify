@@ -44,10 +44,10 @@ def main():
 
     if not is_standalone():
         build_opt = parser.add_argument_group('building options')
-        build_opt.add_argument('--first-build', dest='first_build', action='store_true',
-                               help='download data and create syllable pools, then generate '
+        build_opt.add_argument('--force-download', dest='force_download', action='store_true',
+                               help='force re-download of word data and create syllable pools, then generate '
                                     'dictionary files for all the language combinations. '
-                                    'It may take a few minutes')
+                                    'This may take a few minutes')
         build_opt.add_argument('--rebuild-syllables', dest='rebuild_syllables', action='store_true',
                                help='rebuild syllable pools, without downloading word lists. '
                                     'Then, generate dictionaries with the new syllables')
@@ -67,7 +67,7 @@ def main():
         graphical = True
 
     if not is_standalone():
-        if args.first_build:
+        if args.force_download:
             build_syllables(download=True)
             build_dicts()
             build_reverse_dicts()
