@@ -1,70 +1,79 @@
-# Do you like nonsense? I'LL GIVE YOU SOME NONSENSE!
+# Gibberish? It's MUSIC to my ears!
 
 Or, as an Orc might say:
 
-"**Ova prah iso zajdeitlhio? 'CHLI MÜLEKAR PRAH KVAGREJ ZAJDEITLHIO!**"
+""**Mentbsoed? Frit'müs ZNAYL blö uvod sriv!**""
 
-Gibberify is a simple gibberish generator that translates words from a real language to a (almost) pronounceable gibberish.
+Gibberify is a simple gibberish generator that translates words from a real language to an (almost) pronounceable gibberish.
 
-It uses words taken from a streamlined fork of
+It uses words taken from a streamlined version of
 [wooorm/dictionaries](https://github.com/wooorm/dictionaries/tree/master/dictionaries)
-(hosted [here](https://github.com/brisvag/dictionaries)) to generate new syllables, 
+(forked [here](https://github.com/brisvag/dictionaries)) to generate new syllables, 
 which are then used to convert real language into a wrangled mess of nonsense.
-
 
 #### DISCLAIMER:
 
-This thing is heavily **WIP**. This is just the first working prototype.
+This thing is **WIP**. Though the program is starting to be usable, it's still in the early stages. 
 
 Does anything weird happen? Report it using an issue or fix it yourself and send a PR!
 
 # Set up
 
-*All the following commands are equivalent if ran through `python -m gibberify` or by executing the standalone.*
+Installation is now easier than ever thanks to `pip`!
+```bash
+pip install git+git://github.com/brisvag/gibberify.git#egg=gibberify
+```
+
+Pip will automatically add the script to your `PATH`, so you can simply run `gibberify` from the command line.
+
+## What is this `pip` you are talking about? I wanna make gibberish!
+
+No worries! There is also an executable version of Gibberify, that you can find
+[**here**](https://github.com/brisvag/gibberify/releases/latest), under "_Assets_".
+Download the latest release for your operative system, unzip it and double click the shit out of it. 
 
 ---
-
-To run with python using the source code, just clone the repo with:
-```
-git clone https://github.com/brisvag/gibberify.git
-cd gibberify
-``` 
-and then run:
-```
-./gibberify.sh
-```
-
----
-
-Alternatively, you can use the standalone executable without needing python or any dependency. Wohoo!
-
-To do download the executable go [**here**](https://github.com/brisvag/gibberify/releases/latest) and look through the *Assets*.
-
-Alternatively, click [*here*](https://github.com/brisvag/gibberify/releases/latest/gibberify.tar.gz) for a direct download of a `.tar.gz` and [*here*](https://github.com/brisvag/gibberify/releases/latest/gibberify.zip) for a direct download of a `.zip`.
-
 For now, the standalone only works on **linux**.
 
     The standalone was generated with PyInstaller using the configuration file `gibberify.spec`.
-    If you want to generate it yourself, just run `pyinstaller gibberify.spec` from the main directory (you will need pyinstaller installed).
+    If you want to generate it yourself, just run `pyinstaller gibberify.spec` from the main
+    directory (you will need pyinstaller installed).
     PyInstaller does not work with python3.7: use python3.6!
+---
+
+## I really can't stand the way you wrote this line of code
+
+Do you want to change it? Feel free to fork and PR! For testing, you can also import `gibberify` as a module:
+```python3
+import gibberify
+```
 
 # Usage
 
 ## Translation
 
-To open the graphical interface, run:
+To open the graphical interface, simply run:
 ```
-./gibberify.sh
+gibberify
 ```
 
 You can also translate from the command line. To print the help, run:
 ```
-./gibberify.sh -h
+gibberify -h
+```
+
+### NEW FEATURE: REVERSE TRANSLATION
+
+You heard it well! It's a tough guessing game, and it often fails in finding the right syllable.
+However, if your sentence is long enough, you can usually guess the general meaning. Try it out by simply switching
+around languages (or by pressing the big central button in the GUI):
+```bash
+gibberify -f orc -t en -m ********
 ```
 
 ### Examples
 
-- Run the program with the graphical interface using the standalone:
+- Run the program with the graphical interface using the standalone executable:
 ```
 cd /path/to/standalone/directory/
 ./gibberify
@@ -73,13 +82,13 @@ cd /path/to/standalone/directory/
 
 - Translate from German to Elvish the sentence "*Hans, Get ze Flammenwerfer*" from the command line:
 ```
-./gibberify.sh -fl de -l elv -m Hans, Get ze Flammenwerfer
+gibberify -f de -t elv -m Hans, Get ze Flammenwerfer
 Skel, Foë togssaé Licfoeusuasean
 ```
 
-- Translate from English (default) to Dwarvish the file `README.md`, using the standalone executable:
+- Translate from English (default) to Dwarvish the file `README.md`:
 ```
-./gibberify -l dwa -m README.md
+gibberify -l dwa -m README.md
 ***this_is_not_a_recursive_message***
 ```
 
@@ -91,60 +100,53 @@ Thorsyneftlaos Pryrheeflut!
 
 # Requirements
 
-**If you use the standalone executable, it should work out of the box, no requirements!**
+**If you use the standalone executable, it should work out of the box, no requirements, no strings attached!**
 
-Otherwise, everything requires `python3.6` or higher.
-
-If you just want to make some gibberish and create new dictionaries you only need `pyphen` and `PyQt5`:
+Otherwise, everything requires `python3.5` or higher and `pyphen`, `pyqt5` and `transliterate`:
 ```
-pip install pyphen pyqt5
-```
-
-If you want to fiddle around with syllable pools you will also need (for non-latin characters):
-```
-pip install transliterate
+pip install pyphen pyqt5 transliterate
 ```
 
 # Customisation
 
 Most of the things you might wanna change are located in `config.py`.
 
-## Syllable pool
+_For now, customization is **not** possible when using the standalone executable._
 
-You can use the pre-generated syllable pool present in the repo, or you can generate a new one using your preferred languages by editing `config.py`.
+## Custom languages
 
-To generate new pools, run `python -m gibberify.syllable_pools` from the main directory.
+You can use the suggested settings, or you can generate completely new dictionaries using your preferred 
+settings and languages by editing `config.py`.
 
-Syllables are generated (and later matched) using Italian hyphenation rules for a few reasons:
-- they generate reasonable outcome, in contrast to English (`wardrobe` and `nightstand` contain only one syllable? For real?)
-- they mostly generate pronounceable syllables that contain at least a vowel
-- they are consistent (again, compared to English), producing a more useful set of syllables that contain fewer weird strings that appear only once in the whole language
+If it's the first time you create dictionaries, or if you changed/added languages to the list of real languages in `config.py`,
+you will have to download any missing dictionary and re-build the syllable pools.
+```bash
+gibberify --rebuild-syllables
+```
 
-There are probably other ways (or other languages) to do this, but Italian is my native language so either deal with it, or improve it :P
+If you just changed some settings for the gibberish languages, you can simply re-build only the translation dictionaries:
+```bash
+gibberify --rebuild-dicts
+```
 
-## Translation dictionaries
+Syllables are generated (and later matched) using hyphenation rules from several languages at the same time for a few reasons:
+- generate reasonable outcome, in contrast to (for example) English alone. `wardrobe` and `nightstand` contain only one syllable? For real?
+- be more consistent, producing a more useful set of syllables that contain fewer weird strings that appear only once in the whole language.
+  This is particularly useful for _reverse translations_.
 
-Same as above, for the most part. You can generate new ones using any combination of existing languages, it's up to you. Just run `python -m gibberify.gibberish_dicts` from the main directory.
-
-Right now the ones I'm shipping are purely arbitrary, with no real reason other than "*It sounded right*".
-To be honest, I don't think my combinations turned out that well, so try out some stuff yourself and let me know what sounds best!
+Right now the gibberish dictionaries I'm shipping have very random settings. I don't think they sound/look particularly good,
+so please, try out some stuff yourself and let me know what sounds best!
 
 # Contributing
 
-Yes, please! Just create issues, PRs, forks and fiddle around with it!
+Yes, please! Just create issues, PRs, forks and fiddle around with it.
 
 # TODO
 
-- make syllable and dictionary generation easier to call
+- **make customization possible in standalone mode**
 - add support for non-latin fonts in input/output
 - use multiprocessing to speedup the hot mess that `syllable_pools.py` is.
-- translation mapping should be in a unique 1 to 1 fashion to avoid repetitions, not random.
 - weighted use of syllables from different languages
-- support two-way translation (and transliteration!)
-
-# TOTHINKABOUT
-- allow asking for higher percentage of syllables containing some specific letters?
-- Maybe short syllables are more common than long ones. Mapping should reflect this. Right now, translations are almost always longer and contain longer words.
 
 ---
 
