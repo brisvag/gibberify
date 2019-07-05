@@ -34,7 +34,7 @@ def gibberify(translator, text):
             trans_w = ''.join(trans_syl)
             # let's preserve capitalisation, at least a bit
             if w[0].isupper():
-                if w.isupper():
+                if w.isupper() and len(w) >= 2:
                     trans_w = trans_w.upper()
                 else:
                     trans_w = trans_w.capitalize()
