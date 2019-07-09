@@ -32,53 +32,26 @@ No worries! There is also an executable version of Gibberify, that you can find
 [**here**](https://github.com/brisvag/gibberify/releases/latest), under "_Assets_".
 Download the latest release for your operative system, unzip it and double click the shit out of it. 
 
----
-For now, the standalone only works on **linux**.
-
+    For now, the standalone only works on **linux**.
     The standalone was generated with PyInstaller using the configuration file `gibberify.spec`.
     If you want to generate it yourself, just run `pyinstaller gibberify.spec` from the main
     directory (you will need pyinstaller installed).
     PyInstaller does not work with python3.7: use python3.6!
----
-
-## I really can't stand the way you wrote this line of code
-
-Do you want to change it? Feel free to fork and PR! For testing, you can also import `gibberify` as a module:
-```python3
-import gibberify
-```
 
 # Usage
-
-## Translation
 
 To open the graphical interface, simply run:
 ```
 gibberify
 ```
+(or just double click on the executable).
 
 You can also translate from the command line. To print the help, run:
 ```
 gibberify -h
 ```
 
-### NEW FEATURE: REVERSE TRANSLATION
-
-You heard it well! It's a tough guessing game, and it often fails in finding the right syllable.
-However, if your sentence is long enough, you can usually guess the general meaning. Try it out by simply switching
-around languages (or by pressing the big central button in the GUI):
-```bash
-gibberify -f orc -t en -m ********
-```
-
 ### Examples
-
-- Run the program with the graphical interface using the standalone executable:
-```
-cd /path/to/standalone/directory/
-./gibberify
-```
-(or just double click on it).
 
 - Translate from German to Elvish the sentence "*Hans, Get ze Flammenwerfer*" from the command line:
 ```
@@ -96,6 +69,16 @@ gibberify -l dwa -m README.md
 ```
 echo Privetstvuju Putina! | python3 -m gibberify -fl ru -m -
 Thorsyneftlaos Pryrheeflut!
+```
+
+
+### NEW FEATURE: REVERSE TRANSLATION
+
+You heard it well! It's a tough guessing game, and it often fails in finding the right syllable.
+However, if your sentence is long enough, you can usually guess the general meaning. Try it out by simply switching
+around languages (or by pressing the big central button in the GUI):
+```bash
+gibberify -f orc -t en -m [orcish message here] 
 ```
 
 # Requirements
@@ -137,9 +120,12 @@ Syllables are generated (and later matched) using hyphenation rules from several
 Right now the gibberish dictionaries I'm shipping have very random settings. I don't think they sound/look particularly good,
 so please, try out some stuff yourself and let me know what sounds best!
 
-# Contributing
+# I really can't stand the way you wrote this specific line of code
 
-Yes, please! Just create issues, PRs, forks and fiddle around with it.
+Do you want to change it? Feel free to fork and PR! For testing, you can also import `gibberify` as a module:
+```python3
+import gibberify
+```
 
 # TODO
 
