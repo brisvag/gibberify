@@ -6,6 +6,7 @@ Main entry point of gibberify
 
 import os
 import sys
+from sys import exit
 import argparse
 
 # local imports. Here, they MUST actually be explicit, otherwise pyinstaller complains
@@ -64,10 +65,10 @@ def main():
 
     if args.force_download:
         build_syllables(download=True)
-        build_all_dicts()
+        build_all_dicts(force_rebuild=True)
         exit()
     if args.rebuild_dicts:
-        build_all_dicts()
+        build_all_dicts(force_rebuild=True)
         exit()
 
     # before running anything, check if data files exist and create them if needed
@@ -76,7 +77,7 @@ def main():
         reverse = clean_path(__data__, 'dicts', f'{gib_lang}-{real_lang}.json')
         if not any([os.path.isfile(straight), os.path.isfile(reverse)]):
             print('Dictionaries are missing! I will generate all the data first. It may take a minute!\n')
-            build_all_dicts()
+            build_all_dicts(force_rebuild=True)
 
     if graphical:
         gui()

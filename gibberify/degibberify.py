@@ -33,16 +33,20 @@ def unscramble(straight):
     return reverse
 
 
-def build_all_dicts():
+def build_all_dicts(force_rebuild=False):
     """
     creates and saves a reverse dict for every language combination
     """
-    # check whether straight dictionaries exist, run scramble if needed
-    for lang in __real_langs__:
-        for gib_lang in __gib_langs__.keys():
-            dict_file = clean_path(__data__, 'dicts', f'{lang}-{gib_lang}.json')
-        if not os.path.isfile(dict_file):
-            build_dicts()
+    # force rebuild of straight dictionaries if asked
+    if force_rebuild:
+        build_dicts()
+    else:
+        # check whether straight dictionaries exist, run scramble if needed
+        for lang in __real_langs__:
+            for gib_lang in __gib_langs__.keys():
+                dict_file = clean_path(__data__, 'dicts', f'{lang}-{gib_lang}.json')
+            if not os.path.isfile(dict_file):
+                build_dicts()
 
     # make them all!
     for gib_lang_in in __gib_langs__.keys():
