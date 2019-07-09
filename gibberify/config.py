@@ -7,7 +7,6 @@ config.json is strucutred as follows:
 
 # natural languages used for syllable generation and everything else
 # languages must be indicated with international 2-letter codes
-# add, remove or comment out lines to edit the base list
 
 real_langs = [
     "en",   # english
