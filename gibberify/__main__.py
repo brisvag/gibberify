@@ -4,11 +4,13 @@
 Main entry point of gibberify
 """
 
+import os
 import sys
 import argparse
 
 # local imports. Here, they MUST actually be explicit, otherwise pyinstaller complains
-from gibberify.utils import __version__, access_data, parse_message, data_exists
+from gibberify.utils import __version__, access_data, parse_message, clean_path, __data__
+from gibberify.config import __real_langs__, __gib_langs__
 from gibberify.syllabize import build_syllables
 from gibberify.degibberify import build_all_dicts
 from gibberify.gibberify import gibberify, interactive
@@ -68,11 +70,13 @@ def main():
         build_all_dicts()
         exit()
 
-    # before running anything, check if data file exist:
-    if not data_exists():
-        print('Dictionaries are missing! I will generate all the data first. It may take a minute!\n')
-        build_all_dicts()
-        exit(1)
+    # before running anything, check if data files exist and create them if needed
+    for real_lang, gib_lang in zip(__real_langs__, __gib_langs__.keys()):
+        straight = clean_path(__data__, 'dicts', f'{real_lang}-{gib_lang}.json')
+        reverse = clean_path(__data__, 'dicts', f'{gib_lang}-{real_lang}.json')
+        if not any([os.path.isfile(straight), os.path.isfile(reverse)]):
+            print('Dictionaries are missing! I will generate all the data first. It may take a minute!\n')
+            build_all_dicts()
 
     if graphical:
         gui()

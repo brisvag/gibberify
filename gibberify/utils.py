@@ -9,8 +9,6 @@ import sys
 import json
 import platform
 
-# local imports
-from .config import __real_langs__, __gib_langs__
 
 # TODO: keep updated!
 __version__ = 0.1
@@ -57,17 +55,16 @@ def get_data_dir():
     return datadir
 
 
-# TODO: refactor these functions into one that returns package dir and
-#       if possible use pkg_resources for standalone
-def find_assets():
+def find_basedir():
     if is_standalone():
-        return clean_path(sys._MEIPASS, 'assets')
+        return clean_path(sys._MEIPASS)
     else:
-        return clean_path(os.path.dirname(__file__), 'assets')
+        return clean_path(os.path.dirname(__file__))
 
 
 __data__ = get_data_dir()
-__assets__ = find_assets()
+__basedir__ = find_basedir()
+__assets__ = clean_path(__basedir__, 'assets')
 
 
 def progress(message, partial, total):
@@ -96,19 +93,7 @@ def access_data(data_type, lang_in, lang_out=None, write_data=None):
         if not write_data:
             return json.load(f)
         else:
-            json.dump(write_data, f, indent=2)
-
-
-def data_exists():
-    """
-    make sure all the dict files required for translation exist
-    """
-    for real_lang, gib_lang in zip(__real_langs__, __gib_langs__.keys()):
-        straight = clean_path(__data__, 'dicts', f'{real_lang}-{gib_lang}.json')
-        reverse = clean_path(__data__, 'dicts', f'{gib_lang}-{real_lang}.json')
-        if not any([os.path.isfile(straight), os.path.isfile(reverse)]):
-            return False
-    return True
+            json.dump(write_data, f, indent=4)
 
 
 def parse_message(str_in):
