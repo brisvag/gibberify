@@ -10,11 +10,12 @@ block_cipher = None
 
 added_files = []
 added_files += collect_data_files('pyphen')
+added_files += collect_data_files('certifi')
 added_files += collect_data_files('transliterate', include_py_files=True)
 added_files += [(os.path.join('gibberify', 'assets'), 'assets')]
 added_files += [(os.path.join('gibberify', 'config.json'), '.')]
 
-extra_imports = ['pyphen', 'transliterate', 'PyQt5']
+extra_imports = ['pyphen', 'transliterate', 'PyQt5', 'certifi']
 
 
 a = Analysis(['gibberify/__main__.py'],

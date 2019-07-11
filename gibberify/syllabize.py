@@ -8,6 +8,7 @@ from urllib.request import urlopen
 from transliterate import translit, get_available_language_codes
 from collections import OrderedDict
 import pyphen
+import certifi
 from time import sleep
 import os
 
@@ -25,7 +26,8 @@ def get_dict(lang):
     baseurl = 'https://raw.githubusercontent.com/brisvag/dictionaries/master/dictionaries/'
 
     print(f'Downloading "{lang}"...')
-    file = urlopen(f"{baseurl}/{lang}/index.dic")
+    # certifi is needed for mac, otherwise it complains about missing ssl certificates
+    file = urlopen(f"{baseurl}/{lang}/index.dic", cafile=certifi.where())
     # need to wait a bit, cause files may be large. TODO: any better solution?
     sleep(3)
 

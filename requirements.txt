@@ -1,3 +1,4 @@
 pyphen
 transliterate
 PyQt5
+certifi
