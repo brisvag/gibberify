@@ -2,4 +2,5 @@
 
 from . import syllabize, scramble, gibberify, degibberify, utils, config
 
+from .cli import main
 from .gui import gui
