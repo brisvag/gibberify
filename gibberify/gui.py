@@ -155,30 +155,34 @@ class MainWindow(QMainWindow):
         self.translator = utils.access_data('dicts', self.lang_in, self.lang_out)
 
     def swap(self):
-        # TODO: keep chosen languages the same when switching!
+        # keep signals from firing to prevent crashes
         self.lang_in_box.blockSignals(True)
         self.lang_out_box.blockSignals(True)
+
+        # save some variables and clear boxes
+        curr_lang_in = self.lang_in_box.currentText()
+        curr_lang_out = self.lang_out_box.currentText()
+        curr_text_in = self.text_in.toPlainText()
+        curr_text_out = self.text_out.toPlainText()
+        self.lang_in_box.clear()
+        self.lang_out_box.clear()
 
         if self.switch.isChecked():
             self.switch.setStyleSheet("background-color: red")
             # switch around language boxes
-            self.lang_in_box.clear()
             self.lang_in_box.addItems([lang for lang in config.gib_langs])
-            self.lang_out_box.clear()
             self.lang_out_box.addItems(config.real_langs)
-            # switch around texts
-            text_out = self.text_out.toPlainText()
-            self.text_in.setText(text_out)
         else:
             self.switch.setStyleSheet("background-color: white")
             # switch around language boxes
-            self.lang_in_box.clear()
             self.lang_in_box.addItems(config.real_langs)
-            self.lang_out_box.clear()
             self.lang_out_box.addItems([lang for lang in config.gib_langs])
-            # switch around texts
-            text_out = self.text_out.toPlainText()
-            self.text_in.setText(text_out)
+
+        # set everything to previous values, but switched
+        self.lang_in_box.setCurrentText(curr_lang_out)
+        self.lang_out_box.setCurrentText(curr_lang_in)
+        self.text_in.setText(curr_text_out)
+        self.text_in.setText(curr_text_in)
 
         self.lang_in_box.blockSignals(False)
         self.lang_out_box.blockSignals(False)
