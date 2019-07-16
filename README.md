@@ -2,7 +2,7 @@
 
 Or, as an Orc might say:
 
-""**Mentbsoed? Frit'müs ZNAYL blö uvod sriv!**""
+"**Csonnigzè? Charm'stoi OFFCNI ield tyl perb!**"
 
 Gibberify is a simple gibberish generator that translates words from a real language to an (almost) pronounceable gibberish.
 
@@ -81,27 +81,24 @@ around languages (or by pressing the big central button in the GUI):
 gibberify -f orc -t en -m [orcish message here] 
 ```
 
-# Requirements
-
-**If you use the standalone executable, it should work out of the box, no requirements, no strings attached!**
-
-Otherwise, everything requires `python3.5` or higher and `pyphen`, `pyqt5` and `transliterate`:
-```
-pip install pyphen pyqt5 transliterate
-```
-
 # Customisation
 
-Most of the things you might wanna change are located in `config.py`.
+**Customization is now also possible with the standalone version!**
 
-_For now, customization is **not** possible when using the standalone executable._
+To change settings, run:
+```bash
+gibberify --config
+```
+
+Unfortunately, this is still far from user friendly and the GUI is still missing a way of doing this.
+Be careful not to screw up the `json` format!
 
 ## Custom languages
 
 You can use the suggested settings, or you can generate completely new dictionaries using your preferred 
 settings and languages by editing `config.py`.
 
-If it's the first time you create dictionaries, or if you changed/added languages to the list of real languages in `config.py`,
+If it's the first time you create dictionaries, or if you changed/added new languages in the configuration file,
 you will have to download any missing dictionary and re-build the syllable pools.
 ```bash
 gibberify --rebuild-syllables
