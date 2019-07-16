@@ -27,34 +27,54 @@ gib_langs = {
 
 import os
 import json
+import texteditor
+from time import sleep
 
 # local imports
-from .utils import clean_path, __data__, __basedir__
+from .utils import clean_path, __data__, __basedir__, __conf__
 
 
-def get_conf():
+def make_conf():
+    """
+    does nothing if config file exists, otherwise creates one
+    """
+    if os.path.exists(__conf__):
+        pass
+    else:
+        if not os.path.exists(__data__):
+            os.makedirs(__data__)
+        base_conf = clean_path(__basedir__, 'config.json')
+        with open(base_conf, 'r') as f:
+            conf = json.load(f)
+        with open(__conf__, 'w+') as f:
+            json.dump(conf, f, indent=4)
+
+
+def edit_conf():
+    """
+    opens the config file in the default editor
+    """
+    return texteditor.open(filename=__conf__)
+
+
+def import_conf():
     """
     import user-defined configuration from data directory
     create a new one if not present
     """
-    conf_path = clean_path(__data__, 'config.json')
+    make_conf()
 
-    if not os.path.exists(__data__):
-        os.makedirs(__data__)
-
-    if os.path.isfile(conf_path):
-        with open(conf_path, 'r') as f:
-            conf = json.load(f)
-    else:
-        base_conf = clean_path(__basedir__, 'config.json')
-        with open(base_conf, 'r') as f:
-            conf = json.load(f)
-        with open(conf_path, 'w+') as f:
-            json.dump(conf, f, indent=4)
-
-    return conf
+    with open(__conf__, 'r') as f:
+        try:
+            return json.load(f)
+        except json.decoder.JSONDecodeError:
+            print('ERROR: your configuration file is corrupted!\n'
+                  'I will open it in an editor so you can fix it.')
+            sleep(3)
+            json.loads(edit_conf())
+            exit(2)
 
 
-conf = get_conf()
+conf = import_conf()
 __real_langs__ = conf['real_langs']
 __gib_langs__ = conf['gib_langs']

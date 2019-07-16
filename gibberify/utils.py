@@ -62,9 +62,11 @@ def find_basedir():
         return clean_path(os.path.dirname(__file__))
 
 
-__data__ = get_data_dir()
 __basedir__ = find_basedir()
 __assets__ = clean_path(__basedir__, 'assets')
+
+__data__ = get_data_dir()
+__conf__ = clean_path(__data__, 'config.json')
 
 
 def progress(message, partial, total):

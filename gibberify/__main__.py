@@ -11,7 +11,7 @@ import argparse
 
 # local imports. Here, they MUST actually be explicit, otherwise pyinstaller complains
 from gibberify.utils import __version__, access_data, parse_message, clean_path, __data__
-from gibberify.config import __real_langs__, __gib_langs__
+from gibberify.config import __real_langs__, __gib_langs__, edit_conf
 from gibberify.syllabize import build_syllables
 from gibberify.degibberify import build_all_dicts
 from gibberify.gibberify import gibberify, interactive
@@ -44,7 +44,9 @@ def main():
                                 'If `-` is given, input text is take from stdin. '
                                 'Question marks are not supported')
 
-    build_opt = parser.add_argument_group('building options')
+    build_opt = parser.add_argument_group('configuration and building options')
+    build_opt.add_argument('--config', dest='config', action='store_true',
+                           help='open configuration file for editing, then rebuild dictionaries accordingly')
     build_opt.add_argument('--force-download', dest='force_download', action='store_true',
                            help='force re-download of word data and create syllable pools, then generate '
                                 'dictionary files for all the language combinations.')
@@ -63,11 +65,15 @@ def main():
     if len(sys.argv) == 1:
         graphical = True
 
-    if args.force_download:
+    if args.config:
+        edit_conf()
+        build_all_dicts(force_rebuild=True)
+        exit()
+    elif args.force_download:
         build_syllables(download=True)
         build_all_dicts(force_rebuild=True)
         exit()
-    if args.rebuild_dicts:
+    elif args.rebuild_dicts:
         build_all_dicts(force_rebuild=True)
         exit()
 
@@ -78,6 +84,7 @@ def main():
         if not any([os.path.isfile(straight), os.path.isfile(reverse)]):
             print('Dictionaries are missing! I will generate all the data first. It may take a minute!\n')
             build_all_dicts(force_rebuild=True)
+            break
 
     if graphical:
         gui()
