@@ -68,6 +68,11 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Gibberify')
         self.setWindowIcon(QIcon(utils.clean_path(utils.assets, 'gibberify.png')))
 
+        # MENU CREATION
+        self.menu = self.menuBar()
+        self.menu_file = self.menu.addMenu('File')
+        self.menu_edit = self.menu.addMenu('Edit')
+
         # WIDGET CREATION
         # create textboxes
         self.text_in = TextBox('Type your text here.')
