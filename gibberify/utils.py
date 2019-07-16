@@ -10,14 +10,10 @@ import json
 import platform
 
 
-# TODO: keep updated!
-__version__ = 0.1
-
-
 # TODO: is this needed anymore?
 def is_standalone():
     """
-    check whethere it's runnin gin standalone mode
+    check whether it's running in standalone mode
 
     returns true or false
     """
@@ -30,9 +26,7 @@ def clean_path(*steps):
     """
     joins strings into a path, then returns a cleaned up version with expanded variables and ~
     """
-    path = os.path.realpath(os.path.expanduser(os.path.expandvars(os.path.join(*steps))))
-
-    return path
+    return os.path.realpath(os.path.expanduser(os.path.expandvars(os.path.join(*steps))))
 
 
 def get_data_dir():
@@ -49,9 +43,7 @@ def get_data_dir():
         except KeyError:
             print(f'ERROR: could not find "APPDATA" environment variable.')
             exit(0)
-
     datadir = clean_path(basedir, 'gibberify')
-
     return datadir
 
 
@@ -60,13 +52,6 @@ def find_basedir():
         return clean_path(sys._MEIPASS)
     else:
         return clean_path(os.path.dirname(__file__))
-
-
-__basedir__ = find_basedir()
-__assets__ = clean_path(__basedir__, 'assets')
-
-__data__ = get_data_dir()
-__conf__ = clean_path(__data__, 'config.json')
 
 
 def progress(message, partial, total):
@@ -94,7 +79,7 @@ def access_data(data_type, lang_in, lang_out=None, write_data=None):
     if write_data:
         mode = 'w+'
 
-    with open(clean_path(__data__, data_type, f'{dest}.json'), mode) as f:
+    with open(clean_path(data, data_type, f'{dest}.json'), mode) as f:
         if not write_data:
             return json.load(f)
         else:
@@ -123,3 +108,13 @@ def parse_message(str_in):
 #            return f.read()
 #    else:
     return str_in
+
+
+# initialize all the globals used by other modules
+version = '0.2.0-beta'
+
+basedir = find_basedir()
+assets = clean_path(basedir, 'assets')
+
+data = get_data_dir()
+conf = clean_path(data, 'config.json')

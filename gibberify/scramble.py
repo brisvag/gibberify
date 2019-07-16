@@ -8,8 +8,8 @@ import random
 import os
 
 # local imports
-from .config import __real_langs__, __gib_langs__
-from .utils import access_data, __data__, clean_path
+from . import utils
+from . import config
 from .syllabize import build_syllables
 
 
@@ -23,10 +23,10 @@ def scramble(lang_in, langs_out):
     trans_dict = {}
 
     # load the required languages
-    pool_in = access_data('syllables', lang_in)
+    pool_in = utils.access_data('syllables', lang_in)
     pool_out = {}
     for lang_out in langs_out:
-        pool_out_part = access_data('syllables', lang_out)
+        pool_out_part = utils.access_data('syllables', lang_out)
         for ln, syls in pool_out_part.items():
             if ln not in pool_out.keys():
                 pool_out[ln] = []
@@ -68,13 +68,13 @@ def make_dict(lang_in, gib_lang_out):
     returns nothing
     """
     # unpack translation settings
-    langs_out = __gib_langs__[gib_lang_out]['pool']
+    langs_out = config.gib_langs[gib_lang_out]['pool']
 
     # create actual translation dictionary
     print(f'Creating translation dictionary "{lang_in}-{gib_lang_out}"')
     trans_dict = scramble(lang_in, langs_out)
 
-    access_data('dicts', lang_in, gib_lang_out, write_data=trans_dict)
+    utils.access_data('dicts', lang_in, gib_lang_out, write_data=trans_dict)
 
 
 def build_dicts():
@@ -82,13 +82,13 @@ def build_dicts():
     builds a translation dictionary for all the required language combinations
     """
     # make sure directories exist
-    dict_dir = clean_path(__data__, 'dicts')
+    dict_dir = utils.clean_path(utils.data, 'dicts')
     if not os.path.exists(dict_dir):
         os.makedirs(dict_dir)
 
     # check whether syllable pools exist, and make them if needed
-    for lang in __real_langs__:
-        syl_file = clean_path(__data__, 'syllables', f'{lang}.json')
+    for lang in config.real_langs:
+        syl_file = utils.clean_path(utils.data, 'syllables', f'{lang}.json')
         if not os.path.isfile(syl_file):
             build_syllables(download=False)
 
@@ -96,8 +96,8 @@ def build_dicts():
     random.seed('gibberify')
 
     # make them all!
-    for lang_in in __real_langs__:
-        for gib_lang_out in __gib_langs__.keys():
+    for lang_in in config.real_langs:
+        for gib_lang_out in config.gib_langs.keys():
             make_dict(lang_in, gib_lang_out)
 
 

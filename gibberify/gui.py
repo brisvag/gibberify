@@ -11,8 +11,10 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QComboBox, QHB
 from PyQt5.QtCore import QSize, pyqtSignal
 
 # local imports
-from .config import __real_langs__, __gib_langs__
-from .utils import access_data, __assets__, clean_path
+from . import utils
+from . import config
+#from .config import real_langs, gib_langs
+#from .utils import access_data, assets, clean_path
 from .gibberify import gibberify
 from .degibberify import degibberify
 
@@ -48,7 +50,7 @@ class SwitchButton(QPushButton):
     def __init__(self):
         super(SwitchButton, self).__init__()
         # configure icon and size
-        self.setIcon(QIcon(clean_path(__assets__, 'switch.png')))
+        self.setIcon(QIcon(utils.clean_path(utils.assets, 'switch.png')))
         self.setIconSize(QSize(35, 35))
         # make it togglable
         self.setCheckable(True)
@@ -64,15 +66,15 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setWindowTitle('Gibberify')
-        self.setWindowIcon(QIcon(clean_path(__assets__, 'gibberify.png')))
+        self.setWindowIcon(QIcon(utils.clean_path(utils.assets, 'gibberify.png')))
 
         # WIDGET CREATION
         # create textboxes
         self.text_in = TextBox('Type your text here.')
         self.text_out = TextBox('Get your translation here.', readonly=True)
         # create language menus
-        self.lang_in_box = LangMenu(__real_langs__)
-        self.lang_out_box = LangMenu([lang for lang in __gib_langs__])
+        self.lang_in_box = LangMenu(config.real_langs)
+        self.lang_out_box = LangMenu([lang for lang in config.gib_langs])
         # switch button
         self.switch = SwitchButton()
 
@@ -145,9 +147,10 @@ class MainWindow(QMainWindow):
         self.is_ready()
 
     def update_translator(self):
-        self.translator = access_data('dicts', self.lang_in, self.lang_out)
+        self.translator = utils.access_data('dicts', self.lang_in, self.lang_out)
 
     def swap(self):
+        # TODO: keep chosen languages the same when switching!
         self.lang_in_box.blockSignals(True)
         self.lang_out_box.blockSignals(True)
 
@@ -155,9 +158,9 @@ class MainWindow(QMainWindow):
             self.switch.setStyleSheet("background-color: red")
             # switch around language boxes
             self.lang_in_box.clear()
-            self.lang_in_box.addItems([lang for lang in __gib_langs__])
+            self.lang_in_box.addItems([lang for lang in config.gib_langs])
             self.lang_out_box.clear()
-            self.lang_out_box.addItems(__real_langs__)
+            self.lang_out_box.addItems(config.real_langs)
             # switch around texts
             text_out = self.text_out.toPlainText()
             self.text_in.setText(text_out)
@@ -165,9 +168,9 @@ class MainWindow(QMainWindow):
             self.switch.setStyleSheet("background-color: white")
             # switch around language boxes
             self.lang_in_box.clear()
-            self.lang_in_box.addItems(__real_langs__)
+            self.lang_in_box.addItems(config.real_langs)
             self.lang_out_box.clear()
-            self.lang_out_box.addItems([lang for lang in __gib_langs__])
+            self.lang_out_box.addItems([lang for lang in config.gib_langs])
             # switch around texts
             text_out = self.text_out.toPlainText()
             self.text_in.setText(text_out)

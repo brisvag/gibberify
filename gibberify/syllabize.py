@@ -13,8 +13,8 @@ from time import sleep
 import os
 
 # local imports
-from .config import __real_langs__
-from .utils import access_data, __data__, clean_path
+from . import utils
+from . import config
 
 
 def get_dict(lang):
@@ -77,7 +77,7 @@ def download_data(lang):
     # get clean list of words from raw data
     words = get_words(lang, raw)
     # save it as json
-    access_data('words', lang, write_data=words)
+    utils.access_data('words', lang, write_data=words)
 
 
 def super_hyphenator(lang_list):
@@ -121,10 +121,10 @@ def gen_syllables(lang):
 
     # hyphen using as many languages as possible. This ensures we cut down syllables to the most fundamental ones
     # TODO: using pyphen.LANGUAGES is kinda overkill, reverting back to __real_langs__, but keep this in mind
-    hyph_list = super_hyphenator(__real_langs__)
+    hyph_list = super_hyphenator(config.real_langs)
 
     # open words file and syllabize all of them
-    words = access_data('words', lang)
+    words = utils.access_data('words', lang)
     for word in words:
         # let's clean up once more just to be sure
         word = word.strip()
@@ -139,7 +139,7 @@ def gen_syllables(lang):
             syl_dict[ln] = []
         syl_dict[ln].append(s)
 
-    access_data('syllables', lang, write_data=syl_dict)
+    utils.access_data('syllables', lang, write_data=syl_dict)
 
 
 def build_syllables(download=False, langs=False):
@@ -149,24 +149,24 @@ def build_syllables(download=False, langs=False):
     returns nothing
     """
     # check if languages in config.py exist in pyphen
-    for l in __real_langs__:
+    for l in config.real_langs:
         if l not in pyphen.LANGUAGES:
             raise KeyError(f'the language "{l}" is not supported by pyphen. Remove it from the configuration')
 
     # make sure data directories exist
     dirs = [
-        clean_path(__data__, 'words'),
-        clean_path(__data__, 'syllables'),
+        utils.clean_path(utils.data, 'words'),
+        utils.clean_path(utils.data, 'syllables'),
     ]
     for d in dirs:
         if not os.path.exists(d):
             os.makedirs(d)
 
     # main loop through languages
-    for lang in __real_langs__:
+    for lang in config.real_langs:
         # only download again if requested or if local word lists are not present
         dw = download
-        if not os.path.isfile(clean_path(__data__, 'words', f'{lang}.json')):
+        if not os.path.isfile(utils.clean_path(utils.data, 'words', f'{lang}.json')):
             dw = True
         if dw:
             download_data(lang)

@@ -10,8 +10,8 @@ from sys import exit
 import argparse
 
 # local imports. Here, they MUST actually be explicit, otherwise pyinstaller complains
-from .utils import __version__, access_data, parse_message, clean_path, __data__
-from .config import __real_langs__, __gib_langs__, edit_conf
+from . import utils
+from . import config
 from .syllabize import build_syllables
 from .degibberify import build_all_dicts
 from .gibberify import gibberify, interactive
@@ -38,7 +38,7 @@ def parse():
                            help='language to translate from')
     trans_opt.add_argument('-t', '--to', dest='lang_out', type=str, default='orc',
                            help='language to translate into')
-    trans_opt.add_argument('-m', '--message', type=parse_message, nargs='*',
+    trans_opt.add_argument('-m', '--message', type=utils.parse_message, nargs='*',
                            help='text to translate. If a filename is given, the '
                                 'contents of the file will be translated to stdout. '
                                 'If `-` is given, input text is take from stdin. '
@@ -59,7 +59,7 @@ def parse():
 
 def dispatch(args):
     if args.version:
-        print(f'Gibberify {__version__}')
+        print(f'Gibberify {utils.version}')
         exit()
 
     # if no arguments were given, run gui version
@@ -68,7 +68,8 @@ def dispatch(args):
         graphical = True
 
     if args.config:
-        edit_conf()
+        config.edit_conf()
+        config.update_conf()
         build_all_dicts(force_rebuild=True)
         exit()
     elif args.force_download:
@@ -80,9 +81,9 @@ def dispatch(args):
         exit()
 
     # before running anything, check if data files exist and create them if needed
-    for real_lang, gib_lang in zip(__real_langs__, __gib_langs__.keys()):
-        straight = clean_path(__data__, 'dicts', f'{real_lang}-{gib_lang}.json')
-        reverse = clean_path(__data__, 'dicts', f'{gib_lang}-{real_lang}.json')
+    for real_lang, gib_lang in zip(config.real_langs, config.gib_langs.keys()):
+        straight = utils.clean_path(utils.data, 'dicts', f'{real_lang}-{gib_lang}.json')
+        reverse = utils.clean_path(utils.data, 'dicts', f'{gib_lang}-{real_lang}.json')
         if not any([os.path.isfile(straight), os.path.isfile(reverse)]):
             print('Dictionaries are missing! I will generate all the data first. It may take a minute!\n')
             build_all_dicts(force_rebuild=True)
@@ -93,12 +94,14 @@ def dispatch(args):
     elif args.inter:
         interactive()
     else:
-        translator = access_data('dicts', args.lang_in, args.lang_out)
+        translator = utils.access_data('dicts', args.lang_in, args.lang_out)
         print(gibberify(translator, ' '.join(args.message)))
 
 
 def main():
+    # get arguments
     args = parse()
+    # dispatch to correct function based on arguments
     dispatch(args)
 
 

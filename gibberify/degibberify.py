@@ -8,8 +8,8 @@ import os
 import re
 
 # local imports
-from .config import __real_langs__, __gib_langs__
-from .utils import access_data, __data__, clean_path
+from . import config
+from . import utils
 from .scramble import build_dicts
 
 
@@ -42,18 +42,18 @@ def build_all_dicts(force_rebuild=False):
         build_dicts()
     else:
         # check whether straight dictionaries exist, run scramble if needed
-        for lang in __real_langs__:
-            for gib_lang in __gib_langs__.keys():
-                dict_file = clean_path(__data__, 'dicts', f'{lang}-{gib_lang}.json')
+        for lang in config.real_langs:
+            for gib_lang in config.gib_langs.keys():
+                dict_file = utils.clean_path(utils.data, 'dicts', f'{lang}-{gib_lang}.json')
             if not os.path.isfile(dict_file):
                 build_dicts()
 
     # make them all!
-    for gib_lang_in in __gib_langs__.keys():
-        for lang_out in __real_langs__:
-            straight = access_data('dicts', lang_out, gib_lang_in)
+    for gib_lang_in in config.gib_langs.keys():
+        for lang_out in config.real_langs:
+            straight = utils.access_data('dicts', lang_out, gib_lang_in)
             reverse = unscramble(straight)
-            access_data('dicts', gib_lang_in, lang_out, reverse)
+            utils.access_data('dicts', gib_lang_in, lang_out, reverse)
 
 
 def degibberify(translator, text):

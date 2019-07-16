@@ -8,9 +8,9 @@ import re
 import random
 
 # local imports
+from . import utils
+from . import config
 from .syllabize import super_hyphenator, syllabize
-from .utils import __version__, access_data
-from .config import __real_langs__, __gib_langs__
 
 
 def gibberify(translator, text):
@@ -23,7 +23,7 @@ def gibberify(translator, text):
     # generate translation based on syllables
     trans_list = []
     # use syllabize to break down into syllables
-    hyph_list = super_hyphenator(__real_langs__)
+    hyph_list = super_hyphenator(config.real_langs)
     for w in words:
         # leave non-word parts of the sentence as is
         if re.match(r'\w+', w):
@@ -58,7 +58,6 @@ def interactive():
     """
     interactive mode. Deal with user input and call functions accordingly
     """
-    gib_langs = [lang for lang in __gib_langs__]
 
     # Make it a sort of menu for easier usage
     level = 0
@@ -66,7 +65,7 @@ def interactive():
         try:
             if level == 0:
                 # welcome and usage
-                print(f'Welcome to Gibberify {__version__}! '
+                print(f'Welcome to Gibberify {utils.version}! '
                       f'Follow the prompts to translate a text.\n'
                       f'To go back to the previous menu, press Ctrl+C.\n')
                 level += 1
@@ -78,9 +77,9 @@ def interactive():
                 # language selection
                 while not lang_in:
                     lang_in = input(f'What language do you want to translate from? '
-                                    f'Options are: {", ".join(__real_langs__)}.\n')
+                                    f'Options are: {", ".join(config.real_langs)}.\n')
                     # check if requested input language exists
-                    if lang_in not in __real_langs__:
+                    if lang_in not in config.real_langs:
                         print(f'ERROR: you first need to generate a syllable pool for "{lang_in}"!')
                         lang_in = ''
                     else:
@@ -88,9 +87,9 @@ def interactive():
                         print(f'You chose "{lang_in}".')
                 while not lang_out:
                     lang_out = input(f'What language do you want to translate into? '
-                                     f'Options are: {", ".join(gib_langs)}.\n')
+                                     f'Options are: {", ".join(list(config.gib_langs.keys()))}.\n')
                     # check if requested output language exists
-                    if lang_out not in gib_langs:
+                    if lang_out not in config.gib_langs:
                         print(f'ERROR: you first need to generate a dictionary for "{lang_out}"!')
                         lang_out = ''
                     else:
@@ -100,7 +99,7 @@ def interactive():
                 continue
 
             if level == 2:
-                translator = access_data('dicts', lang_in, lang_out)
+                translator = utils.access_data('dicts', lang_in, lang_out)
                 text = input('What do you want to translate?\n')
                 print(f'... or, as someone might say:\n'
                       f'{gibberify(translator, text)}')
