@@ -19,7 +19,8 @@ extra_imports = ['pyphen', 'transliterate', 'PyQt5', 'certifi']
 
 
 a = Analysis(['gibberify/__main__.py'],
-             pathex=['./gibberify'],
+             # need to add pyqt binaly dlls for windows to find them
+             pathex=['gibberify', '/Python36/Lib/site-packages/PyQt5/Qt/bin'],
              binaries=[],
              datas=added_files,
              hiddenimports=extra_imports,
