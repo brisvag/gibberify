@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
 import setuptools
+from gibberify.utils import version
 
+with open('requirements.txt', 'r') as f:
+    requirements = [line for line in f.readlines()]
 
 with open('README.md', 'r') as f:
     long_description = f.read()
@@ -9,7 +12,7 @@ with open('README.md', 'r') as f:
 setuptools.setup(
         name='gibberify',
         scripts=['bin/gibberify'],
-        version='0.2-beta',
+        version=version,
         author='Lorenzo Gaifas',
         author_email='brisvag@gmail.com',
         description='Simple gibberish generator that translates words from a real language '
@@ -23,10 +26,6 @@ setuptools.setup(
             'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
             'Operating System :: OS Independent',
         ],
-        install_requires=[
-            'pyphen',
-            'transliterate',
-            'PyQt5',
-        ],
+        install_requires=requirements,
         python_requires='>=3.5'
         )
