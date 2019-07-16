@@ -13,8 +13,6 @@ from PyQt5.QtCore import QSize, pyqtSignal
 # local imports
 from . import utils
 from . import config
-#from .config import real_langs, gib_langs
-#from .utils import access_data, assets, clean_path
 from .gibberify import gibberify
 from .degibberify import degibberify
 
