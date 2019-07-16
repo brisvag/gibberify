@@ -38,9 +38,7 @@ matrix:
       - export PATH="/c/Python36:/c/Python36/Scripts:$PATH"
       - pip install -r requirements.txt
       - pip install pywin32 pypiwin32
-      - pip install certifi
       - pip install pyinstaller
-      - ls /c/Python36/Lib/site-packages/PyQt5/Qt/bin
     before_deploy:
       - 7z a -tzip gibberify-windows.zip ./dist/gibberify.exe
 
