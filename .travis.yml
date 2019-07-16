@@ -1,0 +1,66 @@
+branches:
+  only:
+    # regex for release tags: vX.Y.Z(-something)
+    - /v\d+\.\d+\.\d+(?:\-[a-z]+)?/
+
+matrix:
+  include:
+
+  - os: linux
+    language: python
+    python: 3.6
+    before_install:
+      - pip install -r requirements.txt
+      - pip install pyinstaller
+    before_deploy:
+      - tar -czvf gibberify-ubuntu.tar.gz -C dist gibberify
+
+  - os: osx
+    language: generic
+    before_install:
+      - curl -LO https://raw.githubusercontent.com/GiovanniBussi/macports-ci/master/macports-ci
+      - source ./macports-ci install
+      - yes | sudo port install python36
+      - yes | sudo port install py36-pip
+      - sudo port select --set python3 python36
+      - sudo port select --set pip pip36
+      - pip install pyinstaller --user
+      - export PATH=$PATH:/Users/travis/Library/Python/3.6/bin
+      - pip install -r requirements.txt --user
+      - pip install pyinstaller --user
+    before_deploy:
+      - zip -j gibberify-macos.zip dist/gibberify
+
+  - os: windows
+    language: shell
+    before_install:
+      - choco install python --version 3.6
+      - export PATH="/c/Python36:/c/Python36/Scripts:$PATH"
+      - pip install -r requirements.txt
+      - pip install pywin32 pypiwin32
+      - pip install pyinstaller
+    before_deploy:
+      - 7z a -tzip gibberify-windows.zip ./dist/gibberify.exe
+
+install:
+  - pyinstaller gibberify.spec
+
+# need to add tests
+script: true
+
+deploy:
+  provider: releases
+  api_key:
+    secure: GKYNtM7ku8bUCn/Bap6iaSTJ5fhhg0SBDi3hKwuxKWImO0T3tK9teUZywk2xTHvKtrxkvJN5JdOIbH+Pf0FA9FR3Sug1KsU7ShRAYJVi72Mfyut6Mts2tfc5a9yAlC/ivrdqVahQUHc8m/Gb2kIs+5Egl+7amUyBGmXhYOIZFk4X1+7jHf89BO/bKzo50Cl1DAPcNE5qkTXpp8ayJ+Kxst7MhcSuG91ik3mpxp4hjXrtgjLybyRkSFvZGPoyQHSx7EM8WWjWLFCrD0aODFAALq1jMvlbgYRAtA32gh3KlaPn4Tyk1yLXHzMnFIUWdJCV0gl8L/5XBXJrZFOn2Qf2yBF4QAPO/SijR7++i6un553rOxhkM2ByGAT2//gHI9M8/2C7QDQdnD4nYgwjOCpfa/U6t4MvZok/MvYNMd4pd/Ywgp2dQ6LV6POqNc3111G/XJ94vwNcgYmx1Sh9sZ4mVnL/hmM4wGqKPHdL/54aOQ+70CUaeNKZNXGgVipGpyjjyVnEy75KcOm6AH4qjHF9QoZUGxzkVFZFHVhrQYDwxEMrv0PBWnRjvqgDnYG93tCK0/7fWvjVDySk63IDNxHzetgGItoXovdNtmDzh1plhd6VC0P3CcrBOjCAm8xtsDBW8dehq3YJt7xzFJEVX4IdjA9gPpXoYwy2aFWJGusdvik=
+  file_glob: true
+  file:
+    - gibberify-ubuntu.tar.gz
+    - gibberify-macos.zip
+    - gibberify-windows.zip
+  skip_cleanup: true
+  draft: true
+  overwrite: true
+  on:
+    repo: brisvag/gibberify
+    all_branches: true
+    tags: true

@@ -1,0 +1,34 @@
+{
+  "real_langs": [
+    "en",
+    "it",
+    "de",
+    "fr",
+    "ru",
+    "es",
+    "nl",
+    "ca",
+    "el",
+    "et",
+    "is",
+    "lt",
+    "nb",
+    "pt",
+    "sk"
+  ],
+
+  "gib_langs": {
+    "orc": {
+      "pool": ["ru", "de"],
+      "notimplemented_setting": "something_awesome"
+    },
+    "elv": {
+      "pool": ["fr", "en"],
+      "notimplemented_setting": "something_boring"
+    },
+    "dwa": {
+      "pool": ["it", "de"],
+      "notimplemented_setting": "something_smelly"
+    }
+  }
+}

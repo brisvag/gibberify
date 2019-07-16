@@ -1,20 +1,26 @@
 # -*- mode: python -*-
 
+# Copyright 2019-2019 the gibberify authors. See copying.md for legal info.
+
+import os
 from PyInstaller.utils.hooks import collect_data_files
 
-import PyInstaller.config
 
 block_cipher = None
 
 added_files = []
 added_files += collect_data_files('pyphen')
-added_files += [('./gibberify/data', 'data')]
+added_files += collect_data_files('certifi')
+added_files += collect_data_files('transliterate', include_py_files=True)
+added_files += [(os.path.join('gibberify', 'assets'), 'assets')]
+added_files += [(os.path.join('gibberify', 'config.json'), '.')]
 
-extra_imports = ['pyphen']
+extra_imports = ['pyphen', 'transliterate', 'PyQt5', 'certifi', 'text-editor']
 
 
 a = Analysis(['gibberify/__main__.py'],
-             pathex=['./gibberify'],
+             # need to add pyqt binaly dlls for windows to find them
+             pathex=['gibberify', '/Python36/Lib/site-packages/PyQt5/Qt/bin'],
              binaries=[],
              datas=added_files,
              hiddenimports=extra_imports,
@@ -25,8 +31,11 @@ a = Analysis(['gibberify/__main__.py'],
              win_private_assemblies=False,
              cipher=block_cipher,
              noarchive=False)
-pyz = PYZ(a.pure, a.zipped_data,
-             cipher=block_cipher)
+
+pyz = PYZ(a.pure,
+          a.zipped_data,
+          cipher=block_cipher)
+
 exe = EXE(pyz,
           a.scripts,
           a.binaries,
@@ -39,4 +48,4 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           runtime_tmpdir=None,
-          console=True )
+          console=True)

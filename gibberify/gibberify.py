@@ -1,16 +1,16 @@
+# Copyright 2019-2019 the gibberify authors. See copying.md for legal info.
+
 """
 Where the translation actually happens
 """
 
 import re
-import pyphen
 import random
-import sys
-import os
 
 # local imports
-from gibberify.utils import __version__
-from gibberify.config import real_langs, gib_langs
+from . import utils
+from . import config
+from .syllabize import super_hyphenator, syllabize
 
 
 def gibberify(translator, text):
@@ -22,23 +22,25 @@ def gibberify(translator, text):
 
     # generate translation based on syllables
     trans_list = []
-    hyph = pyphen.Pyphen(lang='it')
+    # use syllabize to break down into syllables
+    hyph_list = super_hyphenator(config.real_langs)
     for w in words:
+        # leave non-word parts of the sentence as is
         if re.match(r'\w+', w):
-            syl = hyph.inserted(w).split('-')
+            syl = syllabize(w, hyph_list)
+            # check for translation in corresponding length
             # translate syllables only if they are found, otherwise return a random one
-            trans_syl = [translator.get(s.lower(), random.choice(list(translator.keys())))
+            trans_syl = [translator[str(len(s))].get(s.lower(), random.choice(list(translator[str(len(s))].keys())))
                          for s in syl]
             # save word translation
             trans_w = ''.join(trans_syl)
             # let's preserve capitalisation, at least a bit
             if w[0].isupper():
-                if w.isupper():
+                if w.isupper() and len(w) >= 2:
                     trans_w = trans_w.upper()
                 else:
                     trans_w = trans_w.capitalize()
         else:
-            # if w is not a word, just leave it as is
             trans_w = w
 
         trans_list.append(trans_w)
@@ -49,22 +51,21 @@ def gibberify(translator, text):
     # remove multiple spaces due to input or unmapped syllables
     trans = re.sub(' +', ' ', trans)
 
-    # TODO: strip ugly whitespaces and capitalise first letter in a smart way
-
     return trans
 
 
-def interactive(dicts):
+def interactive():
     """
     interactive mode. Deal with user input and call functions accordingly
     """
+
     # Make it a sort of menu for easier usage
     level = 0
     while True:
         try:
             if level == 0:
                 # welcome and usage
-                print(f'Welcome to Gibberify version {__version__}! '
+                print(f'Welcome to Gibberify {utils.version}! '
                       f'Follow the prompts to translate a text.\n'
                       f'To go back to the previous menu, press Ctrl+C.\n')
                 level += 1
@@ -76,29 +77,31 @@ def interactive(dicts):
                 # language selection
                 while not lang_in:
                     lang_in = input(f'What language do you want to translate from? '
-                                    f'Options are: {", ".join(real_langs)}.\n')
+                                    f'Options are: {", ".join(config.real_langs)}.\n')
                     # check if requested input language exists
-                    if lang_in not in real_langs:
+                    if lang_in not in config.real_langs:
                         print(f'ERROR: you first need to generate a syllable pool for "{lang_in}"!')
                         lang_in = ''
                     else:
+                        lang_in = lang_in
                         print(f'You chose "{lang_in}".')
                 while not lang_out:
                     lang_out = input(f'What language do you want to translate into? '
-                                     f'Options are: {", ".join(gib_langs)}.\n')
+                                     f'Options are: {", ".join(list(config.gib_langs.keys()))}.\n')
                     # check if requested output language exists
-                    if lang_out not in gib_langs:
+                    if lang_out not in config.gib_langs:
                         print(f'ERROR: you first need to generate a dictionary for "{lang_out}"!')
                         lang_out = ''
                     else:
+                        lang_out = lang_out
                         print(f'You chose "{lang_out}".')
                 level += 1
                 continue
 
             if level == 2:
-                translator = dicts[lang_in][lang_out]
+                translator = utils.access_data('dicts', lang_in, lang_out)
                 text = input('What do you want to translate?\n')
-                print(f'... or as someone might say:\n'
+                print(f'... or, as someone might say:\n'
                       f'{gibberify(translator, text)}')
                 continue
 
@@ -110,30 +113,3 @@ def interactive(dicts):
                 return
             print('\nGoing back...\n')
             continue
-
-
-def parse_message(somestring):
-    """
-    Handle message input nicely
-    Passing '-' as the message will read from stdin
-    Passing a valid file will read from the file
-    Passing a string will use it as the message.
-    If your string happens to accidentally be a valid file,
-    tough shit i guess..
-    """
-    somestring = str(somestring)
-    if somestring == '-':
-        try:
-            return sys.stdin.read()
-        except KeyboardInterrupt:
-            print()
-            exit()
-    elif os.path.exists(somestring):
-        with open(somestring, 'r') as f:
-            return f.read()
-    else:
-        return somestring
-
-
-if __name__ == '__main__':
-    raise NotImplementedError('this function is not implemented yet')
