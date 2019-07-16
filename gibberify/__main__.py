@@ -1,7 +1,7 @@
 # Copyright 2019-2019 the gibberify authors. See copying.md for legal info.
 
 """
-Main entry point of gibberify
+Command line interface and argument parsing
 """
 
 import os
@@ -10,15 +10,15 @@ from sys import exit
 import argparse
 
 # local imports. Here, they MUST actually be explicit, otherwise pyinstaller complains
-from gibberify.utils import __version__, access_data, parse_message, clean_path, __data__
-from gibberify.config import __real_langs__, __gib_langs__, edit_conf
-from gibberify.syllabize import build_syllables
-from gibberify.degibberify import build_all_dicts
-from gibberify.gibberify import gibberify, interactive
-from gibberify.gui import gui
+from .utils import __version__, access_data, parse_message, clean_path, __data__
+from .config import __real_langs__, __gib_langs__, edit_conf
+from .syllabize import build_syllables
+from .degibberify import build_all_dicts
+from .gibberify import gibberify, interactive
+from .gui import gui
 
 
-def main():
+def parse():
     # Parse arguments (also gives you help automatically with -h)
     parser = argparse.ArgumentParser(prog='gibberify', formatter_class=argparse.RawDescriptionHelpFormatter,
                                      description='Gibberify is simple gibberish generator.\n'
@@ -54,8 +54,10 @@ def main():
                            help='rebuild translation dictionaries. Use this option '
                                 'after changing dictionary generation settings')
 
-    args = parser.parse_args()
+    return parser.parse_args()
 
+
+def dispatch(args):
     if args.version:
         print(f'Gibberify {__version__}')
         exit()
@@ -93,6 +95,11 @@ def main():
     else:
         translator = access_data('dicts', args.lang_in, args.lang_out)
         print(gibberify(translator, ' '.join(args.message)))
+
+
+def main():
+    args = parse()
+    dispatch(args)
 
 
 if __name__ == '__main__':
