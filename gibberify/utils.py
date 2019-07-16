@@ -73,8 +73,11 @@ def progress(message, partial, total):
     """
     print progress in percentage with carriage return
     """
+    # TODO: use this!
     # +0.5 is to round up
     print(f'\r{message}: {int((partial/total)*100+0.5)}%', flush=True, end='')
+    if partial == total:
+        print()
 
 
 def access_data(data_type, lang_in, lang_out=None, write_data=None):
