@@ -23,12 +23,24 @@
       "notimplemented_setting": "something_awesome"
     },
     "elv": {
-      "pool": ["fr", "en"],
+      "pool": ["fr", "en", "is"],
       "notimplemented_setting": "something_boring"
     },
     "dwa": {
-      "pool": ["it", "de"],
+      "pool": ["it", "de", "nl"],
       "notimplemented_setting": "something_smelly"
+    },
+    "hal": {
+      "pool": ["es", "nb", "et"],
+      "notimplemented_setting": "something_short"
+    },
+    "gob": {
+      "pool": ["lt", "el", "pt"],
+      "notimplemented_setting": "something_squishy"
+    },
+    "gno": {
+      "pool": ["es", "nb", "ca"],
+      "notimplemented_setting": "something_hairy"
     }
   }
 }

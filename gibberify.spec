@@ -3,7 +3,7 @@
 # Copyright 2019-2019 the gibberify authors. See copying.md for legal info.
 
 import os
-from PyInstaller.utils.hooks import collect_data_files
+from PyInstaller.utils.hooks import collect_data_files, copy_metadata
 
 
 block_cipher = None
@@ -12,10 +12,11 @@ added_files = []
 added_files += collect_data_files('pyphen')
 added_files += collect_data_files('certifi')
 added_files += collect_data_files('transliterate', include_py_files=True)
+added_files += copy_metadata('text-editor')
 added_files += [(os.path.join('gibberify', 'assets'), 'assets')]
 added_files += [(os.path.join('gibberify', 'config.json'), '.')]
 
-extra_imports = ['pyphen', 'transliterate', 'PyQt5', 'certifi', 'text-editor']
+extra_imports = ['pyphen', 'transliterate', 'PyQt5', 'certifi']
 
 
 a = Analysis(['gibberify/__main__.py'],
