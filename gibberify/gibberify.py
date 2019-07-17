@@ -30,7 +30,11 @@ def gibberify(translator, text):
             syl = syllabize(w, hyph_list)
             # check for translation in corresponding length
             # translate syllables only if they are found, otherwise return a random one
-            trans_syl = [translator[str(len(s))].get(s.lower(), random.choice(list(translator[str(len(s))].keys())))
+            trans_syl = [translator[str(len(s))].get(s.lower(),
+                                                     random.choice(list(translator[str(len(s))].keys())))
+                         if str(len(s)) in translator.keys()
+                         # also return a random one if syllable length is too high, instead of crashing
+                         else random.choice(list(random.choice(list(translator.values())).values()))
                          for s in syl]
             # save word translation
             trans_w = ''.join(trans_syl)
