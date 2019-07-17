@@ -1,5 +1,5 @@
 pyphen
 transliterate
-PyQt5
+PyQt5==5.12.2
 certifi
 text-editor
