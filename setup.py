@@ -4,7 +4,7 @@ import setuptools
 from gibberify.utils import version
 
 with open('requirements.txt', 'r') as f:
-    requirements = [line for line in f.readlines()]
+    requirements = [line.strip() for line in f.readlines()]
 
 with open('README.md', 'r') as f:
     long_description = f.read()
