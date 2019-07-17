@@ -46,7 +46,7 @@ def make_conf():
         base_conf = utils.clean_path(utils.basedir, 'config.json')
         with open(base_conf, 'r') as f:
             conf = json.load(f)
-        with open(conf, 'w+') as f:
+        with open(utils.conf, 'w+') as f:
             json.dump(conf, f, indent=4)
 
 
