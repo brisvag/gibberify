@@ -32,7 +32,6 @@ No worries! There is also an executable version of Gibberify, that you can find
 [**here**](https://github.com/brisvag/gibberify/releases/latest), under "_Assets_".
 Download the latest release for your operative system, unzip it and double click the shit out of it. 
 
-    For now, the standalone only works on **linux**.
     The standalone was generated with PyInstaller using the configuration file `gibberify.spec`.
     If you want to generate it yourself, just run `pyinstaller gibberify.spec` from the main
     directory (you will need pyinstaller installed).
