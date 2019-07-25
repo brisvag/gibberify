@@ -111,8 +111,6 @@ def parse_message(str_in):
 
 
 # initialize all the globals used by other modules
-version = '0.2.0-beta'
-
 basedir = find_basedir()
 assets = clean_path(basedir, 'assets')
 
