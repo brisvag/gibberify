@@ -1,7 +1,15 @@
 #!/usr/bin/env python3
 
+from os import path
 import setuptools
-from gibberify.utils import version
+
+HERE = path.abspath(path.dirname(__file__))
+NAME = "gibberify"
+
+# Load the version
+with open(path.join(HERE, NAME, "version.py")) as version_file:
+    exec(version_file.read())
+
 
 with open('requirements.txt', 'r') as f:
     requirements = [line.strip() for line in f.readlines()]
@@ -10,9 +18,9 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 setuptools.setup(
-        name='gibberify',
+        name=NAME,
         scripts=['bin/gibberify'],
-        version=version,
+        version=__version__,
         author='Lorenzo Gaifas',
         author_email='brisvag@gmail.com',
         description='Simple gibberish generator that translates words from a real language '
