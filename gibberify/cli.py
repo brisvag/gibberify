@@ -16,7 +16,7 @@ from .syllabize import build_syllables
 from .degibberify import build_all_dicts
 from .gibberify import gibberify, interactive
 from .gui import gui
-from .version import __version__
+from .utils import __version__
 
 def parse():
     # Parse arguments (also gives you help automatically with -h)

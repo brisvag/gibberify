@@ -11,7 +11,7 @@ import random
 from . import utils
 from . import config
 from .syllabize import super_hyphenator, syllabize
-from .version import __version__
+from .utils import __version__
 
 
 def gibberify(translator, text):
