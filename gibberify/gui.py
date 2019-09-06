@@ -5,9 +5,10 @@ User interface using PyQt5
 """
 
 import sys
+import math
 from PyQt5.QtGui import QFontDatabase, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QComboBox, QHBoxLayout,\
-    QVBoxLayout, QWidget, QPushButton
+    QVBoxLayout, QWidget, QPushButton, QAction, QCheckBox, QGridLayout
 from PyQt5.QtCore import QSize, pyqtSignal
 
 # local imports
@@ -56,6 +57,40 @@ class SwitchButton(QPushButton):
         self.setCheckable(True)
 
 
+class SettingsWindow(QMainWindow):
+    def __init__(self, parent):
+        super(SettingsWindow, self).__init__(parent)
+        self.setWindowTitle('Gibberify - Settings')
+        self.setWindowIcon(QIcon(utils.clean_path(utils.assets, 'gibberify.png')))
+        self.conf = config.import_conf()
+
+        lay_main = QGridLayout(self)
+        container = QWidget()
+        container.setLayout(lay_main)
+        self.setCentralWidget(container)
+
+        real_langs = [
+            "bg", "ca", "da", "el", "eo", "et", "fa", "fr",  "fy", "gd", "he", "hu", "ie",
+            "it", "ko", "lb", "ltg", "mk", "nb",  "ne", "nn", "pt", "ru", "sk", "sr", "tk",
+            "tr", "vi", "br", "cs", "de", "en", "es", "eu", "fo", "fur", "ga", "gl", "hr",
+            "ia", "is", "ka", "la", "lt", "lv",  "mn", "nds", "nl", "pl", "ro", "rw", "sl",
+            "sv", "tlh", "uk",
+        ]
+
+        rows = math.ceil(math.sqrt(len(real_langs)))
+        columns = math.floor(math.sqrt(len(real_langs)))
+
+        langs = real_langs
+        for i in range(rows):
+            for j in range(columns):
+                sub_layout = QHBoxLayout()
+                cb = QCheckBox(langs.pop(), self)
+                sub_layout.addWidget(cb)
+                lay_main.addLayout(sub_layout, i, j)
+                if not langs:
+                    break
+
+
 class MainWindow(QMainWindow):
     """
     main window class
@@ -67,11 +102,26 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.setWindowTitle('Gibberify')
         self.setWindowIcon(QIcon(utils.clean_path(utils.assets, 'gibberify.png')))
+        self.conf = config.import_conf()
 
         # MENU CREATION
         self.menu = self.menuBar()
-        self.menu_file = self.menu.addMenu('File')
-        self.menu_edit = self.menu.addMenu('Edit')
+        self.file_menu = self.menu.addMenu('File')
+        self.edit_menu = self.menu.addMenu('Edit')
+
+        # MENU BUTTONS
+        quit_button = QAction("Quit", self)
+        quit_button.triggered.connect(self.close)
+        self.file_menu.addAction(quit_button)
+        settings_button = QAction("Settings", self)
+        settings_button.triggered.connect(self.open_settings)
+        self.edit_menu.addAction(settings_button)
+
+        # quit_button = QAction(, 'Exit', self)
+        # exitButton.setShortcut('Ctrl+Q')
+        # exitButton.setStatusTip('Exit application')
+        # exitButton.triggered.connect(self.close)
+        # fileMenu.addAction(exitButton)
 
         # WIDGET CREATION
         # create textboxes
@@ -187,6 +237,11 @@ class MainWindow(QMainWindow):
         self.lang_in_box.blockSignals(False)
         self.lang_out_box.blockSignals(False)
         self.update_languages()
+
+    def open_settings(self):
+        self.settings_window = SettingsWindow(self)
+        self.settings_window.show()
+        self.settings_window.parent().setWindowTitle('this is a test')
 
 
 def gui():
