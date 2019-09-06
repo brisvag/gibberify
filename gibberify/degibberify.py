@@ -37,23 +37,25 @@ def build_all_dicts(force_rebuild=False):
     """
     creates and saves a reverse dict for every language combination
     """
+    conf = config.import_conf()
+
     # force rebuild of straight dictionaries if asked
     if force_rebuild:
         build_dicts()
     else:
         # check whether straight dictionaries exist, run scramble if needed
-        for lang in config.real_langs:
-            for gib_lang in config.gib_langs.keys():
-                dict_file = utils.clean_path(utils.data, 'dicts', f'{lang}-{gib_lang}.json')
+        for real_lang in conf['real_langs']:
+            for gib_lang in conf['gib_langs']:
+                dict_file = utils.clean_path(utils.data, 'dicts', f'{real_lang}-{gib_lang}.json')
             if not os.path.isfile(dict_file):
                 build_dicts()
 
     # make them all!
-    for gib_lang_in in config.gib_langs.keys():
-        for lang_out in config.real_langs:
-            straight = utils.access_data('dicts', lang_out, gib_lang_in)
+    for gib_lang in conf['gib_langs']:
+        for real_lang in conf['real_langs']:
+            straight = utils.access_data('dicts', real_lang, gib_lang)
             reverse = unscramble(straight)
-            utils.access_data('dicts', gib_lang_in, lang_out, reverse)
+            utils.access_data('dicts', gib_lang, real_lang, reverse)
 
 
 def degibberify(translator, text):

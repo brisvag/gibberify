@@ -65,14 +65,15 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.setWindowTitle('Gibberify')
         self.setWindowIcon(QIcon(utils.clean_path(utils.assets, 'gibberify.png')))
+        self.conf = config.import_conf()
 
         # WIDGET CREATION
         # create textboxes
         self.text_in = TextBox('Type your text here.')
         self.text_out = TextBox('Get your translation here.', readonly=True)
         # create language menus
-        self.lang_in_box = LangMenu(config.real_langs)
-        self.lang_out_box = LangMenu([lang for lang in config.gib_langs])
+        self.lang_in_box = LangMenu(self.conf['real_langs'])
+        self.lang_out_box = LangMenu([lang for lang in self.conf['gib_langs']])
         # switch button
         self.switch = SwitchButton()
 
@@ -156,9 +157,9 @@ class MainWindow(QMainWindow):
             self.switch.setStyleSheet("background-color: red")
             # switch around language boxes
             self.lang_in_box.clear()
-            self.lang_in_box.addItems([lang for lang in config.gib_langs])
+            self.lang_in_box.addItems([lang for lang in self.conf['gib_langs']])
             self.lang_out_box.clear()
-            self.lang_out_box.addItems(config.real_langs)
+            self.lang_out_box.addItems(self.conf['real_langs'])
             # switch around texts
             text_out = self.text_out.toPlainText()
             self.text_in.setText(text_out)
@@ -166,9 +167,9 @@ class MainWindow(QMainWindow):
             self.switch.setStyleSheet("background-color: white")
             # switch around language boxes
             self.lang_in_box.clear()
-            self.lang_in_box.addItems(config.real_langs)
+            self.lang_in_box.addItems(self.conf['real_langs'])
             self.lang_out_box.clear()
-            self.lang_out_box.addItems([lang for lang in config.gib_langs])
+            self.lang_out_box.addItems([lang for lang in self.conf['gib_langs']])
             # switch around texts
             text_out = self.text_out.toPlainText()
             self.text_in.setText(text_out)

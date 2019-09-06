@@ -78,19 +78,3 @@ def import_conf():
     except json.decoder.JSONDecodeError:
         print('ERROR: still corrupted. Aborting.')
         exit(2)
-
-
-def update_conf():
-    global conf
-    global real_langs
-    global gib_langs
-
-    conf = import_conf()
-    real_langs = conf['real_langs']
-    gib_langs = conf['gib_langs']
-
-
-# global variables to be used by other modules
-conf = import_conf()
-real_langs = conf['real_langs']
-gib_langs = conf['gib_langs']

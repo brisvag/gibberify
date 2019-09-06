@@ -81,13 +81,16 @@ def build_dicts():
     """
     builds a translation dictionary for all the required language combinations
     """
+    # import config
+    conf = config.import_conf()
+
     # make sure directories exist
     dict_dir = utils.clean_path(utils.data, 'dicts')
     if not os.path.exists(dict_dir):
         os.makedirs(dict_dir)
 
     # check whether syllable pools exist, and make them if needed
-    for lang in config.real_langs:
+    for lang in conf['real_langs']:
         syl_file = utils.clean_path(utils.data, 'syllables', f'{lang}.json')
         if not os.path.isfile(syl_file):
             build_syllables(download=False)
@@ -96,9 +99,9 @@ def build_dicts():
     random.seed('gibberify')
 
     # make them all!
-    for lang_in in config.real_langs:
-        for gib_lang_out in config.gib_langs.keys():
-            make_dict(lang_in, gib_lang_out)
+    for real_lang in conf['real_langs']:
+        for gib_lang, gib_lang_conf in conf['gib_langs'].items():
+            make_dict(real_lang, gib_lang, gib_lang_conf)
 
 
 if __name__ == '__main__':
