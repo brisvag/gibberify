@@ -14,8 +14,6 @@ from PyQt5.QtCore import QSize, pyqtSignal
 # local imports
 from . import utils
 from . import config
-#from .config import real_langs, gib_langs
-#from .utils import access_data, assets, clean_path
 from .gibberify import gibberify
 from .degibberify import degibberify
 
@@ -128,8 +126,8 @@ class MainWindow(QMainWindow):
         self.text_in = TextBox('Type your text here.')
         self.text_out = TextBox('Get your translation here.', readonly=True)
         # create language menus
-        self.lang_in_box = LangMenu(config.real_langs)
-        self.lang_out_box = LangMenu([lang for lang in config.gib_langs])
+        self.lang_in_box = LangMenu(self.conf['real_langs'])
+        self.lang_out_box = LangMenu([lang for lang in self.conf['gib_langs']])
         # switch button
         self.switch = SwitchButton()
 
@@ -220,19 +218,23 @@ class MainWindow(QMainWindow):
         if self.switch.isChecked():
             self.switch.setStyleSheet("background-color: red")
             # switch around language boxes
-            self.lang_in_box.addItems([lang for lang in config.gib_langs])
-            self.lang_out_box.addItems(config.real_langs)
+            self.lang_in_box.clear()
+            self.lang_in_box.addItems([lang for lang in self.conf['gib_langs']])
+            self.lang_out_box.clear()
+            self.lang_out_box.addItems(self.conf['real_langs'])
+            # switch around texts
+            text_out = self.text_out.toPlainText()
+            self.text_in.setText(text_out)
         else:
             self.switch.setStyleSheet("background-color: white")
             # switch around language boxes
-            self.lang_in_box.addItems(config.real_langs)
-            self.lang_out_box.addItems([lang for lang in config.gib_langs])
-
-        # set everything to previous values, but switched
-        self.lang_in_box.setCurrentText(curr_lang_out)
-        self.lang_out_box.setCurrentText(curr_lang_in)
-        self.text_in.setText(curr_text_out)
-        self.text_in.setText(curr_text_in)
+            self.lang_in_box.clear()
+            self.lang_in_box.addItems(self.conf['real_langs'])
+            self.lang_out_box.clear()
+            self.lang_out_box.addItems([lang for lang in self.conf['gib_langs']])
+            # switch around texts
+            text_out = self.text_out.toPlainText()
+            self.text_in.setText(text_out)
 
         self.lang_in_box.blockSignals(False)
         self.lang_out_box.blockSignals(False)

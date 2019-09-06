@@ -46,7 +46,7 @@ def make_conf():
         base_conf = utils.clean_path(utils.basedir, 'config.json')
         with open(base_conf, 'r') as f:
             conf = json.load(f)
-        with open(conf, 'w+') as f:
+        with open(utils.conf, 'w+') as f:
             json.dump(conf, f, indent=4)
 
 
@@ -78,19 +78,3 @@ def import_conf():
     except json.decoder.JSONDecodeError:
         print('ERROR: still corrupted. Aborting.')
         exit(2)
-
-
-def update_conf():
-    global conf
-    global real_langs
-    global gib_langs
-
-    conf = import_conf()
-    real_langs = conf['real_langs']
-    gib_langs = conf['gib_langs']
-
-
-# global variables to be used by other modules
-conf = import_conf()
-real_langs = conf['real_langs']
-gib_langs = conf['gib_langs']

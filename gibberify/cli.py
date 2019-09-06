@@ -67,9 +67,11 @@ def dispatch(args):
     if len(sys.argv) == 1:
         graphical = True
 
+    conf = config.import_conf()
+
     if args.config:
         config.edit_conf()
-        config.update_conf()
+        conf = config.import_conf()
         build_all_dicts(force_rebuild=True)
         exit()
     elif args.force_download:
@@ -81,7 +83,7 @@ def dispatch(args):
         exit()
 
     # before running anything, check if data files exist and create them if needed
-    for real_lang, gib_lang in zip(config.real_langs, config.gib_langs.keys()):
+    for real_lang, gib_lang in zip(conf['real_langs'], conf['gib_langs']):
         straight = utils.clean_path(utils.data, 'dicts', f'{real_lang}-{gib_lang}.json')
         reverse = utils.clean_path(utils.data, 'dicts', f'{gib_lang}-{real_lang}.json')
         if not any([os.path.isfile(straight), os.path.isfile(reverse)]):
