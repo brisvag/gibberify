@@ -111,10 +111,10 @@ def parse_message(str_in):
 
 
 # initialize all the globals used by other modules
+version = '0.2.0-beta'
+
 basedir = find_basedir()
 assets = clean_path(basedir, 'assets')
 
 data = get_data_dir()
 conf = clean_path(data, 'config.json')
-
-__version__ = '0.2.0-beta'

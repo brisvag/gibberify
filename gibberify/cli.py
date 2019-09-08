@@ -16,7 +16,7 @@ from .syllabize import build_syllables
 from .degibberify import build_all_dicts
 from .gibberify import gibberify, interactive
 from .gui import gui
-from .utils import __version__
+
 
 def parse():
     # Parse arguments (also gives you help automatically with -h)
@@ -59,7 +59,7 @@ def parse():
 
 def dispatch(args):
     if args.version:
-        print(f'Gibberify {__version__}')
+        print(f'Gibberify {utils.version}')
         exit()
 
     # if no arguments were given, run gui version

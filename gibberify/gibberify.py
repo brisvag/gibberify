@@ -11,7 +11,6 @@ import random
 from . import utils
 from . import config
 from .syllabize import super_hyphenator, syllabize
-from .utils import __version__
 
 
 def gibberify(translator, text):
@@ -74,7 +73,7 @@ def interactive():
         try:
             if level == 0:
                 # welcome and usage
-                print(f'Welcome to Gibberify {__version__}! '
+                print(f'Welcome to Gibberify {utils.version}! '
                       f'Follow the prompts to translate a text.\n'
                       f'To go back to the previous menu, press Ctrl+C.\n')
                 level += 1
