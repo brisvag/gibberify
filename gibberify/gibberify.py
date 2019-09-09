@@ -64,8 +64,8 @@ def interactive():
     interactive mode. Deal with user input and call functions accordingly
     """
     conf = config.import_conf()
-    real_langs = config['real_langs']
-    gib_langs = config['gib_langs'].keys()
+    real_langs = conf['real_langs']
+    gib_langs = conf['gib_langs'].keys()
 
     # Make it a sort of menu for easier usage
     level = 0
