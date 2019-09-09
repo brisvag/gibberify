@@ -232,9 +232,9 @@ class SettingsWindow(QMainWindow):
             ok_pressed = True
             code = default_code
 
-        if ok_pressed and code != '':
-            self.gib_tabs.addTab(new_lang, code)
-            self.gib_langs_widgets[code] = new_lang
+        if ok_pressed and len(code) == 3 and code.isalpha():
+            self.gib_tabs.addTab(new_lang, code.lower())
+            self.gib_langs_widgets[code.lower()] = new_lang
 
             # create options
             for i, (option, desc) in enumerate(self.gib_options.items()):
