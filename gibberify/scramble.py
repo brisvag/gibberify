@@ -127,7 +127,7 @@ def build_dicts():
     for lang in conf['real_langs']:
         syl_file = utils.clean_path(utils.data, 'syllables', f'{lang}.json')
         if not os.path.isfile(syl_file):
-            build_syllables(download=False)
+            build_syllables(download=False, langs=[lang])
 
     # make dictionary generation somewhat deterministic, cause why not TODO: this clearly does nothing
     random.seed('gibberify')

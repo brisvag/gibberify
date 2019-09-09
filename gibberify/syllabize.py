@@ -177,7 +177,6 @@ def build_syllables(download=False, langs=False):
         # generate syllables and save them, restricting to some languages if required
         if langs:
             if lang not in langs:
-                print(f'Language "{lang}" will be skipped as requested.')
                 continue
         gen_syllables(conf, lang)
 

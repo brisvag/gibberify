@@ -320,6 +320,12 @@ class SettingsWindow(QMainWindow):
                     values = child.text()
                     conf['gib_langs'][gib_lang][option] = values.split()
 
+        # if real languages are used for gib_langs but not ticked, add them back in
+        for _, options in conf['gib_langs'].items():
+            for lang in options['pool']:
+                if lang not in conf['real_langs']:
+                    conf['real_langs'].append(lang)
+
         config.write_conf(conf)
         self.conf = conf
         build_all_dicts(force_rebuild=True)
