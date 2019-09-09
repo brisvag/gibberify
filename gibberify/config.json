@@ -20,27 +20,39 @@
   "gib_langs": {
     "orc": {
       "pool": ["ru", "de"],
-      "notimplemented_setting": "something_awesome"
+      "enrich": ["g", "k", "r"],
+      "impoverish": ["w"],
+      "remove": [""]
     },
     "elv": {
       "pool": ["fr", "en", "is"],
-      "notimplemented_setting": "something_boring"
+      "enrich": ["v"],
+      "impoverish": ["k", "r"],
+      "remove": []
     },
     "dwa": {
       "pool": ["it", "de", "nl"],
-      "notimplemented_setting": "something_smelly"
+      "enrich": ["b", "r"],
+      "impoverish": ["z"],
+      "remove": []
     },
     "hal": {
       "pool": ["es", "nb", "et"],
-      "notimplemented_setting": "something_short"
+      "enrich": [],
+      "impoverish": [],
+      "remove": []
     },
     "gob": {
       "pool": ["lt", "el", "pt"],
-      "notimplemented_setting": "something_squishy"
+      "enrich": ["z", "k", "t"],
+      "impoverish": [],
+      "remove": ["w"]
     },
     "gno": {
       "pool": ["es", "nb", "ca"],
-      "notimplemented_setting": "something_hairy"
+      "enrich": ["l", "x", "u"],
+      "impoverish": [],
+      "remove": []
     }
   }
 }

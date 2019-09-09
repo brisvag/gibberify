@@ -80,13 +80,6 @@ def download_data(lang):
     utils.access_data('words', lang, write_data=words)
 
 
-def super_hyphenator(lang_list):
-    """
-    returns a list of pyphen.Pyphen instances for each passed language
-    """
-    return [pyphen.Pyphen(lang=hyph_lang) for hyph_lang in lang_list]
-
-
 def syllabize(word, hyph_list):
     """
     takes a word and reduces it to fundamental syllables using a list of
@@ -108,7 +101,15 @@ def syllabize(word, hyph_list):
     return syllables
 
 
-def gen_syllables(lang):
+def super_hyphenator():
+    """
+    returns a list of pyphen.Pyphen instances for each passed language
+    """
+    conf = config.import_conf()
+    return [pyphen.Pyphen(lang=hyph_lang) for hyph_lang in conf['real_langs']]
+
+
+def gen_syllables(conf, lang):
     """
     generates a pool of syllables for a given language starting from a word list in a file and
     saves to file a dictionary containing the syllables divided by length
@@ -119,9 +120,9 @@ def gen_syllables(lang):
 
     print(f'Generating syllables for "{lang}"...')
 
-    # hyphen using as many languages as possible. This ensures we cut down syllables to the most fundamental ones
-    # TODO: using pyphen.LANGUAGES is kinda overkill, reverting back to __real_langs__, but keep this in mind
-    hyph_list = super_hyphenator(config.real_langs)
+    # hyphen using a bunch of languages. This ensures we cut down syllables to the most fundamental ones
+    # TODO: using pyphen.LANGUAGES is kinda overkill, reverting back to using the real_langs list
+    hyph_list = super_hyphenator()
 
     # open words file and syllabize all of them
     words = utils.access_data('words', lang)
@@ -148,8 +149,10 @@ def build_syllables(download=False, langs=False):
 
     returns nothing
     """
+    conf = config.import_conf()
+
     # check if languages in config.py exist in pyphen
-    for l in config.real_langs:
+    for l in conf['real_langs']:
         if l not in pyphen.LANGUAGES:
             raise KeyError(f'the language "{l}" is not supported by pyphen. Remove it from the configuration')
 
@@ -163,7 +166,7 @@ def build_syllables(download=False, langs=False):
             os.makedirs(d)
 
     # main loop through languages
-    for lang in config.real_langs:
+    for lang in conf['real_langs']:
         # only download again if requested or if local word lists are not present
         dw = download
         if not os.path.isfile(utils.clean_path(utils.data, 'words', f'{lang}.json')):
@@ -174,9 +177,8 @@ def build_syllables(download=False, langs=False):
         # generate syllables and save them, restricting to some languages if required
         if langs:
             if lang not in langs:
-                print(f'Language "{lang}" will be skipped as requested.')
                 continue
-        gen_syllables(lang)
+        gen_syllables(conf, lang)
 
 
 if __name__ == '__main__':
