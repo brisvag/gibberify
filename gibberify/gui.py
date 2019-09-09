@@ -6,10 +6,10 @@ User interface using PyQt5
 
 import sys
 import math
-from PyQt5.QtGui import QFontDatabase, QIcon
+from PyQt5.QtGui import QFontDatabase, QIcon, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QComboBox, QHBoxLayout, \
     QVBoxLayout, QWidget, QPushButton, QAction, QCheckBox, QGridLayout, QGroupBox, QLabel, \
-    QTabWidget, QSpacerItem, QInputDialog, QLineEdit, QMessageBox
+    QTabWidget, QInputDialog, QLineEdit, QMessageBox
 from PyQt5.QtCore import QSize, pyqtSignal
 
 # local imports
@@ -124,7 +124,7 @@ class SettingsWindow(QMainWindow):
         lay_top.addWidget(group_real)
         group_real_desc = (
             'Choose the pool of languages you want to be able to translate from\n'
-            'and/or use for the generation of gibberish languages.\n'
+            'and/or use for the generation of gibberish languages.'
         )
         group_real_desc_label = QLabel(group_real_desc)
         group_real_desc_label.setWordWrap(True)
@@ -174,23 +174,29 @@ class SettingsWindow(QMainWindow):
         # plus and minus buttons
         buttons_lay = QVBoxLayout()
         lay_mid.addLayout(buttons_lay)
+        big_font = QFont("Times", 20, QFont.Bold)
 
+        buttons_lay.addStretch(1)
         add_lang_button = QPushButton()
         add_lang_button.setText('+')
+        add_lang_button.setFont(big_font)
         add_lang_button.setFixedSize(35, 35)
         buttons_lay.addWidget(add_lang_button)
         add_lang_button.clicked.connect(self.add_gib_lang)
 
         delete_lang_button = QPushButton()
         delete_lang_button.setText('-')
+        delete_lang_button.setFont(big_font)
         delete_lang_button.setFixedSize(35, 35)
         buttons_lay.addWidget(delete_lang_button)
         delete_lang_button.clicked.connect(self.delete_curr_gib_lang)
+        buttons_lay.addStretch(1)
 
         # set options to current configuration
         self.set_current(config.import_conf())
 
         # buttons
+        lay_bot.addStretch(1)
         ok_button = QPushButton()
         ok_button.setText('OK')
         lay_bot.addWidget(ok_button)
@@ -200,6 +206,7 @@ class SettingsWindow(QMainWindow):
         cancel_button = QPushButton()
         cancel_button.setText('Cancel')
         lay_bot.addWidget(cancel_button)
+        lay_bot.addStretch(1)
 
         # button functions
         ok_button.clicked.connect(self.save_settings)
