@@ -29,9 +29,21 @@ import os
 import json
 import texteditor
 from time import sleep
+import shutil
 
 # local imports
 from . import utils
+
+
+def get_defaults():
+    base_conf = utils.clean_path(utils.basedir, 'config.json')
+    with open(base_conf, 'r') as f:
+        return json.load(f)
+
+
+def write_conf(conf):
+    with open(utils.conf, 'w+') as f:
+        json.dump(conf, f, indent=4)
 
 
 def make_conf():
@@ -43,11 +55,8 @@ def make_conf():
     else:
         if not os.path.exists(utils.data):
             os.makedirs(utils.data)
-        base_conf = utils.clean_path(utils.basedir, 'config.json')
-        with open(base_conf, 'r') as f:
-            conf = json.load(f)
-        with open(utils.conf, 'w+') as f:
-            json.dump(conf, f, indent=4)
+        conf = get_defaults()
+        write_conf(conf)
 
 
 def edit_conf():
@@ -76,5 +85,6 @@ def import_conf():
         with open(utils.conf, 'r') as f:
             return json.load(f)
     except json.decoder.JSONDecodeError:
-        print('ERROR: still corrupted. Aborting.')
-        exit(2)
+        print('ERROR: still corrupted. Backing up and resetting to defaults.')
+        shutil.move(utils.conf, f'{utils.conf}.backup')
+        make_conf()
