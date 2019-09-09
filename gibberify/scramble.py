@@ -37,7 +37,7 @@ def create_pool(gib_lang_conf):
         for ln, syls in pool_out.items():
             # get rid of 30% of syllables not containing pattern
             temp_pool[ln] = [syl for syl in syls
-                             if pattern in syl or random.choices([True, False], [0.7, 0.3])]
+                             if pattern in syl or random.choices([True, False], [0.5, 0.5])[0]]
         pool_out = temp_pool
 
     for pattern in gib_lang_conf["impoverish"]:
@@ -45,7 +45,7 @@ def create_pool(gib_lang_conf):
         for ln, syls in pool_out.items():
             # get rid of 30% of syllables containing pattern
             temp_pool[ln] = [syl for syl in syls
-                             if pattern not in syl or random.choices([True, False], [0.7, 0.3])]
+                             if pattern not in syl or random.choices([True, False], [0.5, 0.5])[0]]
         pool_out = temp_pool
 
     for pattern in gib_lang_conf["remove"]:
