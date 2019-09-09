@@ -322,7 +322,7 @@ class SettingsWindow(QMainWindow):
                 if isinstance(child, QLineEdit):
                     option = child.objectName()
                     values = child.text()
-                    conf['gib_langs'][gib_lang][option] = values.split()
+                    conf['gib_langs'][gib_lang][option] = values.lower().split()
 
         # if real languages are used for gib_langs but not ticked, add them back in
         for _, options in conf['gib_langs'].items():
