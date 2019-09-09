@@ -95,10 +95,10 @@ class SettingsWindow(QMainWindow):
                            'sv': 'Swedish',
                            'uk': 'Ukrainian'}
         self.gib_options = {
-            'pool': 'Language pool:',
-            'enrich': 'Show more of:',
-            'impoverish': 'Show less of:',
-            'remove': 'Never show:',
+            'pool': 'Pool of real languages:',
+            'enrich': 'Use MORE of these letters/patterns:',
+            'impoverish': 'Use LESS of these letters/patterns:',
+            'remove': 'NEVER use:',
         }
 
         # general layout
@@ -123,8 +123,9 @@ class SettingsWindow(QMainWindow):
         group_real.setLayout(group_real_lay)
         lay_top.addWidget(group_real)
         group_real_desc = (
-            'Choose the pool of languages you want to be able to translate from\n'
+            'Choose the pool of languages you want to be able to translate from '
             'and/or use for the generation of gibberish languages.'
+            'Languages that are used by some gibberish language will be added automatically upon saving.'
         )
         group_real_desc_label = QLabel(group_real_desc)
         group_real_desc_label.setWordWrap(True)
@@ -159,9 +160,12 @@ class SettingsWindow(QMainWindow):
         lay_mid.addWidget(group_gib)
         group_gib_desc = (
             'Choose your custom options for the generation of gibberish languages.\n'
-            'To add a new language, press the plus on the right and come up with a three-letter code.\n'
-            'For each option, give a set entries. Separate them with just a space (e.g.: "it en ru")\n'
-            'To delete a language, simply press the minus button.'
+            'To add a new language, press the plus on the right and come up with a three-letter code. '
+            'For each option, give a set entries. Separate them with just a space (e.g.: "it en ru").\n'
+            'To delete a language, simply press the minus button.\n\n'
+            'HINT: writing something multiple times has an effect! "en en it" will use twice as often '
+            'syllables from the English language than from Italian. The same goes for the rest: '
+            f'setting the "Use less" field to "gr gr ca" will remove more "gr"s than "ca"s from your language.'
         )
         group_gib_desc_label = QLabel(group_gib_desc)
         group_gib_desc_label.setWordWrap(True)
