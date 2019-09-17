@@ -6,7 +6,6 @@ Command line interface and argument parsing
 
 import os
 import sys
-from sys import exit
 import argparse
 
 # local imports. Here, they MUST actually be explicit, otherwise pyinstaller complains
@@ -60,27 +59,24 @@ def parse():
 def dispatch(args):
     if args.version:
         print(f'Gibberify {utils.version}')
-        exit()
+        sys.exit()
 
     # if no arguments were given, run gui version
-    graphical = False
-    if len(sys.argv) == 1:
-        graphical = True
+    graphical = True if len(sys.argv) == 1 else False
 
     conf = config.import_conf()
 
     if args.config:
         config.edit_conf()
-        conf = config.import_conf()
         build_all_dicts(force_rebuild=True)
-        exit()
+        sys.exit()
     elif args.force_download:
         build_syllables(download=True)
         build_all_dicts(force_rebuild=True)
-        exit()
+        sys.exit()
     elif args.rebuild_dicts:
         build_all_dicts(force_rebuild=True)
-        exit()
+        sys.exit()
 
     # before running anything, check if data files exist and create them if needed
     for real_lang, gib_lang in zip(conf['real_langs'], conf['gib_langs']):
