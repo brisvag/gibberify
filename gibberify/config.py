@@ -50,11 +50,8 @@ def make_conf():
     """
     does nothing if config file exists, otherwise creates one
     """
-    if os.path.exists(utils.conf):
-        pass
-    else:
-        if not os.path.exists(utils.data):
-            os.makedirs(utils.data)
+    os.makedirs(utils.data, exist_ok=True)
+    if not os.path.exists(utils.conf):
         conf = get_defaults()
         write_conf(conf)
 
