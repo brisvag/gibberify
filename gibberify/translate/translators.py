@@ -1,16 +1,15 @@
 # Copyright 2019-2019 the gibberify authors. See copying.md for legal info.
 
 """
-Where the translation actually happens
+Translate real languages in gibberish based on pre-generated translation dictionaries
 """
 
 import re
 import random
 
 # local imports
-from gibberify import utils
-from gibberify import config
-from .syllables import super_hyphenator, syllabize
+from .. import utils
+from .. import config
 
 
 def gibberify(translator, text):
@@ -26,11 +25,10 @@ def gibberify(translator, text):
     # generate translation based on syllables
     trans_list = []
     # use syllabize to break down into syllables
-    hyph_list = super_hyphenator()
     for w in words:
         # leave non-word parts of the sentence as is
         if re.match(r'\w+', w):
-            syl = syllabize(w, hyph_list)
+            syl = utils.syllabize(w)
             # check for translation in corresponding length
             # translate syllables only if they are found, otherwise return a random one
             trans_syl = [translator[str(len(s))].get(s.lower(),
@@ -75,7 +73,7 @@ def interactive():
         try:
             if level == 0:
                 # welcome and usage
-                print(f'Welcome to Gibberify {utils.version}! '
+                print(f'Welcome to Gibberify {general.version}! '
                       f'Follow the prompts to translate a text.\n'
                       f'To go back to the previous menu, press Ctrl+C.\n')
                 level += 1
@@ -109,7 +107,7 @@ def interactive():
                 continue
 
             if level == 2:
-                translator = utils.access_data('dicts', lang_in, lang_out)
+                translator = general.access_data('dicts', lang_in, lang_out)
                 text = input('What do you want to translate?\n')
                 print(f'... or, as someone might say:\n'
                       f'{gibberify(translator, text)}')

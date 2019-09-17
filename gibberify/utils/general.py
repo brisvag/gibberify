@@ -75,8 +75,6 @@ def access_data(data_type, lang_in, lang_out=None, write_data=None):
             return json.load(f)
         else:
             json.dump(write_data, f, indent=4)
-
-
 # initialize all the globals used by other modules
 version = '0.3.0'
 
