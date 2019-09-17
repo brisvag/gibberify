@@ -1,7 +1,7 @@
 # Copyright 2019-2019 the gibberify authors. See copying.md for legal info.
 
 """
-Collection of utilities and globals
+Collection of general utilities used by several modules
 """
 
 import os
@@ -22,16 +22,16 @@ def get_data_dir():
     OS-sensitive function to find a good place to store data and config files
     """
     os_name = platform.system().lower()
-    basedir = ''
+    conf_dir = ''
     if os_name in ['linux', 'darwin']:
-        basedir = clean_path('~', '.config')
+        conf_dir = clean_path('~', '.config')
     elif os_name == 'windows':
         try:
-            basedir = clean_path(os.getenv('APPDATA'))
+            conf_dir = clean_path(os.getenv('APPDATA'))
         except KeyError:
             print(f'ERROR: could not find "APPDATA" environment variable.')
             exit(0)
-    datadir = clean_path(basedir, 'gibberify')
+    datadir = clean_path(conf_dir, 'gibberify')
     return datadir
 
 
@@ -42,7 +42,7 @@ def find_basedir():
     if hasattr(sys, "_MEIPASS"):
         return clean_path(sys._MEIPASS)     # needed for standalone version
     else:
-        return clean_path(os.path.dirname(__file__))
+        return clean_path(os.path.dirname(__file__), os.path.pardir)
 
 
 def progress(message, partial, total):
@@ -75,6 +75,8 @@ def access_data(data_type, lang_in, lang_out=None, write_data=None):
             return json.load(f)
         else:
             json.dump(write_data, f, indent=4)
+
+
 # initialize all the globals used by other modules
 version = '0.3.0'
 

@@ -5,12 +5,9 @@ Generate fake, gibberish translation dictionaries to be used by the translator
 """
 
 import random
-import os
 
 # local imports
-from . import utils
-from . import config
-from .syllabize import build_syllables
+from .. import utils
 
 
 def create_pool(gib_lang_conf):
@@ -91,7 +88,6 @@ def scramble(real_lang, gib_lang_conf):
     for ln_in, syls_in in pool_in.items():
         # maintain length discrimination for later utility
         trans_dict[ln_in] = {}
-        # create subpool of syllables (more list comprehension black magic!)
         # do the actual mapping
         for syl_in in syls_in:
             mapping = pool_out_total.pop()
@@ -114,32 +110,10 @@ def make_dict(real_lang, gib_lang, gib_lang_conf):
     utils.access_data('dicts', real_lang, gib_lang, write_data=trans_dict)
 
 
-def build_dicts():
+def build_straight_dicts(real_langs, gib_langs):
     """
-    builds a translation dictionary for all the required language combinations
+    builds a translation dictionary for all the required language combinations and save as files
     """
-    # import config
-    conf = config.import_conf()
-
-    # make sure directories exist
-    dict_dir = utils.clean_path(utils.data, 'dicts')
-    if not os.path.exists(dict_dir):
-        os.makedirs(dict_dir)
-
-    # check whether syllable pools exist, and make them if needed
-    for lang in conf['real_langs']:
-        syl_file = utils.clean_path(utils.data, 'syllables', f'{lang}.json')
-        if not os.path.isfile(syl_file):
-            build_syllables(download=False, langs=[lang])
-
-    # make dictionary generation somewhat deterministic, cause why not TODO: this clearly does nothing
-    random.seed('gibberify')
-
-    # make them all!
-    for real_lang in conf['real_langs']:
-        for gib_lang, gib_lang_conf in conf['gib_langs'].items():
+    for real_lang in real_langs:
+        for gib_lang, gib_lang_conf in gib_langs.items():
             make_dict(real_lang, gib_lang, gib_lang_conf)
-
-
-if __name__ == '__main__':
-    build_dicts()

@@ -6,15 +6,12 @@ Download, parse and build all the data files needed by gibberify to do its magic
 
 from urllib.request import urlopen
 from transliterate import translit, get_available_language_codes
-from collections import OrderedDict
-import pyphen
 import certifi
 from time import sleep
 import os
 
 # local imports
 from .. import utils
-from .. import config
 
 
 def get_dict(lang):
@@ -80,36 +77,7 @@ def download_data(lang):
     utils.access_data('words', lang, write_data=words)
 
 
-def syllabize(word, hyph_list):
-    """
-    takes a word and reduces it to fundamental syllables using a list of
-    pyphen hyphenators from several different languages
-
-    returns a set of syllables
-    """
-    word = word.lower()
-
-    # first get rid of apostrophes and such by splitting the word in sub-words
-    syl = word.split('\'')
-    for hyph in hyph_list:
-        # do some list comprehension black magic to split up everything nicely
-        syl = [s for w in syl for s in hyph.inserted(w).strip().split('-')]
-
-    # nice trick to maintain order
-    syllables = list(OrderedDict.fromkeys(syl))
-
-    return syllables
-
-
-def super_hyphenator():
-    """
-    returns a list of pyphen.Pyphen instances for each passed language
-    """
-    conf = config.import_conf()
-    return [pyphen.Pyphen(lang=hyph_lang) for hyph_lang in conf['real_langs']]
-
-
-def gen_syllables(conf, lang):
+def gen_syllables(lang):
     """
     generates a pool of syllables for a given language starting from a word list in a file and
     saves to file a dictionary containing the syllables divided by length
@@ -120,16 +88,12 @@ def gen_syllables(conf, lang):
 
     print(f'Generating syllables for "{lang}"...')
 
-    # hyphen using a bunch of languages. This ensures we cut down syllables to the most fundamental ones
-    # TODO: using pyphen.LANGUAGES is kinda overkill, reverting back to using the real_langs list
-    hyph_list = super_hyphenator()
-
     # open words file and syllabize all of them
     words = utils.access_data('words', lang)
     for word in words:
         # let's clean up once more just to be sure
         word = word.strip()
-        syllables.update(set(syllabize(word, hyph_list)))
+        syllables.update(set(utils.syllabize(word)))
 
     # divide per length
     syllables.discard('')
@@ -143,43 +107,21 @@ def gen_syllables(conf, lang):
     utils.access_data('syllables', lang, write_data=syl_dict)
 
 
-def build_syllables(download=False, langs=False):
+def build_syllables(langs, force_download=False, force_generation=False):
     """
-    builds a syllable pool for all the required languages, saves it as a file
+    builds a syllable pool for all the required languages if missing and saves it as a file
+
+    download of words and syllable generation can both be forced even if files are present
 
     returns nothing
     """
-    conf = config.import_conf()
-
-    # check if languages in config.py exist in pyphen
-    for l in conf['real_langs']:
-        if l not in pyphen.LANGUAGES:
-            raise KeyError(f'the language "{l}" is not supported by pyphen. Remove it from the configuration')
-
-    # make sure data directories exist
-    dirs = [
-        utils.clean_path(utils.data, 'words'),
-        utils.clean_path(utils.data, 'syllables'),
-    ]
-    for d in dirs:
-        if not os.path.exists(d):
-            os.makedirs(d)
-
-    # main loop through languages
-    for lang in conf['real_langs']:
+    for lang in langs:
         # only download again if requested or if local word lists are not present
-        dw = download
-        if not os.path.isfile(utils.clean_path(utils.data, 'words', f'{lang}.json')):
-            dw = True
-        if dw:
+        words_file = utils.clean_path(utils.data, 'words', f'{lang}.json')
+        if not os.path.isfile(words_file) or force_download:
             download_data(lang)
 
-        # generate syllables and save them, restricting to some languages if required
-        if langs:
-            if lang not in langs:
-                continue
-        gen_syllables(conf, lang)
-
-
-if __name__ == '__main__':
-    build_syllables()
+        # generate syllables and save them if they don't exist or if generation is force
+        syl_file = utils.clean_path(utils.data, 'syllables', f'{lang}.json')
+        if not os.path.isfile(syl_file) or force_generation:
+            gen_syllables(lang)

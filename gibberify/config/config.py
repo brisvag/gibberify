@@ -34,7 +34,7 @@ from time import sleep
 import shutil
 
 # local imports
-from gibberify import utils
+from .. import utils
 
 
 def get_defaults():
@@ -43,7 +43,7 @@ def get_defaults():
 
     returns config dictionary
     """
-    base_conf = utils.clean_path(utils.basedir, 'config.json')
+    base_conf = utils.clean_path(utils.basedir, 'config', 'config.json')
     with open(base_conf, 'r') as f:
         return json.load(f)
 
@@ -70,6 +70,8 @@ def edit_conf():
     """
     opens the config file in the default text editor
     """
+    if not os.path.exists(utils.conf):
+        make_conf()
     texteditor.open(filename=utils.conf)
 
 

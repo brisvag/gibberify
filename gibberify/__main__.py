@@ -4,6 +4,6 @@
 Main entry point of gibberify
 """
 
-from gibberify import main
+from .translate import main
 
 main()

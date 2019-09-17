@@ -13,10 +13,10 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QComboBox, QHB
 from PyQt5.QtCore import QSize, pyqtSignal
 
 # local imports
-from . import utils
-from . import config
-from generate.gibberify import gibberify
-from .degibberify import degibberify, build_all_dicts
+from .. import utils
+from .. import config
+from ..generate import build
+from . import gibberify, degibberify
 
 
 class LangMenu(QComboBox):
@@ -115,7 +115,7 @@ class SettingsWindow(QMainWindow):
             'remove': 'NEVER use:',
         }
 
-        # general layout, divided in 3 vertically (tobp, mid, bot)
+        # utils layout, divided in 3 vertically (tobp, mid, bot)
         lay_main = QVBoxLayout()
         container = QWidget()
         container.setLayout(lay_main)
@@ -134,7 +134,7 @@ class SettingsWindow(QMainWindow):
         lay_top.addWidget(group_real)
         group_real_desc = (
             'Choose the pool of languages you want to be able to translate from '
-            'and/or use for the generation of gibberish languages.'
+            'and/or use for the generation of gibberish languages. '
             'Languages that are used by some gibberish language will be added automatically upon saving.'
         )
         group_real_desc_label = QLabel(group_real_desc)
@@ -292,7 +292,7 @@ class SettingsWindow(QMainWindow):
         """
         delete the currently active gibberish language tab
         """
-        if self.no_confirm('Delete Language', 'Are you sure?\nThis will delete the configuration'
+        if self.no_confirm('Delete Language', 'Are you sure?\nThis will delete the configuration '
                                               'for the current language.'):
             return
 
@@ -386,7 +386,7 @@ class SettingsWindow(QMainWindow):
         config.write_conf(conf)
         self.conf = conf
         # rebuild dictionaries based on new config
-        build_all_dicts(force_rebuild=True)
+        build()
         self.settings_saved.emit()
         self.close()
 
@@ -597,7 +597,3 @@ def gui():
         app.exec_()
     except KeyboardInterrupt:
         pass
-
-
-if __name__ == '__main__':
-    gui()

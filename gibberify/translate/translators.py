@@ -1,7 +1,7 @@
 # Copyright 2019-2019 the gibberify authors. See copying.md for legal info.
 
 """
-Translate real languages in gibberish based on pre-generated translation dictionaries
+Translate real languages in gibberish (and vice-versa) based on pre-generated translation dictionaries
 """
 
 import re
@@ -9,7 +9,6 @@ import random
 
 # local imports
 from .. import utils
-from .. import config
 
 
 def gibberify(translator, text):
@@ -59,65 +58,27 @@ def gibberify(translator, text):
     return trans
 
 
-def interactive():
+def degibberify(translator, text):
     """
-    interactive mode. Deal with user input and call functions accordingly
+    translate a text from real language into a specified gibberish language
+
+    returns something that may resemble the original message
     """
-    conf = config.import_conf()
-    real_langs = conf['real_langs']
-    gib_langs = conf['gib_langs'].keys()
+    # get list of lengths
+    lns = list(translator.keys())
+    lns.sort(reverse=True)
 
-    # Make it a sort of menu for easier usage
-    level = 0
-    while True:
-        try:
-            if level == 0:
-                # welcome and usage
-                print(f'Welcome to Gibberify {general.version}! '
-                      f'Follow the prompts to translate a text.\n'
-                      f'To go back to the previous menu, press Ctrl+C.\n')
-                level += 1
-                continue
+    trans = text.lower()
+    trans_tmp = trans
+    for ln in lns:
+        for syl, mapping in translator[ln].items():
+            for match in re.finditer(syl, trans_tmp):
+                start, end = match.span()
+                trans_tmp = ''.join([c for c in trans_tmp[:start]] +
+                                    ['�'] * len(mapping) +
+                                    [x for x in trans_tmp[end:]])
+                trans = ''.join([c for c in trans[:start]] +
+                                [c for c in mapping] +
+                                [x for x in trans[end:]])
 
-            if level == 1:
-                lang_in = lang_out = ''
-
-                # language selection
-                while not lang_in:
-                    lang_in = input(f'What language do you want to translate from? '
-                                    f'Options are: {", ".join(real_langs)}.\n')
-                    # check if requested input language exists
-                    if lang_in not in real_langs:
-                        print(f'ERROR: you first need to generate a syllable pool for "{lang_in}"!')
-                        lang_in = ''
-                    else:
-                        lang_in = lang_in
-                        print(f'You chose "{lang_in}".')
-                while not lang_out:
-                    lang_out = input(f'What language do you want to translate into? '
-                                     f'Options are: {", ".join(gib_langs)}.\n')
-                    # check if requested output language exists
-                    if lang_out not in gib_langs:
-                        print(f'ERROR: you first need to generate a dictionary for "{lang_out}"!')
-                        lang_out = ''
-                    else:
-                        lang_out = lang_out
-                        print(f'You chose "{lang_out}".')
-                level += 1
-                continue
-
-            if level == 2:
-                translator = general.access_data('dicts', lang_in, lang_out)
-                text = input('What do you want to translate?\n')
-                print(f'... or, as someone might say:\n'
-                      f'{gibberify(translator, text)}')
-                continue
-
-        except KeyboardInterrupt:
-            level -= 1
-            # exit the program if user tries to go back to level 0
-            if level < 1:
-                print('\nGood bye!\n')
-                return
-            print('\nGoing back...\n')
-            continue
+    return trans

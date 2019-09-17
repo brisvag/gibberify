@@ -9,12 +9,10 @@ import sys
 import argparse
 
 # local imports. Here, they MUST actually be explicit, otherwise pyinstaller complains
-from . import utils
-from . import config
-from .syllabize import build_syllables
-from .degibberify import build_all_dicts
-from generate.gibberify import gibberify, interactive
-from .gui import gui
+from gibberify import utils
+from gibberify import config
+from gibberify.generate import build
+from gibberify.translate import gibberify, gui
 
 
 def parse():
@@ -29,7 +27,7 @@ def parse():
                                                  'Run without arguments to use the graphical interface.',
                                      add_help=False)
 
-    gen_opt = parser.add_argument_group('general options')
+    gen_opt = parser.add_argument_group('utils options')
     gen_opt.add_argument('-i', '--interactive', dest='inter', action='store_true',
                          help='run in interactive mode')
     gen_opt.add_argument('-h', '--help', action='help',
@@ -52,13 +50,81 @@ def parse():
     build_opt.add_argument('--config', dest='config', action='store_true',
                            help='open configuration file for editing, then rebuild dictionaries accordingly')
     build_opt.add_argument('--force-download', dest='force_download', action='store_true',
-                           help='force re-download of word data and create syllable pools, then generate '
+                           help='force re-download of word data, creation of syllable pools and generation of '
                                 'dictionary files for all the language combinations.')
+    build_opt.add_argument('--force-syllables', dest='force_syllables', action='store_true',
+                           help='force re-generation of syllable pools and dictionary files '
+                                'for all the language combinations.')
     build_opt.add_argument('--rebuild-dicts', dest='rebuild_dicts', action='store_true',
                            help='rebuild translation dictionaries. Use this option '
                                 'after changing dictionary generation settings')
 
     return parser.parse_args()
+
+
+def interactive():
+    """
+    interactive mode. Deal with user input and call functions accordingly
+    """
+    conf = config.import_conf()
+    real_langs = conf['real_langs']
+    gib_langs = conf['gib_langs'].keys()
+
+    # TODO: add support for reverse translation
+    # Make it a sort of menu for easier usage
+    level = 0
+    while True:
+        try:
+            if level == 0:
+                # welcome and usage
+                print(f'Welcome to Gibberify {utils.version}! '
+                      f'Follow the prompts to translate a text.\n'
+                      f'To go back to the previous menu, press Ctrl+C.\n')
+                level += 1
+                continue
+
+            if level == 1:
+                lang_in = lang_out = ''
+
+                # language selection
+                while not lang_in:
+                    lang_in = input(f'What language do you want to translate from? '
+                                    f'Options are: {", ".join(real_langs)}.\n')
+                    # check if requested input language exists
+                    if lang_in not in real_langs:
+                        print(f'ERROR: you first need to generate a syllable pool for "{lang_in}"!')
+                        lang_in = ''
+                    else:
+                        lang_in = lang_in
+                        print(f'You chose "{lang_in}".')
+                while not lang_out:
+                    lang_out = input(f'What language do you want to translate into? '
+                                     f'Options are: {", ".join(gib_langs)}.\n')
+                    # check if requested output language exists
+                    if lang_out not in gib_langs:
+                        print(f'ERROR: you first need to generate a dictionary for "{lang_out}"!')
+                        lang_out = ''
+                    else:
+                        lang_out = lang_out
+                        print(f'You chose "{lang_out}".')
+                level += 1
+                continue
+
+            if level == 2:
+                translator = utils.access_data('dicts', lang_in, lang_out)
+                text = input('What do you want to translate?\n')
+                print(f'... or, as someone might say:\n'
+                      f'{gibberify(translator, text)}')
+                continue
+
+        except KeyboardInterrupt:
+            level -= 1
+            # exit the program if user tries to go back to level 0
+            if level < 1:
+                print('\nGood bye!\n')
+                return
+            print('\nGoing back...\n')
+            continue
 
 
 def dispatch(args):
@@ -74,17 +140,11 @@ def dispatch(args):
 
     conf = config.import_conf()
 
-    # do-something-and-exit arguments
     if args.config:
         config.edit_conf()
-        build_all_dicts(force_rebuild=True)
-        sys.exit()
-    elif args.force_download:
-        build_syllables(download=True)
-        build_all_dicts(force_rebuild=True)
-        sys.exit()
-    elif args.rebuild_dicts:
-        build_all_dicts(force_rebuild=True)
+
+    if args.force_download or args.force_syllables or args.rebuild_dicts or args.config:
+        build(force_syllables=args.force_syllables, force_download=args.force_download)
         sys.exit()
 
     # before running anything, check if data files exist and create them if needed
@@ -93,7 +153,7 @@ def dispatch(args):
         reverse = utils.clean_path(utils.data, 'dicts', f'{gib_lang}-{real_lang}.json')
         if not any([os.path.isfile(straight), os.path.isfile(reverse)]):
             print('Dictionaries are missing! I will generate all the data first. It may take a minute!\n')
-            build_all_dicts(force_rebuild=True)
+            build()
             break
 
     # dispatch
@@ -111,7 +171,3 @@ def main():
     args = parse()
     # dispatch to correct function based on arguments
     dispatch(args)
-
-
-if __name__ == '__main__':
-    main()
