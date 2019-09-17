@@ -18,8 +18,10 @@ real_langs = [
 
 gib_langs = {
     "orc": {
-        "pool": ["ru", "de"],   # pool of languages to draw syllables from
-        "notimplemented_setting": "something_awesome"
+        "pool": ["ru", "de"],       # pool of languages to draw syllables from
+        "enrich": ["g", "k", "r"],  # get more of these in the target language
+        "impoverish": ["w"],        # get less of these in the target language
+        "remove": [""]              # get none of these in the target language
     },
     ...
 }
@@ -36,19 +38,27 @@ from . import utils
 
 
 def get_defaults():
+    """
+    reads default configuration file
+
+    returns config dictionary
+    """
     base_conf = utils.clean_path(utils.basedir, 'config.json')
     with open(base_conf, 'r') as f:
         return json.load(f)
 
 
 def write_conf(conf):
+    """
+    writes the provided config dictionary to file
+    """
     with open(utils.conf, 'w+') as f:
         json.dump(conf, f, indent=4)
 
 
 def make_conf():
     """
-    does nothing if config file exists, otherwise creates one
+    does nothing if config file exists, otherwise creates one based on the defaults
     """
     os.makedirs(utils.data, exist_ok=True)
     if not os.path.exists(utils.conf):
@@ -58,15 +68,15 @@ def make_conf():
 
 def edit_conf():
     """
-    opens the config file in the default editor
+    opens the config file in the default text editor
     """
     texteditor.open(filename=utils.conf)
 
 
 def import_conf():
     """
-    import user-defined configuration from data directory
-    create a new one if not present
+    imports user-defined configuration from data directory
+    creates a new one if not present
     """
     make_conf()
 
@@ -78,6 +88,8 @@ def import_conf():
               'Try to fix it...')
         sleep(2)
         edit_conf()
+
+    # try again. If failed, back up config and copy defaults
     try:
         with open(utils.conf, 'r') as f:
             return json.load(f)

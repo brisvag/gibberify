@@ -16,6 +16,8 @@ from .syllabize import super_hyphenator, syllabize
 def gibberify(translator, text):
     """
     translate a text from real language into a specified gibberish language
+
+    returns translated string
     """
 
     # split words maintaining non-word characters in the right positions

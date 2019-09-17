@@ -32,6 +32,7 @@ def create_pool(gib_lang_conf):
     for ln, syls in pool_out.items():
         pool_out[ln] = list(set(syls))
 
+    # get rid of part of the syllables NOT containing enriched patterns
     for pattern in gib_lang_conf["enrich"]:
         temp_pool = {}
         for ln, syls in pool_out.items():
@@ -40,6 +41,7 @@ def create_pool(gib_lang_conf):
                              if pattern in syl or random.choices([True, False], [0.5, 0.5])[0]]
         pool_out = temp_pool
 
+    # get rid of part of the syllables containing impoverished patterns
     for pattern in gib_lang_conf["impoverish"]:
         temp_pool = {}
         for ln, syls in pool_out.items():
@@ -48,6 +50,7 @@ def create_pool(gib_lang_conf):
                              if pattern not in syl or random.choices([True, False], [0.5, 0.5])[0]]
         pool_out = temp_pool
 
+    # get rid of ALL the syllables containing forbidden patterns
     for pattern in gib_lang_conf["remove"]:
         temp_pool = {}
         for ln, syls in pool_out.items():

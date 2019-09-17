@@ -18,6 +18,11 @@ from .gui import gui
 
 
 def parse():
+    """
+    provides a nice usage description and parses command line arguments
+
+    returns namespace containing named arguments
+    """
     # Parse arguments (also gives you help automatically with -h)
     parser = argparse.ArgumentParser(prog='gibberify', formatter_class=argparse.RawDescriptionHelpFormatter,
                                      description='Gibberify is simple gibberish generator.\n'
@@ -57,6 +62,9 @@ def parse():
 
 
 def dispatch(args):
+    """
+    takes namespace with named arguments and based on them dispatches to the right modules
+    """
     if args.version:
         print(f'Gibberify {utils.version}')
         sys.exit()
@@ -66,6 +74,7 @@ def dispatch(args):
 
     conf = config.import_conf()
 
+    # do-something-and-exit arguments
     if args.config:
         config.edit_conf()
         build_all_dicts(force_rebuild=True)
@@ -87,6 +96,7 @@ def dispatch(args):
             build_all_dicts(force_rebuild=True)
             break
 
+    # dispatch
     if graphical:
         gui()
     elif args.inter:
