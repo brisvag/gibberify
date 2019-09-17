@@ -8,8 +8,8 @@ import os
 import re
 
 # local imports
-from . import config
-from . import utils
+from gibberify import config
+from gibberify import utils
 from .scramble import build_dicts
 
 

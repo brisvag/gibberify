@@ -13,8 +13,8 @@ from time import sleep
 import os
 
 # local imports
-from . import utils
-from . import config
+from .. import utils
+from .. import config
 
 
 def get_dict(lang):

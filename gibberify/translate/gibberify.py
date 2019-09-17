@@ -8,9 +8,9 @@ import re
 import random
 
 # local imports
-from . import utils
-from . import config
-from .syllabize import super_hyphenator, syllabize
+from gibberify import utils
+from gibberify import config
+from .syllables import super_hyphenator, syllabize
 
 
 def gibberify(translator, text):
