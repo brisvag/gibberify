@@ -42,7 +42,7 @@ def parse():
                            help='language to translate from')
     trans_opt.add_argument('-t', '--to', dest='lang_out', type=str, default='orc',
                            help='language to translate into')
-    trans_opt.add_argument('-m', '--message', type=utils.parse_message, nargs='*',
+    trans_opt.add_argument('-m', '--message', type=str, nargs='*',
                            help='text to translate. If a filename is given, the '
                                 'contents of the file will be translated to stdout. '
                                 'If `-` is given, input text is take from stdin. '

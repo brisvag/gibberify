@@ -10,18 +10,6 @@ import json
 import platform
 
 
-# TODO: is this needed anymore?
-def is_standalone():
-    """
-    check whether it's running in standalone mode
-
-    returns true or false
-    """
-    if hasattr(sys, "_MEIPASS"):
-        return True
-    return False
-
-
 def clean_path(*steps):
     """
     joins strings into a path, then returns a cleaned up version with expanded variables and ~
@@ -48,8 +36,11 @@ def get_data_dir():
 
 
 def find_basedir():
-    if is_standalone():
-        return clean_path(sys._MEIPASS)
+    """
+    return path to module directory,
+    """
+    if hasattr(sys, "_MEIPASS"):
+        return clean_path(sys._MEIPASS)     # needed for standalone version
     else:
         return clean_path(os.path.dirname(__file__))
 
@@ -84,30 +75,6 @@ def access_data(data_type, lang_in, lang_out=None, write_data=None):
             return json.load(f)
         else:
             json.dump(write_data, f, indent=4)
-
-
-def parse_message(str_in):
-    """
-    Handle message input nicely
-    Passing '-' as the message will read from stdin
-    Passing a valid file will read from the file
-    Passing a string will use it as the message.
-    If your string happens to accidentally be a valid file,
-    tough shit i guess..
-    """
-    # TODO: handle this a bit better (now only checks each word separately)
-    str_in = str(str_in)
-#    if str_in == '-':
-#        try:
-#            return sys.stdin.read()
-#        except KeyboardInterrupt:
-#            print()
-#            exit()
-#    elif os.path.isfile(str_in):
-#        with open(str_in, 'r') as f:
-#            return f.read()
-#    else:
-    return str_in
 
 
 # initialize all the globals used by other modules
