@@ -5,10 +5,12 @@ Translate real languages in gibberish (and vice-versa) based on pre-generated tr
 """
 
 import re
+import sys
 import random
 
 # local imports
 from .. import utils
+from .. import config
 
 
 def gibberify(translator, text):
@@ -82,3 +84,25 @@ def degibberify(translator, text):
                                 [x for x in trans[end:]])
 
     return trans
+
+
+def direct_translator(lang_in, lang_out, text):
+    """
+    translates using gibberify or degibberify directly, without the need of passing a "translator" dictionary
+
+    useful for command line translation and module import
+    """
+    conf = config.import_conf()
+
+    if lang_in in conf['real_langs'] and lang_out in conf['gib_langs'].keys():
+        translate = gibberify
+    elif lang_in in conf['gib_langs'].keys() and lang_out in conf['real_langs']:
+        translate = degibberify
+    else:
+        print(f'ERROR: no dictionary from "{lang_in}" to "{lang_out}" found.\n'
+              f'Are you sure it\'s not a typo?\n'
+              f'Otherwise, did you generate the dictionaries first? Try with `gibberify --build-dicts`')
+        sys.exit()
+    translator = utils.access_data('dicts', lang_in, lang_out)
+
+    return translate(translator, text)
