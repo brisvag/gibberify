@@ -14,12 +14,12 @@ added_files += collect_data_files('certifi')
 added_files += collect_data_files('transliterate', include_py_files=True)
 added_files += copy_metadata('text-editor')
 added_files += [(os.path.join('gibberify', 'assets'), 'assets')]
-added_files += [(os.path.join('gibberify', 'config.json'), '.')]
+added_files += [(os.path.join('gibberify', 'config', 'config.json'), '.')]
 
 extra_imports = ['pyphen', 'transliterate', 'PyQt5', 'certifi']
 
 
-a = Analysis(['gibberify/__main__.py'],
+a = Analysis(['pyinstaller_entry.py'],
              # need to add pyqt binaly dlls for windows to find them
              pathex=['gibberify', '/Python36/Lib/site-packages/PyQt5/Qt/bin'],
              binaries=[],

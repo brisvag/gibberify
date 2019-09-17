@@ -4,18 +4,12 @@ from os import path
 import re
 import setuptools
 
-HERE = path.abspath(path.dirname(__file__))
-NAME = "gibberify"
+name = "gibberify"
 
 
-# Load the version
-def read(*parts):
-    with codecs.open(path.join(HERE, *parts), 'r') as fp:
-        return fp.read()
-
-
-def find_version(*file_paths):
-    version_file = read(*file_paths)
+def find_version():
+    with codecs.open(path.join('gibberify', 'utils', 'general'), 'r') as f:
+        version_file = f.read()
     version_match = re.search(r"^version = ['\"]([^'\"]*)['\"]",
                               version_file, re.M)
     if version_match:
@@ -30,9 +24,9 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 setuptools.setup(
-        name=NAME,
+        name=name,
         scripts=['bin/gibberify'],
-        version=find_version("gibberify", "utils.py"),
+        version=find_version(),
         author='Lorenzo Gaifas',
         author_email='brisvag@gmail.com',
         description='Simple gibberish generator that translates words from a real language '
