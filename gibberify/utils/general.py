@@ -78,7 +78,7 @@ def access_data(data_type, lang_in, lang_out=None, write_data=None):
 
 
 # initialize all the globals used by other modules
-version = '0.3.0'
+version = '0.4.0'
 
 basedir = find_basedir()
 assets = clean_path(basedir, 'assets')

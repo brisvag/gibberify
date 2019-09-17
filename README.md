@@ -2,7 +2,7 @@
 
 Or, as an Orc might say:
 
-"**Strecgunssjakstrog? Nev'berg HORTPRIZ hrom strak sang!**"
+"**Morggrämhär? Nel'thö FÖRMGRAUS gür dur opia!**"
 
 Gibberify is a simple gibberish generator that translates words from a real language to an (almost) pronounceable gibberish.
 
@@ -13,7 +13,7 @@ which are then used to convert real language into a wrangled mess of nonsense.
 
 #### DISCLAIMER:
 
-This thing is **WIP**. Though the program is starting to be usable, it's still in the early stages. 
+This thing is **WIP**. Though the program is getting to a decent spot, it's still a bit clunky. 
 
 Does anything weird happen? Report it using the issue tracker or fix it yourself and send a PR!
 
@@ -24,7 +24,7 @@ Installation is now easier than ever thanks to `pip`!
 pip install git+git://github.com/brisvag/gibberify.git#egg=gibberify
 ```
 
-Pip will automatically add the script to your `PATH`, so you can simply run `gibberify` from the command line.
+Pip should automatically add the script to your `PATH`, so you can simply run `gibberify` from the command line.
 
 ## What is this `pip` you are talking about? I wanna make gibberish!
 
@@ -54,15 +54,16 @@ See the **Examples** section for other command line stuff.
 ### NEW FEATURE: REVERSE TRANSLATION
 
 You heard it well! It's a tough guessing game, and it often fails in finding the right syllable.
-However, if your sentence is long enough, you can usually guess the general meaning. Try it out by simply switching
-around languages (or by pressing the big central button in the GUI):
+However, if your sentence is long enough, you can usually guess the general meaning.
+
+Try it out by simply switching around languages (or by pressing the big central button in the GUI):
 ```bash
 gibberify -f orc -t en -m [orcish message here] 
 ```
 
 # Customisation
 
-**Customization is now also possible with the standalone version AND from the GUI!**
+**Customization is now also possible with the standalone version AND _from the GUI!_**
 
 To change settings, go click on `edit` and then `settings`.
 
@@ -96,12 +97,6 @@ Be careful not to screw up the `json` format!
 If anything goes wrong, gibberify will open the config file to let you try and fix it. If that fails too, it will revert
 to defaults and save a backup of your broken configuration.
 
-If it's the first time you create dictionaries, or if you changed/added new languages in the configuration file,
-you will have to download any missing dictionary and re-build the syllable pools.
-```bash
-gibberify --rebuild-syllables
-```
-
 If you just changed some settings for the gibberish languages, you can simply re-build only the translation dictionaries:
 ```bash
 gibberify --rebuild-dicts
@@ -112,15 +107,23 @@ Syllables are generated (and later matched) using hyphenation rules from several
 - be more consistent, producing a more useful set of syllables that contain fewer weird strings that appear only once in the whole language.
   This is particularly useful for _reverse translations_.
 
-Right now the gibberish dictionaries I'm shipping have very random settings. I don't think they sound/look particularly good,
-so please, try out some stuff yourself and let me know what sounds best!
+Right now the gibberish dictionaries I'm "shipping" have settings that I decided. They sound much better now that
+they used to, but please, try out some stuff yourself and let me know if you find anything better!
 
 # I really can't stand the way you wrote this specific line of code
 
 Do you want to change it? Feel free to fork and PR! For testing, you can also import `gibberify` as a module
-(not very useful for now, but possible):
+(_this is now much easier and better!_):
 ```python3
 import gibberify
+
+# edit the configuration file
+gibberify.edit_conf()
+# build dictionaries
+gibberify.build()
+
+# translate something
+print(gibberify.direct_translator('en', 'orc', 'I love ALE!'))
 ```
 
 ### Examples
@@ -137,7 +140,7 @@ gibberify -l dwa -m README.md
 ***this_is_not_a_recursive_message***
 ```
 
-- Translate from Russian to Orcish (default) from `stdin`, using gibberify as a python module:
+- Translate from Russian to Orcish (default) from `stdin` (**DOES NOT WORK AT THE MOMENT**), using gibberify as a python module:
 ```
 echo Privetstvuju Putina! | python3 -m gibberify -fl ru -m -
 Thorsyneftlaos Pryrheeflut!
