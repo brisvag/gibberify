@@ -15,7 +15,7 @@ from PyQt5.QtCore import QSize, pyqtSignal
 # local imports
 from . import utils
 from . import config
-from .gibberify import gibberify
+from generate.gibberify import gibberify
 from .degibberify import degibberify, build_all_dicts
 
 

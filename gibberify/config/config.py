@@ -34,7 +34,7 @@ from time import sleep
 import shutil
 
 # local imports
-from . import utils
+from gibberify import utils
 
 
 def get_defaults():

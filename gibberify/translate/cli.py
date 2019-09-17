@@ -13,7 +13,7 @@ from . import utils
 from . import config
 from .syllabize import build_syllables
 from .degibberify import build_all_dicts
-from .gibberify import gibberify, interactive
+from generate.gibberify import gibberify, interactive
 from .gui import gui
 
 
