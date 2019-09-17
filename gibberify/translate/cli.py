@@ -12,7 +12,7 @@ import argparse
 from gibberify import utils
 from gibberify import config
 from gibberify.generate import build
-from gibberify.translate import gibberify, gui
+from gibberify.translate import gibberify, degibberify, gui
 
 
 def parse():
@@ -162,8 +162,17 @@ def dispatch(args):
     elif args.inter:
         interactive()
     else:
+        if args.lang_in in conf['real_langs'] and args.lang_out in conf['gib_langs'].keys():
+            translate = gibberify
+        elif args.lang_in in conf['gib_langs'].keys() and args.lang_out in conf['real_langs']:
+            translate = degibberify
+        else:
+            print(f'ERROR: no dictionary from "{args.lang_in}" to "{args.lang_out}" found.\n'
+                  f'Are you sure it\'s not a typo?\n'
+                  f'Otherwise, did you generate the dictionaries first? Try with `gibberify --build-dicts`')
+            sys.exit()
         translator = utils.access_data('dicts', args.lang_in, args.lang_out)
-        print(gibberify(translator, ' '.join(args.message)))
+        print(translate(translator, ' '.join(args.message)))
 
 
 def main():
