@@ -22,7 +22,7 @@
       "pool": ["ru", "de"],
       "enrich": ["g", "k", "r"],
       "impoverish": ["w"],
-      "remove": [""]
+      "remove": []
     },
     "elv": {
       "pool": ["fr", "en", "is"],
@@ -56,3 +56,4 @@
     }
   }
 }
+
