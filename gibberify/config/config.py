@@ -3,7 +3,7 @@
 """
 This module takes care of customization through the use of a configuration file
 
-config.json is strucutred as follows:
+config.json is structured as follows:
 
 # natural languages used for syllable generation and everything else
 # languages must be indicated with international 2-letter codes
@@ -21,7 +21,7 @@ gib_langs = {
         "pool": ["ru", "de"],       # pool of languages to draw syllables from
         "enrich": ["g", "k", "r"],  # get more of these in the target language
         "impoverish": ["w"],        # get less of these in the target language
-        "remove": [""]              # get none of these in the target language
+        "remove": []              # get none of these in the target language
     },
     ...
 }
@@ -37,65 +37,60 @@ import shutil
 from .. import utils
 
 
-def get_defaults():
+class Config(dict):
     """
-    reads default configuration file
+    Config class
 
-    returns config dictionary
+    a modified dictionary class that can retrieve, store and edit the configuration for gibberify
     """
-    base_conf = utils.clean_path(utils.basedir, 'config', 'config.json')
-    with open(base_conf, 'r') as f:
-        return json.load(f)
+    default_path = utils.clean_path(utils.basedir, 'config', 'config.json')
+    path = utils.conf
 
+    @classmethod
+    def from_json(cls, path=None):
+        """
+        creates a config object starting from a json file
+        :param path: path of the json file. If not given, default config is loaded
+        :return: Config instance
+        """
+        if not path:
+            path = cls.default_path
+        with open(path, 'r') as f:
+            return cls(json.load(f))
 
-def write_conf(conf):
-    """
-    writes the provided config dictionary to file
-    """
-    with open(utils.conf, 'w+') as f:
-        json.dump(conf, f, indent=4)
+    def write(self):
+        """
+        writes the currently configuration to file
+        """
+        with open(self.path, 'w+') as f:
+            json.dump(self, f, indent=4)
 
+    def edit(self):
+        """
+        opens the config file in the default text editor
+        """
+        texteditor.open(filename=self.path)
 
-def make_conf():
-    """
-    does nothing if config file exists, otherwise creates one based on the defaults
-    """
-    os.makedirs(utils.data, exist_ok=True)
-    if not os.path.exists(utils.conf):
-        conf = get_defaults()
-        write_conf(conf)
-
-
-def edit_conf():
-    """
-    opens the config file in the default text editor
-    """
-    if not os.path.exists(utils.conf):
-        make_conf()
-    texteditor.open(filename=utils.conf)
-
-
-def import_conf():
-    """
-    imports user-defined configuration from data directory
-    creates a new one if not present
-    """
-    make_conf()
-
-    try:
-        with open(utils.conf, 'r') as f:
-            return json.load(f)
-    except json.decoder.JSONDecodeError:
-        print('ERROR: your configuration file is corrupted!\n'
-              'Try to fix it...')
-        sleep(2)
-        edit_conf()
-
-    # try again. If failed, back up config and copy defaults
-    try:
-        with open(utils.conf, 'r') as f:
-            return json.load(f)
-    except json.decoder.JSONDecodeError:
-        print('ERROR: still corrupted. Backing up and resetting to defaults.')
-        shutil.move(utils.conf, f'{utils.conf}.backup')
-        make_conf()
+    def load(self):
+        """
+        imports user-defined configuration from data directory
+        creates a new one if not present
+        """
+        if os.path.exists(self.path):
+            try:
+                with open(self.path, 'r') as f:
+                    self.update(json.load(f))
+            except json.decoder.JSONDecodeError:
+                print('ERROR: your configuration file is corrupted!\n'
+                      'Try to fix it...')
+                sleep(2)
+                self.edit()
+            # try again. If failed, back up config and copy defaults
+            try:
+                with open(self.path, 'r') as f:
+                    self.update(json.load(f))
+            except json.decoder.JSONDecodeError:
+                print('ERROR: still corrupted. Backing up and resetting to defaults.')
+                shutil.move(utils.conf, f'{utils.conf}.backup')
+                self.update(self.path)
+                self.write()
