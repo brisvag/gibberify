@@ -10,7 +10,7 @@ from collections import OrderedDict
 
 def super_hyphenator():
     """
-    returns a list of pyphen.Pyphen instances for a fixed list of languages
+    :return: a list of pyphen.Pyphen instances for a fixed list of languages
     """
     langs = ["en", "it", "de", "fr", "ru", "es", "nl", "ca", "el", "et", "is", "lt", "nb", "pt", "sk"]
     return [pyphen.Pyphen(lang=hyph_lang) for hyph_lang in langs]
@@ -21,7 +21,8 @@ def syllabize(word):
     takes a word and reduces it to fundamental syllables using a list of
     pyphen hyphenators from several different languages
 
-    returns a set of syllables
+    :param word: a single word
+    :return: a set of syllables
     """
     word = word.lower()
 
