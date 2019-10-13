@@ -93,7 +93,7 @@ def access_data(data_type, lang_in, lang_out=None, write_data=None):
 
 
 # initialize all the globals used by other modules
-version = '0.4.2'
+version = '0.5.0'
 
 basedir = find_basedir()
 assets = basedir/'assets'
