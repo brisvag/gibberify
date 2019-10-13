@@ -1,3 +1,3 @@
-from gibberify.translate import main
+from gibberify.cli import main
 
 main()
