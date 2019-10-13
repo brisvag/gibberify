@@ -51,6 +51,16 @@ def progress(message, partial, total):
         print()
 
 
+def check_dirs():
+    """
+    create directory tree for data if not present
+    """
+    dirs = ['raw', 'words', 'syllables', 'dicts']
+    for d in dirs:
+        path = data/d
+        os.makedirs(path, exist_ok=True)
+
+
 def access_data(data_type, lang_in, lang_out=None, write_data=None):
     """
     utility function to load or write data files
@@ -60,6 +70,7 @@ def access_data(data_type, lang_in, lang_out=None, write_data=None):
     :param write_data: data in json compatible format. If not present, data is read from file and returned instead
     :return: contents of the file in json compatible format, if any
     """
+    check_dirs()
     if data_type == 'dicts':
         if not lang_out:
             raise AttributeError('you must specify an output language to access a dictionary')

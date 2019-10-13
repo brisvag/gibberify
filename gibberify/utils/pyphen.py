@@ -1,7 +1,7 @@
 # Copyright 2019-2019 the gibberify authors. See copying.md for legal info.
 
 """
-Pyphen-based utilities used in other modules
+Pyphen-based and other language-related utilities used in other modules
 """
 
 import pyphen
@@ -40,3 +40,37 @@ def syllabize(word):
     syllables = list(OrderedDict.fromkeys(syl))
 
     return syllables
+
+
+# TODO: very bizarre bug that I can't fix: when r_lang_codes is imported in dicts.py, but ONLY
+#       when called from gui.py, it's an empty dict! However when called from anywhere else (cli.py) it works.
+#       For now, I stopped using it in Scrambler, otherwise it crashed. Needs to be solved!
+r_lang_codes = {'bg': 'Bulgarian',
+                'ca': 'Catalan',
+                'da': 'Danish',
+                'el': 'Greek',
+                'et': 'Estonian',
+                'fr': 'French',
+                'hu': 'Hungarian',
+                'it': 'Italian',
+                'nb': 'Norwegian-Bokmål',
+                'nn': 'Norwegian-Nynorsk',
+                'pt': 'Portuguese',
+                'ru': 'Russian',
+                'sk': 'Slovak',
+                'sr': 'Serbian',
+                'cs': 'Czech',
+                'de': 'German',
+                'en': 'English',
+                'es': 'Spanish',
+                'gl': 'Galician',
+                'hr': 'Croatian',
+                'is': 'Icelandic',
+                'lt': 'Lithuanian',
+                'lv': 'Latvian',
+                'nl': 'Dutch',
+                'pl': 'Polish',
+                'ro': 'Romanian',
+                'sl': 'Slovenian',
+                'sv': 'Swedish',
+                'uk': 'Ukrainian'}
