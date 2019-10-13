@@ -1,23 +1,20 @@
 # Copyright 2019-2019 the gibberify authors. See copying.md for legal info.
 
-
 from urllib.request import urlopen
 from transliterate import translit, get_available_language_codes
 import json
 import certifi
-from time import sleep
-import os
 
 # local imports
 from .. import utils
 
 
-class Syllabizer():
+class Syllabizer:
     """
     Syllabizer class. Takes care of download, processing and generation
     of all the data needed to make custom dictionaries
     """
-
+    # TODO: add/improve customizability (load from file, save raw, etc...)
     def __init__(self, lang):
         self.lang = lang
         self.raw = None
@@ -30,11 +27,10 @@ class Syllabizer():
         """
         baseurl = 'https://raw.githubusercontent.com/brisvag/dictionaries/master/dictionaries/'
 
-        print(f'Downloading raw data for "{self.lang}"...')
+        # print(f'Downloading raw data for {utils.r_lang_codes[self.lang]}...')
+        print(f'Downloading raw data for {self.lang}...')
         # certifi is needed for mac, otherwise it complains about missing ssl certificates
         file = urlopen(f"{baseurl}/{self.lang}/index.dic", cafile=certifi.where())
-        # need to wait a bit, cause files may be large. TODO: any better solution?
-        sleep(3)
 
         self.raw = file
 
@@ -44,11 +40,10 @@ class Syllabizer():
         """
         baseurl = 'https://raw.githubusercontent.com/brisvag/gibberify-data/master/words/'
 
-        print(f'Downloading pregenerated words for "{self.lang}"...')
+        # print(f'Downloading pregenerated words for {utils.r_lang_codes[self.lang]}...')
+        print(f'Downloading pregenerated words for {self.lang}...')
         # certifi is needed for mac, otherwise it complains about missing ssl certificates
         file = urlopen(f"{baseurl}/{self.lang}.json", cafile=certifi.where())
-        # need to wait a bit, cause files may be large. TODO: any better solution?
-        sleep(3)
 
         self.words = json.load(file)
 
@@ -58,11 +53,10 @@ class Syllabizer():
         """
         baseurl = 'https://raw.githubusercontent.com/brisvag/gibberify-data/master/syllables/'
 
-        print(f'Downloading pregenerated syllables for "{self.lang}"...')
+        # print(f'Downloading pregenerated syllables for {utils.r_lang_codes[self.lang]}...')
+        print(f'Downloading pregenerated syllables for {self.lang}...')
         # certifi is needed for mac, otherwise it complains about missing ssl certificates
         file = urlopen(f"{baseurl}/{self.lang}.json", cafile=certifi.where())
-        # need to wait a bit, cause files may be large. TODO: any better solution?
-        sleep(3)
 
         self.syllables = json.load(file)
 
@@ -82,7 +76,7 @@ class Syllabizer():
         """
         parses a dictionary file-object in hunspell format (utf-8 version)
 
-        returns a unique list of words
+        :return: a unique list of words
         """
         words = set()
 
@@ -103,36 +97,29 @@ class Syllabizer():
                 continue
             words.add(line)
 
-        # need to transform in list be able to save it as json
         words.discard('')
 
+        # need to transform in list be able to save it as json
         self.words = list(words)
 
-    def make_syllables(self):
+    def make_syllables(self, from_file=False):
         """
         generates a pool of syllables for a given language starting from a word list
+        :param from_file: load words from file instead of downloading them
         """
         syllables = set()
 
-        print(f'Generating syllables for "{self.lang}"...')
+        print(f'Generating syllables for {utils.r_lang_codes[self.lang]}...')
 
         # open words file and syllabize all of them
-        words = utils.access_data('words', self.lang)
+        if from_file:
+            words = utils.access_data('words', self.lang)
+        else:
+            words = self.words
         for word in words:
             # let's clean up once more just to be sure
             word = word.strip()
             syllables.update(set(utils.syllabize(word)))
-
-        # # divide per length
-        # syllables.discard('')
-        # syl_dict = {}
-        # for s in syllables:
-        #     ln = len(s)
-        #     if ln not in syl_dict.keys():
-        #         syl_dict[ln] = []
-        #     syl_dict[ln].append(s)
-        #
-        # utils.access_data('syllables', lang, write_data=syl_dict)
 
         self.syllables = list(syllables)
 
@@ -148,14 +135,14 @@ class Syllabizer():
         if syllables:
             utils.access_data('syllables', self.lang, write_data=self.syllables)
 
-    def run(self, from_raw, force):
+    def run(self, from_raw, force_syl_rebuild):
         """
         automatically downloads and parses data, then generates syllable pools
         :param from_raw: if True, download raw dictionaries and process everything locally
-        :param force: if True, re-generate syllables even if already present
+        :param force_syl_rebuild: if True, re-generate syllables even if already present
         """
-        file = utils.clean_path(utils.data, 'syllables', f'{self.lang}.json')
-        if not os.path.isfile(file) or force:
+        file = utils.data/'syllables'/f'{self.lang}.json'
+        if not file.is_file() or from_raw or force_syl_rebuild:
             if from_raw:
                 self.download_raw()
                 self.make_words()
