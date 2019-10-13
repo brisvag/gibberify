@@ -135,7 +135,7 @@ class Syllabizer:
         if syllables:
             utils.access_data('syllables', self.lang, write_data=self.syllables)
 
-    def run(self, from_raw, force_syl_rebuild):
+    def run(self, from_raw=False, force_syl_rebuild=False):
         """
         automatically downloads and parses data, then generates syllable pools
         :param from_raw: if True, download raw dictionaries and process everything locally
