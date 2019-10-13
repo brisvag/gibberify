@@ -21,17 +21,14 @@ gib_langs = {
         "pool": ["ru", "de"],       # pool of languages to draw syllables from
         "enrich": ["g", "k", "r"],  # get more of these in the target language
         "impoverish": ["w"],        # get less of these in the target language
-        "remove": []              # get none of these in the target language
+        "remove": []                # get none of these in the target language
     },
     ...
 }
 """
 
-import os
 import json
 import texteditor
-from time import sleep
-import shutil
 
 # local imports
 from .. import utils
@@ -43,54 +40,41 @@ class Config(dict):
 
     a modified dictionary class that can retrieve, store and edit the configuration for gibberify
     """
-    default_path = utils.clean_path(utils.basedir, 'config', 'config.json')
-    path = utils.conf
+    default_path = utils.basedir / 'config' / 'config.json'
+    user_path = utils.conf
 
     @classmethod
     def from_json(cls, path=None):
         """
         creates a config object starting from a json file
-        :param path: path of the json file. If not given, default config is loaded
+        :param path: path of the json file. If not given, default path for user config is used
         :return: Config instance
         """
         if not path:
-            path = cls.default_path
-        with open(path, 'r') as f:
-            return cls(json.load(f))
+            path = cls.user_path
+        try:
+            with open(path, 'r') as f:
+                return cls(json.load(f))
+        except FileNotFoundError:
+            with open(cls.default_path, 'r') as f:
+                return cls(json.load(f))
+
+    @classmethod
+    def from_default(cls):
+        """
+        wrapper for from_json that loads the default configuration
+        """
+        return cls.from_json(cls.default_path)
 
     def write(self):
         """
-        writes the currently configuration to file
+        writes the current configuration to file
         """
-        with open(self.path, 'w+') as f:
+        with open(self.user_path, 'w+') as f:
             json.dump(self, f, indent=4)
 
     def edit(self):
         """
-        opens the config file in the default text editor
+        opens the configuration file in the default text editor
         """
-        texteditor.open(filename=self.path)
-
-    def load(self):
-        """
-        imports user-defined configuration from data directory
-        creates a new one if not present
-        """
-        if os.path.exists(self.path):
-            try:
-                with open(self.path, 'r') as f:
-                    self.update(json.load(f))
-            except json.decoder.JSONDecodeError:
-                print('ERROR: your configuration file is corrupted!\n'
-                      'Try to fix it...')
-                sleep(2)
-                self.edit()
-            # try again. If failed, back up config and copy defaults
-            try:
-                with open(self.path, 'r') as f:
-                    self.update(json.load(f))
-            except json.decoder.JSONDecodeError:
-                print('ERROR: still corrupted. Backing up and resetting to defaults.')
-                shutil.move(utils.conf, f'{utils.conf}.backup')
-                self.update(self.path)
-                self.write()
+        texteditor.open(filename=self.user_path)
