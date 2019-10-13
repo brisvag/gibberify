@@ -2,24 +2,13 @@
 
 Or, as an Orc might say:
 
-"**Morggrämhär? Nel'thö FÖRMGRAUS gür dur opia!**"
+"**Sausdrospo? Jl'gras GUSSFORT bav elf gib!**"
 
 Gibberify is a simple gibberish generator that translates words from a real language to an (almost) pronounceable gibberish.
 
-It uses words taken from a streamlined version of
-[wooorm/dictionaries](https://github.com/wooorm/dictionaries/tree/master/dictionaries)
-(forked [here](https://github.com/brisvag/dictionaries)) to generate new syllables, 
-which are then used to convert real language into a wrangled mess of nonsense.
+# Installation
 
-#### DISCLAIMER:
-
-This thing is **WIP**. Though the program is getting to a decent spot, it's still a bit clunky. 
-
-Does anything weird happen? Report it using the issue tracker or fix it yourself and send a PR!
-
-# Set up
-
-Installation is now easier than ever thanks to `pip`!
+If you have python3 installed:
 ```bash
 pip install git+git://github.com/brisvag/gibberify.git#egg=gibberify
 ```
@@ -28,7 +17,7 @@ Pip should automatically add the script to your `PATH`, so you can simply run `g
 
 ## What is this `pip` you are talking about? I wanna make gibberish!
 
-No worries! There is also an executable version of Gibberify, that you can find
+No worries! For ease of use, there is also a standalone executable version of Gibberify, that you can find
 [**here**](https://github.com/brisvag/gibberify/releases/latest), under "_Assets_".
 Download the latest release for your operative system, unzip it and double-click the shit out of it. 
 
@@ -51,21 +40,9 @@ gibberify -h
 ```
 See the **Examples** section for other command line stuff.
 
-### NEW FEATURE: REVERSE TRANSLATION
-
-You heard it well! It's a tough guessing game, and it often fails in finding the right syllable.
-However, if your sentence is long enough, you can usually guess the general meaning.
-
-Try it out by simply switching around languages (or by pressing the big central button in the GUI):
-```bash
-gibberify -f orc -t en -m [orcish message here] 
-```
-
 # Customisation
 
-**Customization is now also possible with the standalone version AND _from the GUI!_**
-
-To change settings, go click on `edit` and then `settings`.
+To change settings in the GUI, go click on `edit` and then `settings`.
 
 **WARNING: EXPECT THE PROGRAM TO FREEZE FOR A COUPLE OF MINUTES AFTER SAVING! It's a lot of processing.**
 
@@ -76,19 +53,20 @@ Several options are available to tune the gibberish language generation:
 - `remove`: letters (or patterns) that you want NONE of
 
 The following is an example config for orcish (which is the default one):
-```json
+```
 "orc": {
   "pool": ["ru", "de"],
   "enrich": ["g", "k", "r"],
   "impoverish": ["w"],
-  "remove": [""]
+  "remove": []
+}
 ```
 This config results in a language based on Russian and German in which `g`, `k` and `r` appear often and
 `w` appears rarely. You can also use patterns (such as `mom`) instead of single letters and specify the same thing
 more than once (such as `["g", "g", "g"]`) to enrich/impoverish even more.
 
-# Advanced
-From the command line:
+# Advanced and additional info
+To edit the configuration from the command line:
 ```bash
 gibberify --config
 ```
@@ -107,26 +85,32 @@ Syllables are generated (and later matched) using hyphenation rules from several
 - be more consistent, producing a more useful set of syllables that contain fewer weird strings that appear only once in the whole language.
   This is particularly useful for _reverse translations_.
 
-Right now the gibberish dictionaries I'm "shipping" have settings that I decided. They sound much better now that
+Right now the gibberish dictionaries I'm "shipping" have settings that I arbitrarily decided. They sound much better now that
 they used to, but please, try out some stuff yourself and let me know if you find anything better!
 
-# I really can't stand the way you wrote this specific line of code
-
+# This line of code sucks! 
 Do you want to change it? Feel free to fork and PR! For testing, you can also import `gibberify` as a module
 (_this is now much easier and better!_):
 ```python3
 import gibberify
 
-# edit the configuration file
-gibberify.edit_conf()
+# anything configuration related
+conf = gibberify.Config()
+c.edit()
+c.write()
 # build dictionaries
 gibberify.build()
 
 # translate something
-print(gibberify.direct_translator('en', 'orc', 'I love ALE!'))
+t = gibberify.Translator('en', 'orc', 'I love ALE!')
+# just print it to see the translation
+print(t)
+# you can change attributes, and the translation updates accordingly
+t.text_in = 'This is a new text!'
+t.lang_out = 'gob'
 ```
 
-### Examples
+### Command line examples
 
 - Translate from German to Elvish the sentence "*Hans, Get ze Flammenwerfer*" from the command line:
 ```
@@ -146,12 +130,18 @@ echo Privetstvuju Putina! | python3 -m gibberify -fl ru -m -
 Thorsyneftlaos Pryrheeflut!
 ```
 
-# TODO
-
-- add support for non-latin fonts in input/output
-- use multiprocessing to speedup the hot mess that `syllable_pools.py` is.
-
 ---
+
+# RESOURCES
+
+Gibberify uses words taken from a streamlined version of
+[wooorm/dictionaries](https://github.com/wooorm/dictionaries/tree/master/dictionaries)
+(forked [here](https://github.com/brisvag/dictionaries)) to generate new syllables, 
+which are then used to convert real language into a wrangled mess of nonsense.
+
+A pre-generated collection of syllables is hosted on [gibberify-data](https://github.com/brisvag/gibberify-data),
+to expedite the installation. However, you're free to generate the syllables yourself from scratch by downloading the aforementioned
+words with `--force-download`.
 
 _Icons made by_
 - _[Freepik](https://www.freepik.com/) from [Flaticon](https://www.flaticon.com/)_
