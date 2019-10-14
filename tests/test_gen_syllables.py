@@ -2,7 +2,6 @@
 
 import pytest
 import json
-from http import client
 from gibberify import Syllabizer
 from gibberify.utils import access_data
 
@@ -19,9 +18,8 @@ def test_syllabizer_instance(syl):
 
 def test_download_raw(syl):
     syl.download_raw()
-    assert isinstance(syl.raw, client.HTTPResponse)
-    assert isinstance(syl.raw.readlines(), list)
-    assert syl.raw.readlines()
+    assert isinstance(syl.raw, list)
+    assert syl.raw
 
 
 # TODO: first need to implement this in gibberify and upload to gibberify-data
