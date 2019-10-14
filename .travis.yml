@@ -17,6 +17,8 @@ matrix:
     before_install:
       - pip install -r requirements.txt
       - pip install pyinstaller
+    before_script:
+      - pip install .
     before_deploy:
       - tar -czvf gibberify-ubuntu.tar.gz -C dist gibberify
 
@@ -33,6 +35,8 @@ matrix:
       - export PATH=$PATH:/Users/travis/Library/Python/3.6/bin
       - pip install -r requirements.txt --user
       - pip install pyinstaller --user
+    before_script:
+      - pip install . --user
     before_deploy:
       - zip -j gibberify-macos.zip dist/gibberify
 
@@ -44,11 +48,13 @@ matrix:
       - pip install -r requirements.txt
       - pip install pywin32 pypiwin32
       - pip install pyinstaller
+    before_script:
+      - pip install pytest
+      - pip install .
     before_deploy:
       - 7z a -tzip gibberify-windows.zip ./dist/gibberify.exe
 
 install:
-  - pip install .
   - pyinstaller gibberify.spec
 
 # need to add tests
