@@ -18,20 +18,28 @@ class Scrambler:
         self.gib_lang = gib_lang
         self.gib_conf = gib_conf
         self.real_pool = None
+        self.gib_pool_raw = None
         self.gib_pool = None
         self.dict_straight = None
         self.dict_reverse = None
 
+    def load_gib_pool_raw(self):
+        """
+        loads all the syllables needed for the gibberish language from a list of real languages
+        """
+        pool = set()
+        for lang in self.gib_conf["pool"]:
+            pool_part = utils.access_data('syllables', lang)
+            pool.update(pool_part)
+
+        self.gib_pool_raw = list(pool)
+
     def create_gib_pool(self):
         """
-        creates a customized pool of syllables to be used by the gibberish language by merging
-        multiple languages and applying several options defined in the provided configuration
+        creates a customized pool of syllables to be used by the gibberish language by
+        applying several options defined in the provided configuration
         """
-        # first create the base pool
-        pool_out = set()
-        for lang in self.gib_conf["pool"]:
-            pool_out_part = utils.access_data('syllables', lang)
-            pool_out.update(pool_out_part)
+        pool_out = self.gib_pool_raw
 
         # get rid of part of the syllables NOT containing enriched patterns
         for pattern in self.gib_conf["enrich"]:
@@ -116,6 +124,7 @@ class Scrambler:
         """
         main class method, runs all the other methods and writes to file
         """
+        self.load_gib_pool_raw()
         self.create_gib_pool()
         self.straight()
         self.reverse()
