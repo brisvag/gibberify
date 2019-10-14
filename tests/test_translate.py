@@ -10,7 +10,7 @@ def tr():
     # because we provide a dummy file right after
     dicts = {
         'en-orc': {'te': 'stu', 'st': 'ff'},
-        'orc-en': {3: {'stu', 'te'}, 2: {'ff': 'st'}}
+        'orc-en': {3: {'stu': 'te'}, 2: {'ff': 'st'}}
     }
     return Translator(lang_in='en', lang_out='orc', text_in='test', dicts=dicts)
 
@@ -21,7 +21,6 @@ def test_translator_instance(tr):
     assert tr.lang_out == 'orc'
     assert tr.text_in == 'test'
     assert isinstance(tr.dicts, dict)
-    assert isinstance(tr.dict, dict)
 
 
 def test_run(tr):
