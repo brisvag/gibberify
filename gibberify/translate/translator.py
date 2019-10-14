@@ -11,17 +11,18 @@ class Translator:
     """
     executes translations according to current configuration and inputs
     """
-    def __init__(self, lang_in=None, lang_out=None, text_in=''):
+    def __init__(self, lang_in=None, lang_out=None, text_in='', dicts=None):
         """
         :param lang_in: language to translate from
         :param lang_out: language to transate to
         :param text_in: texto to translate
+        :param dicts: override loading of dictionaries by providing some via parameter
         """
         self.lang_in = lang_in
         self.lang_out = lang_out
         self.text_in = text_in
         self.text_out = ''
-        self.dicts = self.load_dicts()
+        self.dicts = self.load_dicts(dicts)
         self.dict = None
 
     def __str__(self):
@@ -43,12 +44,14 @@ class Translator:
         if changed and all([attr in self.__dict__ for attr in attr_list]):
             self.run()
 
-    def load_dicts(self):
+    def load_dicts(self, dicts):
         """
         loads all generated dictionaries into memory
 
         :return: a dict containing all the available dictionaries, with `langin-langout` as keys
         """
+        if dicts:
+            return dicts
         dicts = {}
         dicts_dir = utils.data/'dicts'
         for dict_file in dicts_dir.iterdir():
