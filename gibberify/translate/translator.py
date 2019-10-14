@@ -68,7 +68,6 @@ class Translator:
 
         sets translation to text_out
         """
-
         # split words maintaining non-word characters in the right positions
         words = re.split(r'(\W+)(\w+)', self.text_in)
 
