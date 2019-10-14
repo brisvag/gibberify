@@ -23,6 +23,12 @@ class Scrambler:
         self.dict_straight = None
         self.dict_reverse = None
 
+    def load_real_pool(self):
+        """
+        loads all the syllables from the required real language
+        """
+        self.real_pool = utils.access_data('syllables', self.real_lang)
+
     def load_gib_pool_raw(self):
         """
         loads all the syllables needed for the gibberish language from a list of real languages
@@ -74,8 +80,6 @@ class Scrambler:
         trans_dict = {}
 
         # TODO: use shorter syllables more often, like in normal languages
-        # load the required languages
-        self.real_pool = utils.access_data('syllables', self.real_lang)
         # make sure we do enough times to map to all the input syllables (should not be a problem, but you never know)
         ratio = len(self.real_pool) // len(self.gib_pool)
         tmp_gib_pool = self.gib_pool
@@ -124,6 +128,7 @@ class Scrambler:
         """
         main class method, runs all the other methods and writes to file
         """
+        self.load_real_pool()
         self.load_gib_pool_raw()
         self.create_gib_pool()
         self.straight()
