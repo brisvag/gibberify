@@ -61,7 +61,7 @@ def test_download_syllables(syl):
 
 
 def test_make_words(syl):
-    syl.raw = ['test', 'word']
+    syl.raw = [b'test', b'word']
     syl.make_words()
     assert isinstance(syl.words, list)
     assert syl.words
