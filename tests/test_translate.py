@@ -9,8 +9,8 @@ def tr():
     # need to suppress because load_dicts tries to load files that don't exist. It's fine
     # because we provide a dummy file right after
     dicts = {
-        'en-orc': {'test': 'test_trans', 'word': 'word_trans'},
-        'orc-en': {1: {'test_trans': 'test'}}
+        'en-orc': {'te': 'stu', 'st': 'ff'},
+        'orc-en': {3: {'stu', 'te'}, 2: {'ff': 'st'}}
     }
     return Translator(lang_in='en', lang_out='orc', text_in='test', dicts=dicts)
 
@@ -25,24 +25,17 @@ def test_translator_instance(tr):
 
 
 def test_run(tr):
-    tr.run()
-    assert tr.text_out == 'test_trans'
+    assert tr.text_out == 'stuff'
 
 
 def test_setattr(tr):
-    tr.run()
-    tr.text_in = 'word'
-    assert tr.text_out == 'word_trans'
-
-
-def test_gibberify(tr):
-    tr.gibberify()
-    assert tr.text_out == 'test_trans'
+    tr.text_in = 'te'
+    assert tr.text_out == 'stu'
 
 
 def test_degibberify(tr):
     tr.lang_in = 'orc'
     tr.lang_out = 'en'
-    tr.text_in = 'test_trans'
+    tr.text_in = 'stuff'
     tr.degibberify()
     assert tr.text_out == 'test'
