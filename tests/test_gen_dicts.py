@@ -7,7 +7,7 @@ from gibberify.utils import access_data
 
 
 @pytest.fixture
-def src():
+def scr():
     gib_conf_test = {
         "pool": [],
         "enrich": ["t"],
