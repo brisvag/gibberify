@@ -8,7 +8,7 @@ name = "gibberify"
 
 
 def find_version():
-    with codecs.open(path.join('gibberify', 'utils', 'general'), 'r') as f:
+    with codecs.open(path.join('gibberify', 'utils', 'general.py'), 'r') as f:
         version_file = f.read()
     version_match = re.search(r"^version = ['\"]([^'\"]*)['\"]",
                               version_file, re.M)
