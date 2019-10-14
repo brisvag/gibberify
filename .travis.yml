@@ -48,6 +48,7 @@ matrix:
       - 7z a -tzip gibberify-windows.zip ./dist/gibberify.exe
 
 install:
+  - pip install .
   - pyinstaller gibberify.spec
 
 # need to add tests
