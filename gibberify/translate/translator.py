@@ -22,7 +22,8 @@ class Translator:
         self.lang_out = lang_out
         self.text_in = text_in
         self.text_out = ''
-        self.dicts = self.load_dicts(dicts)
+        self.dicts = None
+        self.load_dicts(dicts)
         self.dict = None
 
     def __str__(self):
@@ -44,23 +45,22 @@ class Translator:
         if changed and all([attr in self.__dict__ for attr in attr_list]):
             self.run()
 
-    def load_dicts(self, dicts):
+    def load_dicts(self, dicts=None):
         """
         loads all generated dictionaries into memory
 
         :return: a dict containing all the available dictionaries, with `langin-langout` as keys
         """
-        if dicts:
-            return dicts
-        dicts = {}
-        dicts_dir = utils.data/'dicts'
-        for dict_file in dicts_dir.iterdir():
-            dict_code = dict_file.stem
-            lang_in, lang_out = dict_code.split('-')
-            content = utils.access_data('dicts', lang_in, lang_out)
-            dicts[dict_code] = content
+        if not dicts:
+            dicts = {}
+            dicts_dir = utils.data/'dicts'
+            for dict_file in dicts_dir.iterdir():
+                dict_code = dict_file.stem
+                lang_in, lang_out = dict_code.split('-')
+                content = utils.access_data('dicts', lang_in, lang_out)
+                dicts[dict_code] = content
 
-        return dicts
+        self.dicts = dicts
 
     def gibberify(self):
         """

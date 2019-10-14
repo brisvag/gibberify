@@ -529,6 +529,7 @@ class MainWindow(QMainWindow):
         self.lang_out_box.addItems([lang for lang in self.conf['gib_langs']])
 
         self.update_languages()
+        self.translator.load_dicts()
 
 
 def gui():

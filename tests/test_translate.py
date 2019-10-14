@@ -6,8 +6,6 @@ from gibberify import Translator
 
 @pytest.fixture
 def tr():
-    # need to suppress because load_dicts tries to load files that don't exist. It's fine
-    # because we provide a dummy file right after
     dicts = {
         'en-orc': {'te': 'stu', 'st': 'ff'},
         'orc-en': {3: {'stu': 'te'}, 2: {'ff': 'st'}}
