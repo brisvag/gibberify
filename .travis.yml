@@ -36,6 +36,7 @@ matrix:
       - pip install -r requirements.txt --user
       - pip install pyinstaller --user
     before_script:
+      - pip install pytest --user
       - pip install . --user
     before_deploy:
       - zip -j gibberify-macos.zip dist/gibberify
