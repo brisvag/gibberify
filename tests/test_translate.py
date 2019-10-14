@@ -17,11 +17,11 @@ def tr():
 
 def test_translator_instance(tr):
     assert isinstance(tr, Translator)
-    assert Translator.lang_in == 'en'
-    assert Translator.lang_out == 'orc'
-    assert Translator.text_in == 'test'
-    assert isinstance(Translator.dicts, dict)
-    assert isinstance(Translator.dict, dict)
+    assert tr.lang_in == 'en'
+    assert tr.lang_out == 'orc'
+    assert tr.text_in == 'test'
+    assert isinstance(tr.dicts, dict)
+    assert isinstance(tr.dict, dict)
 
 
 def test_run(tr):
