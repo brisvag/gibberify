@@ -32,7 +32,8 @@ class Syllabizer:
         # certifi is needed for mac, otherwise it complains about missing ssl certificates
         file = urlopen(f"{baseurl}/{self.lang}/index.dic", cafile=certifi.where())
 
-        self.raw = file
+        lines = file.readlines()[1:]
+        self.raw = lines
 
     def download_words(self):
         """
@@ -80,7 +81,7 @@ class Syllabizer:
         """
         words = set()
 
-        lines = self.raw.readlines()[1:]
+        lines = self.raw
         for line in lines:
             # decode and remove comments
             line = line.decode('utf-8').partition('/')[0]
