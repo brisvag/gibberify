@@ -53,11 +53,11 @@ def test_reverse(scr):
     assert scr.dict_reverse == {4: {'word': 'test'}}
 
 
-# def test_write(scr):
-#     scr.dict_straight = {'test': 'word'}
-#     scr.dict_reverse = {4: {'word': 'test'}}
-#     scr.write()
-#     straight = json.load(access_data('dicts', 'en', 'orc'))
-#     reverse = json.load(access_data('dicts', 'orc', 'en'))
-#     assert scr.dict_straight == straight
-#     assert scr.dict_reverse == reverse
+def test_write(scr):
+    scr.dict_straight = {'test': 'word'}
+    scr.dict_reverse = {4: {'word': 'test'}}
+    scr.write()
+    straight = json.load(access_data('dicts', 'en', 'orc'))
+    reverse = json.load(access_data('dicts', 'orc', 'en'))
+    assert scr.dict_straight == straight
+    assert scr.dict_reverse == reverse

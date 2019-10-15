@@ -35,29 +35,29 @@ def test_download_syllables(syl):
     assert syl.syllables
 
 
-# @pytest.mark.incremental
-# class TestSyllablizerWriteRead():
-#     def test_write(syl):
-#         syl.raw = ['test', 'word']
-#         syl.words = ['another', 'thing']
-#         syl.syllables = ['more', 'stuff']
-#         syl.write(raw=True, words=True, syllables=True)
-#         raw = json.load(access_data('raw', 'en'))
-#         words = json.load(access_data('words', 'en'))
-#         syllables = json.load(access_data('syllables', 'en'))
-#         assert raw == syl.raw
-#         assert words == syl.words
-#         assert syllables == syl.syllables
-#
-#     def test_load_words(syl):
-#         syl.load_words()
-#         assert isinstance(syl.words, list)
-#         assert syl.words
-#
-#     def test_load_syllables(syl):
-#         syl.load_syllables()
-#         assert isinstance(syl.syllables, list)
-#         assert syl.syllables
+@pytest.mark.incremental
+class TestSyllablizerWriteRead():
+    def test_write(syl):
+        syl.raw = ['test', 'word']
+        syl.words = ['another', 'thing']
+        syl.syllables = ['more', 'stuff']
+        syl.write(raw=True, words=True, syllables=True)
+        raw = json.load(access_data('raw', 'en'))
+        words = json.load(access_data('words', 'en'))
+        syllables = json.load(access_data('syllables', 'en'))
+        assert raw == syl.raw
+        assert words == syl.words
+        assert syllables == syl.syllables
+
+    def test_load_words(syl):
+        syl.load_words()
+        assert isinstance(syl.words, list)
+        assert syl.words
+
+    def test_load_syllables(syl):
+        syl.load_syllables()
+        assert isinstance(syl.syllables, list)
+        assert syl.syllables
 
 
 def test_make_words(syl):
@@ -74,7 +74,7 @@ def test_make_syllables(syl):
     assert syl.syllables
 
 
-# def test_run(syl):
-#     syl.run(from_raw=True)
-#     syl.run(force_syl_rebuild=True)
-#     syl.run()
+def test_run(syl):
+    syl.run(from_raw=True)
+    syl.run(force_syl_rebuild=True)
+    syl.run()
