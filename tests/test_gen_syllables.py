@@ -36,7 +36,7 @@ def test_download_syllables(syl):
 
 
 @pytest.mark.incremental
-class TestSyllablizerWriteRead():
+class TestSyllablizerWriteRead:
     def test_write(syl):
         syl.raw = ['test', 'word']
         syl.words = ['another', 'thing']
@@ -74,7 +74,7 @@ def test_make_syllables(syl):
     assert syl.syllables
 
 
-def test_run(syl):
-    syl.run(from_raw=True)
-    syl.run(force_syl_rebuild=True)
-    syl.run()
+# def test_run(syl):
+#     syl.run(from_raw=True)
+#     syl.run(force_syl_rebuild=True)
+#     syl.run()

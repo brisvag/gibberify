@@ -9,10 +9,10 @@ from gibberify.utils import access_data
 @pytest.fixture
 def scr():
     gib_conf_test = {
-        "pool": [],
-        "enrich": ["t"],
-        "impoverish": [],
-        "remove": ["w"]
+        'pool': ['en'],
+        'enrich': ['t'],
+        'impoverish': [],
+        'remove': ['w']
     }
     scr = Scrambler(real_lang='en', gib_lang='orc', gib_conf=gib_conf_test)
     return scr
@@ -23,10 +23,10 @@ def test_scrambler_instance(scr):
     assert scr.real_lang == 'en'
     assert scr.gib_lang == 'orc'
     assert scr.gib_conf == {
-        "pool": [],
-        "enrich": ["t"],
-        "impoverish": [],
-        "remove": ["w"]
+        'pool': ['en'],
+        'enrich': ['t'],
+        'impoverish': [],
+        'remove': ['w']
     }
 
 

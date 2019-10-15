@@ -3,6 +3,6 @@
 from gibberify import Config, build
 
 
-def test_build():
-    cfg = Config.from_default()
-    build(cfg, from_raw=True, force_syl_rebuild=True)
+# def test_build():
+#     cfg = Config.from_default()
+#     build(cfg, from_raw=True, force_syl_rebuild=True)
