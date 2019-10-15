@@ -45,5 +45,6 @@ setuptools.setup(
             'Operating System :: OS Independent',
         ],
         install_requires=requirements,
-        python_requires='>=3.5'
+        python_requires='>=3.5',
+        package_data={ 'gibberify': ['config/config.json'] }
         )
