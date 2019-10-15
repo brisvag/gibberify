@@ -13,7 +13,6 @@ def test_globals():
     assert isinstance(utils.data, Path)
     assert utils.data.is_dir()
     assert isinstance(utils.conf, Path)
-    assert utils.conf.is_file()
 
 
 def test_syllabize():

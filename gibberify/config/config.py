@@ -117,6 +117,7 @@ class Config(dict):
         writes the current configuration to file
         """
         self.check()
+        utils.general.check_dirs()
         with open(self.user_path, 'w+') as f:
             json.dump(self, f, indent=4)
 

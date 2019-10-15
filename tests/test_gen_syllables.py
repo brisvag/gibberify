@@ -1,7 +1,6 @@
 # Copyright 2019-2019 the gibberify authorsyl. See copying.md for legal info.
 
 import pytest
-import json
 from gibberify import Syllabizer
 from gibberify.utils import access_data
 
@@ -37,24 +36,24 @@ def test_download_syllables(syl):
 
 @pytest.mark.incremental
 class TestSyllablizerWriteRead:
-    def test_write(syl):
+    def test_write(self, syl):
         syl.raw = ['test', 'word']
         syl.words = ['another', 'thing']
         syl.syllables = ['more', 'stuff']
         syl.write(raw=True, words=True, syllables=True)
-        raw = json.load(access_data('raw', 'en'))
-        words = json.load(access_data('words', 'en'))
-        syllables = json.load(access_data('syllables', 'en'))
+        raw = access_data('raw', 'en')
+        words = access_data('words', 'en')
+        syllables = access_data('syllables', 'en')
         assert raw == syl.raw
         assert words == syl.words
         assert syllables == syl.syllables
 
-    def test_load_words(syl):
+    def test_load_words(self, syl):
         syl.load_words()
         assert isinstance(syl.words, list)
         assert syl.words
 
-    def test_load_syllables(syl):
+    def test_load_syllables(self, syl):
         syl.load_syllables()
         assert isinstance(syl.syllables, list)
         assert syl.syllables

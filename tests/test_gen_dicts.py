@@ -1,7 +1,6 @@
 # Copyright 2019-2019 the gibberify authors. See copying.md for legal info.
 
 import pytest
-import json
 from gibberify import Scrambler
 from gibberify.utils import access_data
 
@@ -50,14 +49,15 @@ def test_reverse(scr):
     scr.dict_straight = {'test': 'word'}
     scr.reverse()
     assert isinstance(scr.dict_reverse, dict)
+    # TODO this thing shouldn't be a string sometimes and an int ome other time!
     assert scr.dict_reverse == {4: {'word': 'test'}}
 
 
 def test_write(scr):
     scr.dict_straight = {'test': 'word'}
-    scr.dict_reverse = {4: {'word': 'test'}}
+    scr.dict_reverse = {'4': {'word': 'test'}}
     scr.write()
-    straight = json.load(access_data('dicts', 'en', 'orc'))
-    reverse = json.load(access_data('dicts', 'orc', 'en'))
+    straight = access_data('dicts', 'en', 'orc')
+    reverse = access_data('dicts', 'orc', 'en')
     assert scr.dict_straight == straight
     assert scr.dict_reverse == reverse
