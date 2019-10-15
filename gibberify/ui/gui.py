@@ -5,6 +5,7 @@ User interface using PyQt5
 """
 
 import sys
+import signal
 import math
 from PyQt5.QtGui import QFontDatabase, QIcon, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QComboBox, QHBoxLayout, \
@@ -549,7 +550,7 @@ def gui():
     translator = Translator()
     window = MainWindow(translator)
 
-    try:
-        app.exec_()
-    except KeyboardInterrupt:
-        pass
+    # catch KeyboardInterrupt
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+    app.exec_()
