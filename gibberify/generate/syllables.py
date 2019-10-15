@@ -27,8 +27,7 @@ class Syllabizer:
         """
         baseurl = 'https://raw.githubusercontent.com/brisvag/dictionaries/master/dictionaries/'
 
-        # print(f'Downloading raw data for {utils.r_lang_codes[self.lang]}...')
-        print(f'Downloading raw data for {self.lang}...')
+        print(f'Downloading raw data for {utils.r_lang_codes[self.lang]}...')
         # certifi is needed for mac, otherwise it complains about missing ssl certificates
         file = urlopen(f"{baseurl}/{self.lang}/index.dic", cafile=certifi.where())
 
@@ -41,8 +40,7 @@ class Syllabizer:
         """
         baseurl = 'https://raw.githubusercontent.com/brisvag/gibberify-data/master/words/'
 
-        # print(f'Downloading pregenerated words for {utils.r_lang_codes[self.lang]}...')
-        print(f'Downloading pregenerated words for {self.lang}...')
+        print(f'Downloading pregenerated words for {utils.r_lang_codes[self.lang]}...')
         # certifi is needed for mac, otherwise it complains about missing ssl certificates
         file = urlopen(f"{baseurl}/{self.lang}.json", cafile=certifi.where())
 
@@ -54,8 +52,7 @@ class Syllabizer:
         """
         baseurl = 'https://raw.githubusercontent.com/brisvag/gibberify-data/master/syllables/'
 
-        # print(f'Downloading pregenerated syllables for {utils.r_lang_codes[self.lang]}...')
-        print(f'Downloading pregenerated syllables for {self.lang}...')
+        print(f'Downloading pregenerated syllables for {utils.r_lang_codes[self.lang]}...')
         # certifi is needed for mac, otherwise it complains about missing ssl certificates
         file = urlopen(f"{baseurl}/{self.lang}.json", cafile=certifi.where())
 

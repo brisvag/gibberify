@@ -74,9 +74,7 @@ class Scrambler:
 
         generates a dict that can be used to translate (almost) every syllable from the input language
         """
-        # TODO: see utils.pyphen about r_lang_codes
-        # print(f'Creating translation dictionary from {utils.r_lang_codes[self.real_lang]} to {self.gib_lang}...')
-        print(f'Creating translation dictionary from {self.real_lang} to {self.gib_lang}...')
+        print(f'Creating translation dictionary from {utils.r_lang_codes[self.real_lang]} to {self.gib_lang}...')
         trans_dict = {}
 
         # TODO: use shorter syllables more often, like in normal languages
@@ -100,9 +98,7 @@ class Scrambler:
         """
         takes an existing translation dictionary from real to gibberish and reverses it
         """
-        # TODO: see utils.pyphen about r_lang_codes
-        # print(f'Creating translation dictionary from {self.gib_lang} to {utils.r_lang_codes[self.real_lang]}...')
-        print(f'Creating translation dictionary from {self.gib_lang} to {self.real_lang}...')
+        print(f'Creating translation dictionary from {self.gib_lang} to {utils.r_lang_codes[self.real_lang]}...')
         reverse = {}
 
         all_reverse = {k: v for v, k in self.dict_straight.items()}

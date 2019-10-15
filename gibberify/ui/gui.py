@@ -117,7 +117,7 @@ class SettingsWindow(QMainWindow):
         real_langs_widg.setLayout(real_langs_lay)
         group_real_lay.addWidget(real_langs_widg)
         columns = 5     # arbitrary number TODO: would be nice to have it dynamically adjusted
-        langs = utils.r_lang_codes
+        langs = dict(utils.r_lang_codes)
         rows = math.ceil(len(langs) / columns)
         # save them for later access
         self.real_lang_widgets = {}
