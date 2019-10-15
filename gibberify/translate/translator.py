@@ -22,7 +22,7 @@ class Translator:
         self.lang_out = lang_out
         self.text_in = text_in
         self.text_out = ''
-        self.dicts = None
+        self.dicts = {}
         self.load_dicts(dicts)
         self.dict = None
 
