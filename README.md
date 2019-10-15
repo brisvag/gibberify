@@ -10,7 +10,7 @@ Gibberify is a simple gibberish generator that translates words from a real lang
 
 If you have python3 installed:
 ```bash
-pip install git+git://github.com/brisvag/gibberify.git#egg=gibberify
+pip install --user git+git://github.com/brisvag/gibberify.git#egg=gibberify
 ```
 
 Pip should automatically add the script to your `PATH`, so you can simply run `gibberify` from the command line.
@@ -24,7 +24,6 @@ Download the latest release for your operative system, unzip it and double-click
     The standalone was generated with PyInstaller using the configuration file `gibberify.spec`.
     If you want to generate it yourself, just run `pyinstaller gibberify.spec` from the main
     directory (you will need pyinstaller installed).
-    PyInstaller does not work with python3.7 yet: use python3.6!
 
 # Usage
 
@@ -44,7 +43,7 @@ See the **Examples** section for other command line stuff.
 
 To change settings in the GUI, go click on `edit` and then `settings`.
 
-**WARNING: EXPECT THE PROGRAM TO FREEZE FOR A COUPLE OF MINUTES AFTER SAVING! It's a lot of processing.**
+**WARNING: EXPECT THE PROGRAM TO FREEZE FOR A FEW SECONDS AFTER SAVING!**
 
 Several options are available to tune the gibberish language generation:
 - `pool`: pool of real languages to use as a starting point for syllable generation
@@ -52,7 +51,7 @@ Several options are available to tune the gibberish language generation:
 - `impoverish`: letters (or patterns) that you want to have few of
 - `remove`: letters (or patterns) that you want NONE of
 
-The following is an example config for orcish (which is the default one):
+The following is an example config for orcish:
 ```
 "orc": {
   "pool": ["ru", "de"],
@@ -64,6 +63,14 @@ The following is an example config for orcish (which is the default one):
 This config results in a language based on Russian and German in which `g`, `k` and `r` appear often and
 `w` appears rarely. You can also use patterns (such as `mom`) instead of single letters and specify the same thing
 more than once (such as `["g", "g", "g"]`) to enrich/impoverish even more.
+
+# Troubleshooting
+
+### Issue with PyQt5-sip import
+```bash
+pip install --user --upgrade PyQt5
+pip install --user --upgrade PyQt5-sip
+```
 
 # Advanced and additional info
 To edit the configuration from the command line:
@@ -88,7 +95,7 @@ Syllables are generated (and later matched) using hyphenation rules from several
 Right now the gibberish dictionaries I'm "shipping" have settings that I arbitrarily decided. They sound much better now that
 they used to, but please, try out some stuff yourself and let me know if you find anything better!
 
-# This line of code sucks! 
+# This line of code sucks! AKA: Contributing
 Do you want to change it? Feel free to fork and PR! For testing, you can also import `gibberify` as a module
 (_this is now much easier and better!_):
 ```python3
@@ -96,18 +103,19 @@ import gibberify
 
 # anything configuration related
 conf = gibberify.Config()
-c.edit()
-c.write()
+conf.edit()
+conf.write()
+
 # build dictionaries
-gibberify.build()
+gibberify.build(conf)
 
 # translate something
-t = gibberify.Translator('en', 'orc', 'I love ALE!')
+tr = gibberify.Translator('en', 'orc', 'I love ALE!')
 # just print it to see the translation
-print(t)
+print(tr)
 # you can change attributes, and the translation updates accordingly
-t.text_in = 'This is a new text!'
-t.lang_out = 'gob'
+tr.text_in = 'This is a new text!'
+tr.lang_out = 'gob'
 ```
 
 ### Command line examples
