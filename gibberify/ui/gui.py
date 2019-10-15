@@ -9,12 +9,12 @@ import math
 from PyQt5.QtGui import QFontDatabase, QIcon, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QComboBox, QHBoxLayout, \
     QVBoxLayout, QWidget, QPushButton, QAction, QCheckBox, QGridLayout, QGroupBox, QLabel, \
-    QTabWidget, QInputDialog, QLineEdit, QMessageBox
+    QTabWidget, QInputDialog, QLineEdit, QMessageBox, QErrorMessage
 from PyQt5.QtCore import QSize, pyqtSignal
 
 # local imports
 from .. import utils
-from ..config import Config
+from ..config import Config, ConfigError
 from ..generate import build
 from ..translate import Translator
 
@@ -353,6 +353,13 @@ class SettingsWindow(QMainWindow):
             for lang in options['pool']:
                 if lang not in conf['real_langs']:
                     conf['real_langs'].append(lang)
+
+        try:
+            conf.check()
+        except ConfigError as e:
+            error_dialog = QErrorMessage(self)
+            error_dialog.showMessage(e.__str__())
+            return
 
         # write output in config file
         conf.write()
