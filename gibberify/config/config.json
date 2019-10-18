@@ -21,7 +21,7 @@
     "orc": {
       "pool": ["ru", "de"],
       "enrich": ["g", "k", "r"],
-      "impoverish": ["w"],
+      "impoverish": ["w", "v", "y"],
       "remove": []
     },
     "elv": {
@@ -38,8 +38,8 @@
     },
     "hal": {
       "pool": ["es", "nb", "et"],
-      "enrich": [],
-      "impoverish": [],
+      "enrich": ["f", "l"],
+      "impoverish": ["k"],
       "remove": []
     },
     "gob": {

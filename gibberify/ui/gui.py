@@ -5,18 +5,19 @@ User interface using PyQt5
 """
 
 import sys
+import signal
 import math
 from PyQt5.QtGui import QFontDatabase, QIcon, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QComboBox, QHBoxLayout, \
     QVBoxLayout, QWidget, QPushButton, QAction, QCheckBox, QGridLayout, QGroupBox, QLabel, \
-    QTabWidget, QInputDialog, QLineEdit, QMessageBox
+    QTabWidget, QInputDialog, QLineEdit, QMessageBox, QErrorMessage
 from PyQt5.QtCore import QSize, pyqtSignal
 
 # local imports
 from .. import utils
-from .. import config
+from ..config import Config, ConfigError
 from ..generate import build
-from . import gibberify, degibberify
+from ..translate import Translator
 
 
 class LangMenu(QComboBox):
@@ -59,7 +60,7 @@ class SwitchButton(QPushButton):
     def __init__(self):
         super(SwitchButton, self).__init__()
         # configure icon and size
-        self.setIcon(QIcon(utils.clean_path(utils.assets, 'switch.png')))
+        self.setIcon(QIcon(str(utils.assets/'switch.png')))
         self.setIconSize(QSize(35, 35))
         # make it togglable
         self.setCheckable(True)
@@ -75,38 +76,8 @@ class SettingsWindow(QMainWindow):
     def __init__(self, parent):
         super(SettingsWindow, self).__init__(parent)
         self.setWindowTitle('Gibberify - Settings')
-        self.setWindowIcon(QIcon(utils.clean_path(utils.assets, 'gibberify.png')))
-        self.conf = config.import_conf()
-
-        self.real_langs = {'bg': 'Bulgarian',
-                           'ca': 'Catalan',
-                           'da': 'Danish',
-                           'el': 'Greek',
-                           'et': 'Estonian',
-                           'fr': 'French',
-                           'hu': 'Hungarian',
-                           'it': 'Italian',
-                           'nb': 'Norwegian-Bokmål',
-                           'nn': 'Norwegian-Nynorsk',
-                           'pt': 'Portuguese',
-                           'ru': 'Russian',
-                           'sk': 'Slovak',
-                           'sr': 'Serbian',
-                           'cs': 'Czech',
-                           'de': 'German',
-                           'en': 'English',
-                           'es': 'Spanish',
-                           'gl': 'Galician',
-                           'hr': 'Croatian',
-                           'is': 'Icelandic',
-                           'lt': 'Lithuanian',
-                           'lv': 'Latvian',
-                           'nl': 'Dutch',
-                           'pl': 'Polish',
-                           'ro': 'Romanian',
-                           'sl': 'Slovenian',
-                           'sv': 'Swedish',
-                           'uk': 'Ukrainian'}
+        self.setWindowIcon(QIcon(str(utils.assets/'gibberify.png')))
+        self.conf = Config.from_json()
 
         self.gib_options = {
             'pool': 'Pool of real languages:',
@@ -147,8 +118,8 @@ class SettingsWindow(QMainWindow):
         real_langs_widg.setLayout(real_langs_lay)
         group_real_lay.addWidget(real_langs_widg)
         columns = 5     # arbitrary number TODO: would be nice to have it dynamically adjusted
-        rows = math.ceil(len(self.real_langs) / columns)
-        langs = self.real_langs
+        langs = dict(utils.r_lang_codes)
+        rows = math.ceil(len(langs) / columns)
         # save them for later access
         self.real_lang_widgets = {}
         for i in range(rows):
@@ -184,15 +155,18 @@ class SettingsWindow(QMainWindow):
         group_gib_desc_label.setWordWrap(True)
         group_gib_lay.addWidget(group_gib_desc_label)
 
+        # sublayout, so tabs and buttons are horizontally divided but still under the gib group
+        group_gib_sublay = QHBoxLayout()
+        group_gib_lay.addLayout(group_gib_sublay)
         # tab widget: will create a tab for each gibberish language for customization
         self.gib_tabs = QTabWidget()
         # store them for later access
         self.gib_langs_widgets = {}
-        group_gib_lay.addWidget(self.gib_tabs)
+        group_gib_sublay.addWidget(self.gib_tabs)
 
         # plus and minus buttons. Horizontally added to lay_mid
         buttons_lay = QVBoxLayout()
-        lay_mid.addLayout(buttons_lay)
+        group_gib_sublay.addLayout(buttons_lay)
         big_font = QFont("Times", 20, QFont.Bold)
 
         # plus button
@@ -213,8 +187,8 @@ class SettingsWindow(QMainWindow):
         delete_lang_button.clicked.connect(self.delete_curr_gib_lang)
         buttons_lay.addStretch(1)
 
-        # set options to current configuration
-        self.set_current(config.import_conf())
+        # set options to current configuration from file
+        self.set_current(self.parent().conf)
 
         # ok, default and cancel buttons
         lay_bot.addStretch(1)
@@ -335,7 +309,7 @@ class SettingsWindow(QMainWindow):
                                                       'You will lose all your current settings.'):
             return
 
-        self.set_current(self.conf)
+        self.set_current(self.parent().conf)
 
     def set_defaults(self):
         """
@@ -345,8 +319,7 @@ class SettingsWindow(QMainWindow):
                                                'You will lose all your current settings.'):
             return
 
-        conf = config.get_defaults()
-        self.set_current(conf)
+        self.set_current(Config.from_default())
 
     def save_settings(self):
         """
@@ -358,10 +331,10 @@ class SettingsWindow(QMainWindow):
             return
 
         # create conf based on current state
-        conf = {
+        conf = Config({
             'real_langs': [],
             'gib_langs': {}
-        }
+        })
 
         # parse active language checkboxes
         for real_lang, widget in self.real_lang_widgets.items():
@@ -382,11 +355,19 @@ class SettingsWindow(QMainWindow):
                 if lang not in conf['real_langs']:
                     conf['real_langs'].append(lang)
 
+        try:
+            conf.check()
+        except ConfigError as e:
+            error_dialog = QErrorMessage(self)
+            error_dialog.showMessage(e.__str__())
+            return
+
         # write output in config file
-        config.write_conf(conf)
-        self.conf = conf
+        conf.write()
         # rebuild dictionaries based on new config
-        build()
+        build(conf)
+        # update conf of parent and close
+        self.parent().conf = conf
         self.settings_saved.emit()
         self.close()
 
@@ -408,11 +389,13 @@ class MainWindow(QMainWindow):
 
     ready = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, translator):
         super(MainWindow, self).__init__()
         self.setWindowTitle('Gibberify')
-        self.setWindowIcon(QIcon(utils.clean_path(utils.assets, 'gibberify.png')))
-        self.conf = config.import_conf()
+        self.setWindowIcon(QIcon(str(utils.assets/'gibberify.png')))
+
+        self.conf = Config.from_json()
+        self.translator = translator
 
         # MENU
         self.menu = self.menuBar()
@@ -439,13 +422,9 @@ class MainWindow(QMainWindow):
 
         # INITIALIZATION
         # and initialize languages to current settings
-        self.lang_in = self.lang_in_box.currentText()
-        self.lang_out = self.lang_out_box.currentText()
-        # initialize translator
-        self.translator = None
-        self.update_translator()
-        # run an empty translation to prevent stutter at first actual translation
-        self.translate()
+        self.translator.lang_in = self.lang_in_box.currentText()
+        self.translator.lang_out = self.lang_out_box.currentText()
+        # run an empty translation to avoid lag the first time something is typed
 
         # LAYOUT SETUP
         # main container
@@ -474,9 +453,6 @@ class MainWindow(QMainWindow):
         lay_cen.addWidget(self.switch)
 
         # CONNECT
-        # update translator whenever ready
-        self.ready.connect(self.update_translator)
-
         # update languages when combobox are modified
         self.lang_in_box.currentTextChanged.connect(self.update_languages)
         self.lang_out_box.currentTextChanged.connect(self.update_languages)
@@ -487,25 +463,13 @@ class MainWindow(QMainWindow):
         # run gibberify each time something changes
         self.text_in.textChanged.connect(self.translate)
         self.ready.connect(self.translate)
+
+        # LAST FEW THINGS
+        # run a dummy translation at start to avoid lag the first time something is typed
+        self.text_in.setText('test')
+        self.text_in.setText('')
+
         self.show()
-
-    def init_conf(self):
-        """
-        initialize transalor to currently loaded configuration
-        """
-        self.conf = config.import_conf()
-        # keep signals from firing to prevent crashes
-        self.lang_in_box.blockSignals(True)
-        self.lang_out_box.blockSignals(True)
-
-        self.lang_in_box.clear()
-        self.lang_out_box.clear()
-        self.lang_in_box.addItems(self.conf['real_langs'])
-        self.lang_out_box.addItems([lang for lang in self.conf['gib_langs']])
-
-        self.lang_in_box.blockSignals(False)
-        self.lang_out_box.blockSignals(False)
-        self.update_languages()
 
     def is_ready(self):
         """
@@ -514,38 +478,21 @@ class MainWindow(QMainWindow):
         self.ready.emit()
 
     def translate(self):
-        """
-        run gibberify on current text_in
-        """
-        textin = self.text_in.toPlainText()
-        # set new text_out as translation
-        if not self.switch.isChecked():
-            self.text_out.setText(gibberify(self.translator, textin))
-        else:
-            self.text_out.setText(degibberify(self.translator, textin))
+        self.translator.text_in = self.text_in.toPlainText()
+        self.text_out.setText(self.translator.text_out)
 
     def update_languages(self):
         """
         update languages based on drop-down menus
         """
-        self.lang_in = self.lang_in_box.currentText()
-        self.lang_out = self.lang_out_box.currentText()
+        self.translator.lang_in = self.lang_in_box.currentText()
+        self.translator.lang_out = self.lang_out_box.currentText()
         self.is_ready()
-
-    def update_translator(self):
-        """
-        update translator to currently selected languages
-        """
-        self.translator = utils.access_data('dicts', self.lang_in, self.lang_out)
 
     def swap(self):
         """
         swap input/output. Keep current languages and texts and swap those too.
         """
-        # keep signals from firing to prevent crashes
-        self.lang_in_box.blockSignals(True)
-        self.lang_out_box.blockSignals(True)
-
         # save some variables and clear boxes
         curr_lang_in = self.lang_in_box.currentText()
         curr_lang_out = self.lang_out_box.currentText()
@@ -569,9 +516,6 @@ class MainWindow(QMainWindow):
         # re-set old languages, but inverted
         self.lang_in_box.setCurrentText(curr_lang_out)
         self.lang_out_box.setCurrentText(curr_lang_in)
-
-        self.lang_in_box.blockSignals(False)
-        self.lang_out_box.blockSignals(False)
         self.update_languages()
 
     def open_settings(self):
@@ -583,6 +527,18 @@ class MainWindow(QMainWindow):
         # update config after saving settings
         self.settings_window.settings_saved.connect(self.init_conf)
 
+    def init_conf(self):
+        """
+        initialize to currently loaded configuration
+        """
+        self.lang_in_box.clear()
+        self.lang_out_box.clear()
+        self.lang_in_box.addItems(self.conf['real_langs'])
+        self.lang_out_box.addItems([lang for lang in self.conf['gib_langs']])
+
+        self.update_languages()
+        self.translator.load_dicts()
+
 
 def gui():
     """
@@ -591,9 +547,10 @@ def gui():
     app = QApplication(sys.argv)
     app.setApplicationName('Gibberify')
 
-    window = MainWindow()
+    translator = Translator()
+    window = MainWindow(translator)
 
-    try:
-        app.exec_()
-    except KeyboardInterrupt:
-        pass
+    # catch KeyboardInterrupt
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+    app.exec_()
