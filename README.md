@@ -33,6 +33,8 @@ gibberify
 ```
 (or just double click on the executable).
 
+**DISCLAIMER**: the reverse translation function is experimental and, frankly, terrible. Don't expect much from it.
+
 You can also translate from the command line. To print the help, run:
 ```
 gibberify -h
@@ -71,6 +73,14 @@ more than once (such as `["g", "g", "g"]`) to enrich/impoverish even more.
 pip install --user --upgrade PyQt5
 pip install --user --upgrade PyQt5-sip
 ```
+
+### If you used previous versions of the program...
+... and now get strange errors, it might be caused by changes in the core file structures
+from older versions. To remove all the old files and start anew, try running:
+```bash
+gibberify --uninstall
+```
+If this doesn't fix it, come back here and open an issue, copy-pasting the error message.
 
 # Advanced and additional info
 To edit the configuration from the command line:

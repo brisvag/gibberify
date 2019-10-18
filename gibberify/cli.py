@@ -4,7 +4,6 @@
 Command line interface and argument parsing
 """
 
-import os
 import sys
 import argparse
 
@@ -60,6 +59,9 @@ def parse():
     build_opt.add_argument('--rebuild-dicts', dest='rebuild_dicts', action='store_true',
                            help='rebuild translation dictionaries. Use this option '
                                 'after changing dictionary generation settings')
+    build_opt.add_argument('--uninstall', dest='uninstall', action='store_true',
+                           help='remove all custom configuration, downloaded and generated data. '
+                                'This is NOT REVERSIBLE')
 
     return parser.parse_args()
 
@@ -74,6 +76,10 @@ def run(args):
 
     # if no arguments were given, run gui version
     graphical = True if len(sys.argv) == 1 else False
+
+    if args.uninstall:
+        utils.uninstall()
+        sys.exit()
 
     conf = Config.from_json()
 

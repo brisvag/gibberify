@@ -8,6 +8,7 @@ import os
 import sys
 import json
 import platform
+import shutil
 from pathlib import Path
 
 
@@ -90,6 +91,23 @@ def access_data(data_type, lang_in, lang_out=None, write_data=None):
             return json.load(f)
         else:
             json.dump(write_data, f, indent=4)
+
+
+def uninstall(force=False):
+    """
+    deletes all the generated data and the user configuration
+    """
+    if not data.is_dir():
+        print('There is nothing to uninstall!')
+    else:
+        if not force:
+            confirm = ''
+            while confirm not in ['y', 'n']:
+                confirm = input('Are you sure? (y/n)')
+            if confirm == 'n':
+                return
+        print('Removing all the generated data and custom configuration.')
+        shutil.rmtree(data)
 
 
 # initialize all the globals used by other modules
