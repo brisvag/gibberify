@@ -44,8 +44,9 @@ class Translator:
         if changed and all([attr in self.__dict__ for attr in attr_list]):
             self.run()
 
-    def __call__(self, text):
-        self.text_in = text
+    def __call__(self, text=None):
+        if text is not None:
+            self.text_in = text
         self.run()
         return self.text_out
 
