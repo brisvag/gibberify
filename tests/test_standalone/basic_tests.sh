@@ -2,8 +2,6 @@
 
 set -e
 
-gibberify --help
-
+gibberify --uninstall
 gibberify --rebuild-dicts
-
 gibberify -m 'test'
