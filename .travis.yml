@@ -43,7 +43,7 @@ matrix:
     before_deploy:
       - zip -j gibberify-macos.zip dist/gibberify
   - os: windows
-    language: shell
+    language: bash
     before_install:
       - choco install python --version 3.6
       - export PATH="/c/Python36:/c/Python36/Scripts:$PATH"
@@ -60,7 +60,7 @@ matrix:
 
 script:
   - pytest
-  - bash tests/test_standalone/basic_tests.sh
+  - bash -c "tests/test_standalone/basic_tests.sh"
 
 deploy:
   provider: releases
