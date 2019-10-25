@@ -5,3 +5,10 @@ from .config import Config
 from .generate import Syllabizer, Scrambler, build
 from .translate import Translator
 from .ui import gui, interactive
+
+__all__ = [
+    'Config',
+    'build',
+    'Translator',
+    'gui'
+]
