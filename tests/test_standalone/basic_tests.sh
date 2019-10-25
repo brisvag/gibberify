@@ -2,6 +2,6 @@
 
 set -e
 
-gibberify --uninstall
+echo y | gibberify --uninstall
 gibberify --rebuild-dicts
 gibberify -m 'test'
