@@ -21,7 +21,7 @@ reason, please contact us.
 
 A full list of all gibberify authors ("contributors") can also be determined
 from the VCS, e.g. via `git shortlog -sne`, or conveniently looked up on
-[the GitHub web interface](https://github.com/martinitoolspymol/gibberify/graphs/contributors).
+[the GitHub web interface](https://github.com/brisvag/gibberify/graphs/contributors).
 
 Details on individual authorships of files can be obtained via the VCS,
 e.g. via `git blame`, or the GitHub web interface.

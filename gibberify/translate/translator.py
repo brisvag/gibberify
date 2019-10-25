@@ -22,8 +22,7 @@ class Translator:
         self.lang_out = lang_out
         self.text_in = text_in
         self.text_out = ''
-        self.dicts = {}
-        self.load_dicts(dicts)
+        self.dicts = self.load_dicts(dicts)
         self.dict = None
 
     def __str__(self):
@@ -45,6 +44,12 @@ class Translator:
         if changed and all([attr in self.__dict__ for attr in attr_list]):
             self.run()
 
+    def __call__(self, text=None):
+        if text is not None:
+            self.text_in = text
+        self.run()
+        return self.text_out
+
     def load_dicts(self, dicts=None):
         """
         loads all generated dictionaries into memory
@@ -54,13 +59,14 @@ class Translator:
         if not dicts:
             dicts = {}
             dicts_dir = utils.data/'dicts'
-            for dict_file in dicts_dir.iterdir():
+            dict_files = [file for file in dicts_dir.iterdir() if file.suffix == '.p']
+            for dict_file in dict_files:
                 dict_code = dict_file.stem
                 lang_in, lang_out = dict_code.split('-')
                 content = utils.access_data('dicts', lang_in, lang_out)
                 dicts[dict_code] = content
 
-        self.dicts = dicts
+        return dicts
 
     def gibberify(self):
         """
@@ -100,7 +106,7 @@ class Translator:
         # remove multiple spaces due to input or unmapped syllables
         trans = re.sub(' +', ' ', trans)
 
-        self.text_out = trans
+        return trans
 
     def degibberify(self):
         """
@@ -137,7 +143,7 @@ class Translator:
                                     [c for c in mapping] +
                                     [x for x in trans[end:]])
 
-        self.text_out = trans
+        return trans
 
     def run(self):
         """
@@ -156,11 +162,7 @@ class Translator:
             return
 
         # check if current translator is straight or reverse
-        if len(self.lang_in) == 2 and len(self.lang_out) == 3:
-            self.gibberify()
-        elif len(self.lang_in) == 3 and len(self.lang_out) == 2:
-            self.degibberify()
+        if not self.dict.reverse:
+            self.text_out = self.gibberify()
         else:
-            raise NotImplementedError(f'How did this happen? {self.lang_in, self.lang_out}')
-        # TODO: change this to something better than code length. Maybe good excuse to switch
-        #       to using `pickle` and save some metadata in the files
+            self.text_out = self.degibberify()

@@ -27,7 +27,7 @@ class LangMenu(QComboBox):
     def __init__(self, lang_list):
         super(LangMenu, self).__init__()
         # use given language list as possible selections
-        self.addItems(lang_list)
+        self.addItems(sorted(lang_list))
 
         # configure font and size
         fixedfont = QFontDatabase.systemFont(QFontDatabase.FixedFont)
@@ -77,7 +77,7 @@ class SettingsWindow(QMainWindow):
         super(SettingsWindow, self).__init__(parent)
         self.setWindowTitle('Gibberify - Settings')
         self.setWindowIcon(QIcon(str(utils.assets/'gibberify.png')))
-        self.conf = Config.from_json()
+        self.conf = Config()
 
         self.gib_options = {
             'pool': 'Pool of real languages:',
@@ -319,7 +319,7 @@ class SettingsWindow(QMainWindow):
                                                'You will lose all your current settings.'):
             return
 
-        self.set_current(Config.from_default())
+        self.set_current(Config(default=True))
 
     def save_settings(self):
         """
@@ -356,14 +356,12 @@ class SettingsWindow(QMainWindow):
                     conf['real_langs'].append(lang)
 
         try:
-            conf.check()
+            # write output in config file
+            conf.write()
         except ConfigError as e:
             error_dialog = QErrorMessage(self)
             error_dialog.showMessage(e.__str__())
             return
-
-        # write output in config file
-        conf.write()
         # rebuild dictionaries based on new config
         build(conf)
         # update conf of parent and close
@@ -394,7 +392,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Gibberify')
         self.setWindowIcon(QIcon(str(utils.assets/'gibberify.png')))
 
-        self.conf = Config.from_json()
+        self.conf = Config()
         self.translator = translator
 
         # MENU

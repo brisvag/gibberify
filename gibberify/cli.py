@@ -71,7 +71,7 @@ def run(args):
     takes namespace with named arguments and based on them control the main functions and modules of gibberify
     """
     if args.version:
-        print(f'Gibberify {utils.version}')
+        print(f'Gibberify {utils.__version__}')
         sys.exit()
 
     # if no arguments were given, run gui version
@@ -81,25 +81,26 @@ def run(args):
         utils.uninstall()
         sys.exit()
 
-    conf = Config.from_json()
+    conf = Config()
 
     if args.config:
         conf.edit()
 
-    if args.force_download or args.force_syllables or args.rebuild_dicts or args.config:
+    if any((args.force_download, args.force_syllables, args.rebuild_dicts, args.config)):
         build(conf, from_raw=args.force_download, force_syl_rebuild=args.force_syllables,
               force_dicts_rebuild=args.rebuild_dicts)
         sys.exit()
 
     # before running anything, check if data files exist and create them if needed
+    exist = []
     for real_lang in conf['real_langs']:
         for gib_lang in conf['gib_langs'].keys():
-            straight = utils.data/'dicts'/f'{real_lang}-{gib_lang}.json'
-            reverse = utils.data/'dicts'/f'{gib_lang}-{real_lang}.json'
-            if not any([straight.is_file(), reverse.is_file()]):
-                print('Dictionaries are missing! I will generate the missing data first. It may take a minute!\n')
-                build(conf)
-                break
+            straight = utils.data/'dicts'/f'{real_lang}-{gib_lang}.p'
+            reverse = utils.data/'dicts'/f'{gib_lang}-{real_lang}.p'
+            exist.extend([straight.is_file(), reverse.is_file()])
+    if not all(exist):
+        print('Dictionaries are missing! I will generate the missing data first. It may take a minute!\n')
+        build(conf)
 
     if not graphical and not args.inter:
         message = args.message[0]

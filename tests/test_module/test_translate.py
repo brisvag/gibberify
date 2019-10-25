@@ -2,13 +2,20 @@
 
 import pytest
 from gibberify import Translator
+from gibberify.generate.dicts import GibDict
 
 
 @pytest.fixture
 def tr():
+    conf = {
+        'pool': ['en'],
+        'enrich': ['t'],
+        'impoverish': [],
+        'remove': ['w']
+    }
     dicts = {
-        'en-orc': {'te': 'stu', 'st': 'ff'},
-        'orc-en': {3: {'stu': 'te'}, 2: {'ff': 'st'}}
+        'en-orc': GibDict('en', 'orc', conf, {'te': 'stu', 'st': 'ff'}),
+        'orc-en': GibDict('orc', 'en', conf, {3: {'stu': 'te'}, 2: {'ff': 'st'}}, reverse=True)
     }
     return Translator(lang_in='en', lang_out='orc', text_in='test', dicts=dicts)
 

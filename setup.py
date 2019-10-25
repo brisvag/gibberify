@@ -10,7 +10,7 @@ name = "gibberify"
 def find_version():
     with codecs.open(path.join('gibberify', 'utils', 'general.py'), 'r') as f:
         version_file = f.read()
-    version_match = re.search(r"^version = ['\"]([^'\"]*)['\"]",
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
                               version_file, re.M)
     if version_match:
         return version_match.group(1)
@@ -41,6 +41,6 @@ setuptools.setup(
             'Operating System :: OS Independent',
         ],
         install_requires=requirements,
-        python_requires='>=3.5',
+        python_requires='>=3.6',
         package_data={'gibberify': ['config/config.json', 'assets/*']}
         )

@@ -11,7 +11,7 @@ def interactive():
     """
     command line interactive mode. Deal with user input and call functions accordingly
     """
-    conf = Config.from_json()
+    conf = Config()
     # TODO: add support for reverse translation
     # Make it a sort of menu for easier usage
     level = 0
@@ -19,7 +19,7 @@ def interactive():
         try:
             if level == 0:
                 # welcome and usage
-                print(f'Welcome to Gibberify {utils.version}! '
+                print(f'Welcome to Gibberify {utils.__version__}! '
                       f'Follow the prompts to translate a text.\n'
                       f'To go back to the previous menu, press Ctrl+C.\n')
                 level += 1
