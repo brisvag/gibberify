@@ -55,12 +55,14 @@ class Config(dict):
         else:
             path = Path(path)
 
-        if not path.is_file() or default:
-            with open(utils.conf_default, 'r') as f:
-                self.update(json.load(f))
-        else:
-            with open(path, 'r') as f:
-                self.update(json.load(f))
+        # if a dict was passed as argument, don't update based on a config
+        if not self:
+            if not path.is_file() or default:
+                with open(utils.conf_default, 'r') as f:
+                    self.update(json.load(f))
+            else:
+                with open(path, 'r') as f:
+                    self.update(json.load(f))
 
         self.path = path
 
