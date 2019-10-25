@@ -2,7 +2,6 @@
 
 from urllib.request import urlopen
 from transliterate import translit, get_available_language_codes
-import json
 import pickle
 import certifi
 
@@ -161,7 +160,7 @@ class Syllabizer:
                 self.words = self._download_words()
                 self.syllables = self._make_syllables()
             else:
-                self._download_syllables()
+                self.syllables = self._download_syllables()
 
             # write data only if we have it
             self._save(words=bool(self.words), syllables=bool(self.syllables))
