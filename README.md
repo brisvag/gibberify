@@ -8,7 +8,7 @@ Gibberify is a simple gibberish generator that translates words from a real lang
 
 # Installation
 
-If you have python3 installed:
+If you have python (3.6+) installed:
 ```bash
 pip install --user git+git://github.com/brisvag/gibberify.git#egg=gibberify
 ```
@@ -39,7 +39,6 @@ You can also translate from the command line. To print the help, run:
 ```
 gibberify -h
 ```
-See the **Examples** section for other command line stuff.
 
 # Customisation
 
@@ -116,36 +115,17 @@ conf = gibberify.Config()
 conf.edit()
 conf.write()
 
-# build dictionaries
+# build dictionaries based on the config
 gibberify.build(conf)
 
 # translate something
-tr = gibberify.Translator('en', 'orc', 'I love ALE!')
-# just print it to see the translation
-print(tr)
+tr = gibberify.Translator('en', 'orc')
+# just call it to run a translation
+tr('I love ALE!')
 # you can change attributes, and the translation updates accordingly
 tr.text_in = 'This is a new text!'
 tr.lang_out = 'gob'
-```
-
-### Command line examples
-
-- Translate from German to Elvish the sentence "*Hans, Get ze Flammenwerfer*" from the command line:
-```
-gibberify -f de -t elv -m Hans, Get ze Flammenwerfer
-Skel, Foë togssaé Licfoeusuasean
-```
-
-- Translate from English (default) to Dwarvish the file `README.md`:
-```
-gibberify -l dwa -m README.md
-***this_is_not_a_recursive_message***
-```
-
-- Translate from Russian to Orcish (default) from `stdin` (**DOES NOT WORK AT THE MOMENT**), using gibberify as a python module:
-```
-echo Privetstvuju Putina! | python3 -m gibberify -fl ru -m -
-Thorsyneftlaos Pryrheeflut!
+tr()
 ```
 
 ---
