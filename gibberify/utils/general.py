@@ -114,7 +114,7 @@ def uninstall(force=False):
 
 
 # initialize all the globals used by other modules
-__version__ = '0.5.0'
+__version__ = '0.6.0'
 
 basedir = find_basedir()
 assets = basedir/'assets'
