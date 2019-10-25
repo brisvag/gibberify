@@ -13,10 +13,11 @@ added_files += collect_data_files('pyphen')
 added_files += collect_data_files('certifi')
 added_files += collect_data_files('transliterate', include_py_files=True)
 added_files += copy_metadata('text-editor')
+added_files += copy_metadata('packaging')
 added_files += [(os.path.join('gibberify', 'assets'), 'assets')]
 added_files += [(os.path.join('gibberify', 'config', 'config.json'), 'config')]
 
-extra_imports = ['pyphen', 'transliterate', 'PyQt5', 'certifi']
+extra_imports = ['pyphen', 'transliterate', 'PyQt5', 'certifi', 'packaging']
 
 
 a = Analysis(['pyinstaller_entry.py'],

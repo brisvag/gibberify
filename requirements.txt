@@ -3,3 +3,4 @@ transliterate
 PyQt5
 certifi
 text-editor
+packaging
