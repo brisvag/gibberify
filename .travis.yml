@@ -14,6 +14,13 @@ matrix:
   - os: linux
     language: python
     python: 3.6
+    install:
+    - pip install -r requirements.txt
+    - pip install pyinstaller
+    - pip install .
+    - pyinstaller gibberify.spec
+    before_script:
+      - pip install pytest
     before_deploy:
       - tar -czvf gibberify-ubuntu.tar.gz -C dist gibberify
   - os: osx
@@ -26,6 +33,13 @@ matrix:
       - sudo port select --set python3 python36
       - sudo port select --set pip pip36
       - export PATH=$PATH:/Users/travis/Library/Python/3.6/bin
+    install:
+      - pip install --user -r requirements.txt
+      - pip install --user pyinstaller
+      - pip install --user .
+      - pyinstaller gibberify.spec
+    before_script:
+      - pip install --user pytest
     before_deploy:
       - zip -j gibberify-macos.zip dist/gibberify
   - os: windows
@@ -34,19 +48,19 @@ matrix:
       - choco install python --version 3.6
       - export PATH="/c/Python36:/c/Python36/Scripts:$PATH"
       - pip install --user pywin32 pypiwin32
+    install:
+      - pip install -r requirements.txt
+      - pip install pyinstaller
+      - pip install .
+      - pyinstaller gibberify.spec
+    before_script:
+      - pip install pytest
     before_deploy:
       - 7z a -tzip gibberify-windows.zip ./dist/gibberify.exe
 
-install:
-  - pip install --user -r requirements.txt
-  - pip install --user pyinstaller
-  - pip install --user .
-  - pyinstaller gibberify.spec
-
-before_script:
-  - pip install --user pytest
-
-script: pytest
+script:
+  - pytest
+  - bash tests/test_standalone/basic_tests.sh
 
 deploy:
   provider: releases
