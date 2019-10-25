@@ -31,26 +31,26 @@ def test_scrambler_instance(scr):
 
 def test_create_gib_pool(scr):
     scr.gib_pool_raw = ['test', 'word']
-    scr._create_gib_pool()
-    assert isinstance(scr.gib_pool, list)
-    assert 'test' in scr.gib_pool
-    assert 'word' not in scr.gib_pool
+    gib_pool = scr._create_gib_pool()
+    assert isinstance(gib_pool, list)
+    assert 'test' in gib_pool
+    assert 'word' not in gib_pool
 
 
-def test_straight(scr):
+def test_make_straight(scr):
     scr.real_pool = ['test', 'word']
     scr.gib_pool = ['another', 'thing']
-    scr._make_straight()
-    assert isinstance(scr.dict_straight, dict)
-    assert scr.dict_straight
+    dict_straight = scr._make_straight()
+    assert isinstance(dict_straight, dict)
+    assert dict_straight
 
 
-def test_reverse(scr):
+def test_make_reverse(scr):
     scr.dict_straight = {'test': 'word'}
-    scr._reverse()
-    assert isinstance(scr.dict_reverse, dict)
+    dict_reverse = scr._make_reverse()
+    assert isinstance(dict_reverse, dict)
     # TODO this thing shouldn't be a string sometimes and an int ome other time!
-    assert scr.dict_reverse == {4: {'word': 'test'}}
+    assert dict_reverse == {4: {'word': 'test'}}
 
 
 def test_write(scr):

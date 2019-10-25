@@ -39,7 +39,7 @@ class TestSyllablizerWriteRead:
     def test_write(self, syl):
         syl.words = GibPool('en', ['another', 'thing'])
         syl.syllables = GibPool('en', ['more', 'stuff'])
-        syl._save(words=True, sylables=True)
+        syl._save(words=True, syllables=True)
         words = access_data('words', 'en')
         syllables = access_data('syllables', 'en')
         assert words == syl.words
