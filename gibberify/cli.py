@@ -92,14 +92,15 @@ def run(args):
         sys.exit()
 
     # before running anything, check if data files exist and create them if needed
+    exist = []
     for real_lang in conf['real_langs']:
         for gib_lang in conf['gib_langs'].keys():
             straight = utils.data/'dicts'/f'{real_lang}-{gib_lang}.p'
             reverse = utils.data/'dicts'/f'{gib_lang}-{real_lang}.p'
-            if not any([straight.is_file(), reverse.is_file()]):
-                print('Dictionaries are missing! I will generate the missing data first. It may take a minute!\n')
-                build(conf)
-                break
+            exist.extend([straight.is_file(), reverse.is_file()])
+    if not all(exist):
+        print('Dictionaries are missing! I will generate the missing data first. It may take a minute!\n')
+        build(conf)
 
     if not graphical and not args.inter:
         message = args.message[0]
