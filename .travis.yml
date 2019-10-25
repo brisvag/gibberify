@@ -4,24 +4,18 @@ branches:
     - /v\d+\.\d+\.\d+(?:\-[a-z]+)?/
     - test-build
 
+# if on test-build, don't deploy
 stages:
   - name: deploy
     if: branch != test-build
 
 matrix:
   include:
-
   - os: linux
     language: python
     python: 3.6
-    before_install:
-      - pip install -r requirements.txt
-      - pip install pyinstaller
-    before_script:
-      - pip install .
     before_deploy:
       - tar -czvf gibberify-ubuntu.tar.gz -C dist gibberify
-
   - os: osx
     language: generic
     before_install:
@@ -31,34 +25,27 @@ matrix:
       - yes | sudo port install py36-pip
       - sudo port select --set python3 python36
       - sudo port select --set pip pip36
-      - pip install pyinstaller --user
       - export PATH=$PATH:/Users/travis/Library/Python/3.6/bin
-      - pip install -r requirements.txt --user
-      - pip install pyinstaller --user
-    before_script:
-      - pip install pytest --user
-      - pip install . --user
     before_deploy:
       - zip -j gibberify-macos.zip dist/gibberify
-
   - os: windows
     language: shell
     before_install:
       - choco install python --version 3.6
       - export PATH="/c/Python36:/c/Python36/Scripts:$PATH"
-      - pip install -r requirements.txt
-      - pip install pywin32 pypiwin32
-      - pip install pyinstaller
-    before_script:
-      - pip install pytest
-      - pip install .
+      - pip install --user pywin32 pypiwin32
     before_deploy:
       - 7z a -tzip gibberify-windows.zip ./dist/gibberify.exe
 
 install:
+  - pip install --user -r requirements.txt
+  - pip install --user pyinstaller
+  - pip install --user .
   - pyinstaller gibberify.spec
 
-# need to add tests
+before_script:
+  - pip install --user pytest
+
 script: pytest
 
 deploy:
