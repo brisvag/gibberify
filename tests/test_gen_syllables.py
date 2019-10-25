@@ -2,6 +2,7 @@
 
 import pytest
 from gibberify import Syllabizer
+from gibberify.generate.syllables import GibPool
 from gibberify.utils import access_data
 
 
@@ -16,64 +17,54 @@ def test_syllabizer_instance(syl):
 
 
 def test_download_raw(syl):
-    syl.download_raw()
-    assert isinstance(syl.raw, list)
-    assert syl.raw
+    raw = syl._download_raw()
+    assert isinstance(raw, list)
+    assert raw
 
 
-# TODO: first need to implement this in gibberify and upload to gibberify-data
-# def test_download_words(syl):
-#     syl.download_words()
-#     assert isinstance(syl.words, list)
-#     assert syl.words.readlines()
+def test_download_words(syl):
+    words = syl._download_words()
+    assert isinstance(words, GibPool)
+    assert words
 
 
 def test_download_syllables(syl):
-    syl.download_syllables()
-    assert isinstance(syl.syllables, list)
-    assert syl.syllables
+    syllables = syl._download_syllables()
+    assert isinstance(syllables, GibPool)
+    assert syllables
 
 
 @pytest.mark.incremental
 class TestSyllablizerWriteRead:
     def test_write(self, syl):
-        syl.raw = ['test', 'word']
-        syl.words = ['another', 'thing']
-        syl.syllables = ['more', 'stuff']
-        syl.write(raw=True, words=True, syllables=True)
-        raw = access_data('raw', 'en')
+        syl.words = GibPool('en', ['another', 'thing'])
+        syl.syllables = GibPool('en', ['more', 'stuff'])
+        syl._write(words=True, sylables=True)
         words = access_data('words', 'en')
         syllables = access_data('syllables', 'en')
-        assert raw == syl.raw
         assert words == syl.words
         assert syllables == syl.syllables
 
     def test_load_words(self, syl):
-        syl.load_words()
-        assert isinstance(syl.words, list)
-        assert syl.words
+        words = syl._load_words()
+        assert isinstance(words, GibPool)
+        assert words
 
     def test_load_syllables(self, syl):
-        syl.load_syllables()
-        assert isinstance(syl.syllables, list)
-        assert syl.syllables
+        syllables = syl._load_syllables()
+        assert isinstance(syllables, GibPool)
+        assert syllables
 
 
 def test_make_words(syl):
     syl.raw = [b'test', b'word']
-    syl.make_words()
-    assert isinstance(syl.words, list)
-    assert syl.words
+    words = syl._make_words()
+    assert isinstance(words, GibPool)
+    assert words
 
 
 def test_make_syllables(syl):
-    syl.words = ['another', 'thing']
-    syl.make_syllables()
-    assert isinstance(syl.syllables, list)
-    assert syl.syllables
-
-
-# def test_run(syl):
-#     syl.run(from_raw=True)
-#     syl.run(force_syl_rebuild=True)
-#     syl.run()
+    syl.words = GibPool('en', ['another', 'thing'])
+    syllables = syl._make_syllables()
+    assert isinstance(syllables, GibPool)
+    assert syllables

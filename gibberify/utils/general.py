@@ -6,10 +6,18 @@ Collection of general utilities and globals used by several modules
 
 import os
 import sys
-import json
+from packaging import version
+import pickle
 import platform
 import shutil
 from pathlib import Path
+
+
+class VersionError(Exception):
+    """
+    error raised when there's a version mismatch between loaded data and current version of gibberify
+    """
+    pass
 
 
 def find_data_dir():
@@ -33,7 +41,7 @@ def find_data_dir():
 
 def find_basedir():
     """
-    return path to module directory,
+    return path to module directory
     """
     if hasattr(sys, "_MEIPASS"):
         return Path(sys._MEIPASS).expanduser()     # needed for standalone version
@@ -41,22 +49,11 @@ def find_basedir():
         return Path(os.path.dirname(__file__)).parent
 
 
-def progress(message, partial, total):
-    """
-    print progress in percentage with carriage return
-    """
-    # TODO: use this!
-    # +0.5 is to round up
-    print(f'\r{message}: {int((partial/total)*100+0.5)}%', flush=True, end='')
-    if partial == total:
-        print()
-
-
 def check_dirs():
     """
     create directory tree for data if not present
     """
-    dirs = ['raw', 'words', 'syllables', 'dicts']
+    dirs = ['words', 'syllables', 'dicts']
     for d in dirs:
         path = data/d
         os.makedirs(path, exist_ok=True)
@@ -68,29 +65,35 @@ def access_data(data_type, lang_in, lang_out=None, write_data=None):
     :param data_type: type of data to access (raw, words, syllables or dicts)
     :param lang_in: (input) language code
     :param lang_out: output language code.
-    :param write_data: data in json compatible format. If not present, data is read from file and returned instead
-    :return: contents of the file in json compatible format, if any
+    :param write_data: data pickleable format. If not present, data is read from file and returned instead
+    :return: contents of the file in pickleable format, if any
     """
     check_dirs()
     if data_type == 'dicts':
         if not lang_out:
             raise AttributeError('you must specify an output language to access a dictionary')
         name = f'{lang_in}-{lang_out}'
-    elif data_type in ('syllables', 'words', 'raw'):
+    elif data_type in ('syllables', 'words'):
         name = lang_in
     else:
         raise ValueError(f'no such data type as "{data_type}"')
 
-    mode = 'r'
+    mode = 'rb'
     if write_data:
-        mode = 'w+'
+        mode = 'wb+'
 
-    file_path = data/data_type/f'{name}.json'
+    file_path = data/data_type/f'{name}.p'
+
     with open(file_path, mode) as f:
         if not write_data:
-            return json.load(f)
+            loaded = pickle.load(f)
+            v_load = version.parse(loaded.version).release
+            v_curr = version.parse(__version__).release
+            if v_load[0] < v_curr[0]:
+                raise VersionError('loaded data is from an old, non compatible version')
+            return loaded
         else:
-            json.dump(write_data, f, indent=4)
+            pickle.dump(write_data, f)
 
 
 def uninstall(force=False):
@@ -111,10 +114,11 @@ def uninstall(force=False):
 
 
 # initialize all the globals used by other modules
-version = '0.5.0'
+__version__ = '0.5.0'
 
 basedir = find_basedir()
 assets = basedir/'assets'
+conf_default = basedir/'config'/'config.json'
 
 data = find_data_dir()
 conf = data/'config.json'

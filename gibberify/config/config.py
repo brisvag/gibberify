@@ -28,6 +28,7 @@ gib_langs = {
 """
 
 import json
+from pathlib import Path
 import texteditor
 
 # local imports
@@ -47,33 +48,25 @@ class Config(dict):
 
     a modified dictionary class that can retrieve, store and edit the configuration for gibberify
     """
-    default_path = utils.basedir / 'config' / 'config.json'
-    user_path = utils.conf
+    def __init__(self, *args, path=None, **kwargs):
+        super(Config, self).__init__(*args, **kwargs)
+        if path is None:
+            path = utils.conf
+        else:
+            path = Path(path)
 
-    @classmethod
-    def from_json(cls, path=None):
-        """
-        creates a config object starting from a json file
-        :param path: path of the json file. If not given, default path for user config is used
-        :return: Config instance
-        """
-        if not path:
-            path = cls.user_path
-        try:
+        if not path.is_file():
+            with open(utils.conf_default, 'r') as f:
+                self.update(json.load(f))
+        else:
             with open(path, 'r') as f:
-                return cls(json.load(f))
-        except FileNotFoundError:
-            with open(cls.default_path, 'r') as f:
-                return cls(json.load(f))
+                self.update(json.load(f))
 
-    @classmethod
-    def from_default(cls):
-        """
-        wrapper for from_json that loads the default configuration
-        """
-        return cls.from_json(cls.default_path)
+        self.path = path
 
-    def check(self):
+        self._check()
+
+    def _check(self):
         """
         check that contents of the dictionary conform the format, try to fix it if not,
         otherwise raise an exception
@@ -112,17 +105,21 @@ class Config(dict):
             else:
                 raise ConfigError(f'{key} is not a valid configuration key')
 
+        # make sure languages only appear once in real_langs
+        unique = set(self['real_langs'])
+        self['real_langs'] = list(unique)
+
     def write(self):
         """
         writes the current configuration to file
         """
-        self.check()
-        utils.general.check_dirs()
-        with open(self.user_path, 'w+') as f:
+        self._check()
+        utils.check_dirs()
+        with open(self.path, 'w+') as f:
             json.dump(self, f, indent=4)
 
     def edit(self):
         """
         opens the configuration file in the default text editor
         """
-        texteditor.open(filename=self.user_path)
+        texteditor.open(filename=self.path)

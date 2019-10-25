@@ -5,7 +5,7 @@ from gibberify import utils
 
 
 def test_globals():
-    assert isinstance(utils.version, str)
+    assert isinstance(utils.__version__, str)
     assert isinstance(utils.basedir, Path)
     assert utils.basedir.is_dir()
     assert isinstance(utils.assets, Path)
