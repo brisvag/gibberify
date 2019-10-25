@@ -27,7 +27,7 @@ class LangMenu(QComboBox):
     def __init__(self, lang_list):
         super(LangMenu, self).__init__()
         # use given language list as possible selections
-        self.addItems(lang_list)
+        self.addItems(sorted(lang_list))
 
         # configure font and size
         fixedfont = QFontDatabase.systemFont(QFontDatabase.FixedFont)
