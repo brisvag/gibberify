@@ -21,6 +21,10 @@ matrix:
     - pyinstaller gibberify.spec
     before_script:
       - pip install pytest
+      - chmod 775 tests/test_standalone/basic_tests.sh
+    script:
+      - pytest
+      - bash tests/test_standalone/basic_tests.sh
     before_deploy:
       - tar -czvf gibberify-ubuntu.tar.gz -C dist gibberify
   - os: osx
@@ -40,6 +44,10 @@ matrix:
       - pyinstaller gibberify.spec
     before_script:
       - pip install --user pytest
+      - chmod 775 tests/test_standalone/basic_tests.sh
+    script:
+      - pytest
+      - bash tests/test_standalone/basic_tests.sh
     before_deploy:
       - zip -j gibberify-macos.zip dist/gibberify
   - os: windows
@@ -55,12 +63,10 @@ matrix:
       - pyinstaller gibberify.spec
     before_script:
       - pip install pytest
+    script:
+      - pytest
     before_deploy:
       - 7z a -tzip gibberify-windows.zip ./dist/gibberify.exe
-
-script:
-  - pytest
-  - bash -c "tests/test_standalone/basic_tests.sh"
 
 deploy:
   provider: releases
