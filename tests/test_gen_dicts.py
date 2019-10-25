@@ -3,6 +3,7 @@
 import pytest
 from gibberify import Scrambler
 from gibberify.utils import access_data
+from gibberify.generate.dicts import GibDict
 
 
 @pytest.fixture
@@ -54,8 +55,8 @@ def test_make_reverse(scr):
 
 
 def test_write(scr):
-    scr.dict_straight = {'test': 'word'}
-    scr.dict_reverse = {'4': {'word': 'test'}}
+    scr.dict_straight = GibDict('en', 'orc', {}, {'test': 'word'})
+    scr.dict_reverse = GibDict('orc', 'en', {}, {'4': {'word': 'test'}}, reverse=True)
     scr._save()
     straight = access_data('dicts', 'en', 'orc')
     reverse = access_data('dicts', 'orc', 'en')
