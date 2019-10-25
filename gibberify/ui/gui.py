@@ -319,7 +319,7 @@ class SettingsWindow(QMainWindow):
                                                'You will lose all your current settings.'):
             return
 
-        self.set_current(Config())
+        self.set_current(Config(default=True))
 
     def save_settings(self):
         """

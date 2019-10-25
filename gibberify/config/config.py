@@ -48,14 +48,14 @@ class Config(dict):
 
     a modified dictionary class that can retrieve, store and edit the configuration for gibberify
     """
-    def __init__(self, *args, path=None, **kwargs):
+    def __init__(self, *args, path=None, default=False, **kwargs):
         super(Config, self).__init__(*args, **kwargs)
         if path is None:
             path = utils.conf
         else:
             path = Path(path)
 
-        if not path.is_file():
+        if not path.is_file() or default:
             with open(utils.conf_default, 'r') as f:
                 self.update(json.load(f))
         else:
@@ -108,6 +108,7 @@ class Config(dict):
         # make sure languages only appear once in real_langs
         unique = set(self['real_langs'])
         self['real_langs'] = list(unique)
+        self['real_langs'].sort()
 
     def write(self):
         """
