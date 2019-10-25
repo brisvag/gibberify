@@ -58,7 +58,8 @@ class Translator:
         if not dicts:
             dicts = {}
             dicts_dir = utils.data/'dicts'
-            for dict_file in dicts_dir.iterdir():
+            dict_files = [file for file in dicts_dir.iterdir() if file.suffix == '.p']
+            for dict_file in dict_files:
                 dict_code = dict_file.stem
                 lang_in, lang_out = dict_code.split('-')
                 content = utils.access_data('dicts', lang_in, lang_out)
