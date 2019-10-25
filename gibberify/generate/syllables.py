@@ -130,7 +130,7 @@ class Syllabizer:
 
         return GibPool(self.lang, syllables)
 
-    def _write(self, words=False, syllables=True):
+    def _save(self, words=False, syllables=True):
         """
         writes to file the generated data. If params are set to False, ignores that
         type of data when saving to file
@@ -164,4 +164,4 @@ class Syllabizer:
                 self._download_syllables()
 
             # write data only if we have it
-            self._write(words=bool(self.words), syllables=bool(self.syllables))
+            self._save(words=bool(self.words), syllables=bool(self.syllables))
